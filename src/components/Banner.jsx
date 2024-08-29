@@ -1,5 +1,5 @@
 import React from 'react';
-import logoCaravela from '../assets/logoCaravela.png';
+import logoCaravela from '../assets/img/logoCaravela.png';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
@@ -7,19 +7,19 @@ export function Banner() {
 	const { t } = useTranslation();
 
 	return (
-		<section className='bannerSection'>
-			<div className='flex flex-row border border-red-500 p-4'>
-				<div className='flex-shrink-0'>
+		<section className='bannerSection w-full m-auto '>
+			<div className='flex flex-row items-center justify-between py-2 gap-6 font-bayard'>
+				<div className=''>
 					<Link to='/'>
-						<img className='cursor-pointer' src={logoCaravela} alt='Logo de caravela' />
+						<img className='cursor-pointer max-w-[50%]' src={logoCaravela} alt='Logo de caravela' />
 					</Link>
 				</div>
-				<div className='flex flex-row gap-6 ml-auto'>
+				<div className=' flex gap-6'>
 					<Link to='/create'>
-						<button className='cursor-pointer'>{t('createContainers')}</button>
+						<button className='cursor-pointer text-3xl text-pink uppercase'>{t('createContainers')}</button>
 					</Link>
 					<Link to='/view'>
-						<button className='cursor-pointer'>{t('viewContainers')}</button>
+						<button className='cursor-pointer text-3xl text-yellow uppercase '>{t('viewContainers')}</button>
 					</Link>
 				</div>
 			</div>

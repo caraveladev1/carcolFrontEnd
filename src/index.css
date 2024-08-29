@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@font-face {
+  font-family: 'bayard';
+  src: url('./assets/font/BAYARD-Regular.otf') format('opentype');
+  font-weight: lighter;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'itf';
+  src: url('./assets/font/itc-franklin-gothic_condensed-medium.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
