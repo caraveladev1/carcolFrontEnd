@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Banner } from '../components/Banner';
-import { Filter } from '../components/Filter';
 import { useTranslation } from 'react-i18next';
-import { DataTable } from '../components/DataTable';
-import { CreateContainer } from './CreateContainer';
-import { headersTablePending, placeholderFilter } from '../utils/consts';
+import { TableGeneric } from '../components/TableGeneric'; // Reemplazamos DataTable por TableGeneric
+import { headersTablePending } from '../utils/consts';
+import { Loader } from '../components/Loader'; // Importa el componente Loader
 
 export function Home() {
 	const { t } = useTranslation();
 	const [organizedData, setOrganizedData] = useState(null);
+	const [loading, setLoading] = useState(true); // Estado para manejar la carga
 
 	useEffect(() => {
 		const url = 'http://localhost:3000/api/exports/pendingExports';
@@ -37,25 +37,31 @@ export function Home() {
 				};
 				const organizedData = organizeDataByExportNumber(data);
 				setOrganizedData(organizedData);
+				setLoading(false); // Cambia el estado a false una vez los datos están cargados
 			})
 			.catch((error) => {
 				console.error('Error:', error);
+				setLoading(false); // Asegura que el loader desaparezca en caso de error
 			});
 	}, []);
+
+	if (loading) {
+		return <Loader />; // Muestra el loader mientras se cargan los datos
+	}
 
 	return (
 		<div className='bg-dark-background bg-cover bg-fixed'>
 			<section className='homeContainer max-w-[90%] m-auto'>
 				<Banner />
 				{/* organized data section */}
-
 				<h1 className='text-5xl font-bold my-8 uppercase text-yellow font-bayard'>{t('pendingTasks')}</h1>
-				{organizedData && <DataTable headersTable={headersTablePending} dataTable={organizedData} />}
-				{/* <div className='flex flex-row gap-5 justify-around mt-16'>
-					{placeholderFilter.map((placeholder, index) => (
-						<Filter key={index} placeholder={t(placeholder)} />
-					))}
-				</div> */}
+				{organizedData && (
+					<TableGeneric
+						headersTable={headersTablePending} // Los headers vienen de consts
+						dataTable={organizedData} // Pasamos los datos organizados
+						renderRowContent={(row) => row} // Pasamos la lógica de renderización
+					/>
+				)}
 			</section>
 		</div>
 	);

@@ -69,7 +69,7 @@ export const BookingAndDates = memo(function BookingAndDates({ exportNumber }) {
 						</div>
 					</React.Fragment>
 				))}
-				<SubmitButton color='verdeTexto' typeButton='submit' />
+				<SubmitButton className='col-span-4' color='verdeTexto' typeButton='submit' />
 			</form>
 		</div>
 	);

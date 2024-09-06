@@ -14,4 +14,23 @@ export const headersTablePending = [
 	'comments',
 ];
 
-export const nameFilters = ['export', 'port', 'booking', 'approvalDate', 'mark', 'date', 'ico'];
+export const nameFilters = [
+	'capacityContainer',
+	'shipmentMonthStart',
+	'exportCountry',
+	'shipmentMonthFinal',
+	'container',
+	'port',
+	'incoterm',
+];
+
+export const headersTableCreateContainer = [
+	'ico_id',
+	'mark',
+	'packaging_capacity',
+	'units',
+	'sample',
+	'shipmentMonth',
+	'pricingConditions',
+	'select',
+];
