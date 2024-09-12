@@ -13,6 +13,7 @@ export function CreateContainer() {
 	const [loading, setLoading] = useState(true);
 	const [icoList, setIcoList] = useState([]);
 	const [filteredIcoList, setFilteredIcoList] = useState([]);
+	const [selectedIcos, setSelectedIcos] = useState(new Set());
 
 	const [selectOptions, setSelectOptions] = useState({
 		shipmentPorts: [],
@@ -43,15 +44,19 @@ export function CreateContainer() {
 				const incoterm = [...new Set(data.map((item) => item.incoterm))];
 
 				const updatedIcoList = data.map((item) => ({
-					ico_id: item.ico_secondary_id === null ? item.ico_id : item.ico_id + ' / ' + item.ico_secondary_id,
+					ico_id: item.ico_id,
+					secondary_ico_id: item.ico_secondary_id,
 					mark: item.mark,
-					packaging_capacity: item.packaging_type + ' ' + item.packaging_capacity,
+					packaging_capacity: `${item.packaging_type} ${item.packaging_capacity}`,
 					units: item.units,
 					sample: item.status_approval_sample === null ? 'Pending' : item.status_approval_sample,
 					shipmentMonth: item.shipment_date,
 					pricingConditions:
-						item.pricing_conditions === 'differential' ? 'Differential: ' + item.fixation_flag : 'Fixed',
-					select: false,
+						item.pricing_conditions === 'differential' && item.fixation_flag === null
+							? 'Differential: Pending '
+							: item.pricing_conditions === 'differential' && item.fixation_flag !== null
+								? 'Differential: Fixed '
+								: 'Fixed',
 					destinationPorts: item.destination_port,
 					exportCountry: item.origin,
 					incoterm: item.incoterm,
@@ -76,9 +81,15 @@ export function CreateContainer() {
 	}, []);
 
 	const handleCheckboxChange = (ico_id) => {
-		setFilteredIcoList((prevList) =>
-			prevList.map((item) => (item.ico_id === ico_id ? { ...item, select: !item.select } : item)),
-		);
+		setSelectedIcos((prevSelectedIcos) => {
+			const newSelectedIcos = new Set(prevSelectedIcos);
+			if (newSelectedIcos.has(ico_id)) {
+				newSelectedIcos.delete(ico_id);
+			} else {
+				newSelectedIcos.add(ico_id);
+			}
+			return newSelectedIcos;
+		});
 	};
 
 	const handleFilterChange = (e) => {
@@ -100,13 +111,61 @@ export function CreateContainer() {
 				(filters.shipmentMonthFinal === '' || shipmentMonth <= shipmentMonthFinal)
 			);
 		});
-		setFilteredIcoList(filteredList);
-	}, [filters, icoList]);
+
+		// Combinar y ordenar: ítems seleccionados primero, luego los ítems filtrados
+		const combinedList = [
+			...icoList.filter(
+				(item) =>
+					selectedIcos.has(item.ico_id) && !filteredList.some((filteredItem) => filteredItem.ico_id === item.ico_id),
+			),
+			...filteredList,
+		];
+
+		setFilteredIcoList(combinedList);
+	}, [filters, icoList, selectedIcos]);
 
 	const preparedDataTable = filteredIcoList.map((item) => ({
 		...item,
-		select: <input type='checkbox' checked={item.select} onChange={() => handleCheckboxChange(item.ico_id)} />,
+		select: (
+			<input
+				type='checkbox'
+				checked={selectedIcos.has(item.ico_id)}
+				onChange={() => handleCheckboxChange(item.ico_id)}
+			/>
+		),
 	}));
+
+	const handleSubmit = (e) => {
+		e.preventDefault();
+		const selectedData = icoList.filter((ico) => selectedIcos.has(ico.ico_id));
+
+		const payload = {
+			filters,
+			selectedIcos: selectedData,
+		};
+		console.log(payload);
+
+		fetch('http://localhost:3000/api/exports/createContainer', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(payload),
+		})
+			.then((response) => {
+				if (!response.ok) {
+					throw new Error('Network response was not ok');
+				}
+				return response.json();
+			})
+			.then(() => {
+				window.alert('Container created successfully');
+				window.location.reload();
+			})
+			.catch((error) => {
+				console.error('Error:', error);
+			});
+	};
 
 	if (loading) {
 		return <Loader />;
@@ -117,43 +176,50 @@ export function CreateContainer() {
 			<section className='max-w-[90%] m-auto'>
 				<Banner />
 				<h1 className='text-5xl font-bold uppercase text-pink font-bayard'>{t('createContainer')}</h1>
-				<div className='grid grid-cols-4 gap-4'>
-					{nameFilters.map((filter) => (
-						<div key={filter} className='col-span-2 flex items-center gap-4'>
-							<LabelGeneric htmlFor={filter} filter={filter} className='col-span-1' />
-							<InputGeneric
-								type={
-									filter === 'port' ||
-									filter === 'capacityContainer' ||
-									filter === 'exportCountry' ||
-									filter === 'incoterm'
-										? 'select'
-										: filter === 'shipmentMonthStart' || filter === 'shipmentMonthFinal'
-											? 'date'
-											: 'text'
-								}
-								filter={filter}
-								name={filter}
-								defaultValue={filters[filter]}
-								className='col-span-3 p-2'
-								options={
-									filter === 'port'
-										? selectOptions.destinationPorts
-										: filter === 'exportCountry'
-											? selectOptions.exportCountry
-											: filter === 'capacityContainer'
-												? selectOptions.capacityContainer
-												: filter === 'incoterm'
-													? selectOptions.incoterm
-													: []
-								}
-								onChange={handleFilterChange}
-							/>
-						</div>
-					))}
-
-					<SubmitButton className='bg-celeste col-span-2' typeButton='submit' />
-				</div>
+				<form onSubmit={handleSubmit}>
+					<div className='grid grid-cols-4 gap-4'>
+						{nameFilters.map((filter) => (
+							<div key={filter} className='col-span-2 flex items-center gap-4'>
+								<LabelGeneric htmlFor={filter} filter={filter} className='col-span-1' />
+								<InputGeneric
+									type={
+										filter === 'port' ||
+										filter === 'capacityContainer' ||
+										filter === 'exportCountry' ||
+										filter === 'incoterm'
+											? 'select'
+											: filter === 'shipmentMonthStart' || filter === 'shipmentMonthFinal'
+												? 'date'
+												: 'text'
+									}
+									filter={filter}
+									name={filter}
+									defaultValue={filters[filter]}
+									className='col-span-3 p-2'
+									options={
+										filter === 'port'
+											? selectOptions.destinationPorts
+											: filter === 'exportCountry'
+												? selectOptions.exportCountry
+												: filter === 'capacityContainer'
+													? selectOptions.capacityContainer
+													: filter === 'incoterm'
+														? selectOptions.incoterm
+														: []
+									}
+									onChange={handleFilterChange}
+									required={
+										filter === 'port' ||
+										filter === 'capacityContainer' ||
+										filter === 'exportCountry' ||
+										filter === 'incoterm'
+									}
+								/>
+							</div>
+						))}
+						<SubmitButton className='bg-celeste col-span-2' typeButton='submit' />
+					</div>
+				</form>
 				<TableGeneric headersTable={headersTableCreateContainer} dataTable={preparedDataTable} />
 			</section>
 		</div>

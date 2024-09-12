@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-export function InputGeneric({ type, filter, defaultValue, options = [], onChange }) {
+export function InputGeneric({ type, filter, defaultValue, options = [], onChange, required }) {
 	const { t } = useTranslation();
 
 	return (
@@ -13,6 +13,7 @@ export function InputGeneric({ type, filter, defaultValue, options = [], onChang
 					defaultValue={defaultValue}
 					className='bg-transparent font-bayard text-xl uppercase border-2 border-pink p-4 w-full text-pink focus:outline-none focus:border-2 focus:border-pink m-auto h-full'
 					onChange={onChange} // Añadir el manejador de eventos
+					required={required}
 				>
 					{/* Opción predeterminada */}
 					<option value='' disabled hidden>
@@ -37,6 +38,7 @@ export function InputGeneric({ type, filter, defaultValue, options = [], onChang
 					defaultValue={defaultValue}
 					className='bg-transparent font-bayard text-xl uppercase border-2 border-pink p-4 w-full text-pink focus:outline-none focus:border-2 focus:border-pink m-auto h-full'
 					onChange={onChange} // Añadir el manejador de eventos
+					required={required}
 				/>
 			)}
 		</>

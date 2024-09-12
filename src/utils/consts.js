@@ -5,13 +5,14 @@ export const placeholderFilter = ['office', 'exportMonth', 'packaging', 'contrac
 export const headersTablePending = [
 	'contract',
 	'ico',
+	'secondary_ico_id',
 	'mark',
 	'customer',
 	'packaging',
 	'units',
 	'sample',
-	'shipmentMonth',
-	'comments',
+	'incoterm',
+	'pricingConditions',
 ];
 
 export const nameFilters = [
@@ -19,13 +20,13 @@ export const nameFilters = [
 	'shipmentMonthStart',
 	'exportCountry',
 	'shipmentMonthFinal',
-	'container',
 	'port',
 	'incoterm',
 ];
 
 export const headersTableCreateContainer = [
 	'ico_id',
+	'secondary_ico_id',
 	'mark',
 	'packaging_capacity',
 	'units',
@@ -33,4 +34,16 @@ export const headersTableCreateContainer = [
 	'shipmentMonth',
 	'pricingConditions',
 	'select',
+];
+
+export const labelsBoogkindAndDates = [
+	'export',
+	'booking',
+	'dateLoadingPort',
+	'estimatedDelivery',
+	'estimatedArrival',
+	'announcement',
+	'order',
+	'review',
+	'salesCode',
 ];

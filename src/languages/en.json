@@ -31,10 +31,16 @@
 	"addIco": "Add Ico",
 	"Select_ICO": " Select ICO",
 	"ico_id": "ICO",
+	"secondary_ico_id": "Secondary ICO",
 	"packaging_capacity": "Packaging Capacity",
 	"capacityContainer": "Container Capacity",
 	"incoterm": "Incoterm",
 	"exportCountry": "Export Country",
 	"pricingConditions": "Pricing Conditions",
-	"container": "Container"
+	"container": "Container",
+	"announcement": "Announcement",
+	"order": "Order",
+	"review": "Review",
+	"salesCode": "Sales Code",
+	"selectOption": "Select Option"
 }

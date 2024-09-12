@@ -5,8 +5,8 @@ export function TableGeneric({ headersTable, dataTable }) {
 	const { t } = useTranslation();
 
 	return (
-		<div className='overflow-x-auto my-6'>
-			<table className='w-full table-fixed'>
+		<div className='overflow-x-auto  mt-6 pb-6'>
+			<table className='w-full table-fixed '>
 				<thead>
 					<tr className='bg-beige font-bayard text-2xl'>
 						{headersTable.map((header, index) => (

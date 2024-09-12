@@ -1,8 +1,9 @@
 import React, { useState, memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SubmitButton } from './SubmitButton';
+import { labelsBoogkindAndDates } from '../utils/consts';
 
-export const BookingAndDates = memo(function BookingAndDates({ exportNumber }) {
+export const BookingAndDates = memo(function BookingAndDates({ exportNumber, selectOptions }) {
 	const { t } = useTranslation();
 
 	const [formData, setFormData] = useState({
@@ -10,6 +11,7 @@ export const BookingAndDates = memo(function BookingAndDates({ exportNumber }) {
 		dateLoadingPort: '',
 		estimatedDelivery: '',
 		estimatedArrival: '',
+		export: '',
 	});
 
 	const handleChange = (e) => {
@@ -18,6 +20,7 @@ export const BookingAndDates = memo(function BookingAndDates({ exportNumber }) {
 			...prevData,
 			[name]: value,
 		}));
+		console.log(formData);
 	};
 
 	const handleSubmit = async (e) => {
@@ -30,7 +33,7 @@ export const BookingAndDates = memo(function BookingAndDates({ exportNumber }) {
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: { ...formData, exportNumber },
+				body: JSON.stringify({ ...formData, exportNumber }),
 			});
 
 			if (!response.ok) {
@@ -44,28 +47,51 @@ export const BookingAndDates = memo(function BookingAndDates({ exportNumber }) {
 		}
 	};
 
-	const labels = ['booking', 'dateLoadingPort', 'estimatedDelivery', 'estimatedArrival'];
-
 	return (
 		<div className='flex items-center justify-center w-full bg-beige'>
 			<form onSubmit={handleSubmit} className='grid grid-cols-4 gap-4 p-4'>
-				{labels.map((label, index) => (
+				{labelsBoogkindAndDates.map((label, index) => (
 					<React.Fragment key={index}>
-						<div>
+						<div className='bg-cafe/10  p-3'>
 							<label
 								htmlFor={label}
-								className='block text-verdeTexto font-bold p-4 font-itf border-2 border-verdeTexto'
+								className='block text-verdeTexto font-bold p-4 font-itf border-2 uppercase border-verdeTexto'
 							>
 								{t(label)}
 							</label>
-							<input
-								type={label === 'booking' ? 'text' : 'date'}
-								id={label}
-								name={label}
-								value={formData[label]}
-								onChange={handleChange}
-								className='bg-transparent font-itf border-2 border-verdeTexto p-4 mt-4 w-full text-verdeTexto focus:outline-none focus:border-2 focus:border-verdeTexto '
-							/>
+							{label === 'export' ? (
+								<select
+									id={label}
+									name={label}
+									value={formData[label]}
+									onChange={handleChange}
+									className='bg-transparent font-itf border-2 border-verdeTexto p-4 mt-4 w-full text-verdeTexto focus:outline-none focus:border-2 focus:border-verdeTexto  uppercase'
+								>
+									<option value=''>{t('selectOption')}</option>
+									{selectOptions.map((option, idx) => (
+										<option key={idx} value={option}>
+											{option}
+										</option>
+									))}
+								</select>
+							) : (
+								<input
+									type={
+										label === 'booking' ||
+										label === 'announcement' ||
+										label === 'order' ||
+										label === 'review' ||
+										label === 'salesCode'
+											? 'text'
+											: 'date'
+									}
+									id={label}
+									name={label}
+									value={formData[label]}
+									onChange={handleChange}
+									className='bg-transparent font-itf border-2  border-verdeTexto p-4 mt-4 w-full text-verdeTexto focus:outline-none focus:border-2 focus:border-verdeTexto uppercase'
+								/>
+							)}
 						</div>
 					</React.Fragment>
 				))}

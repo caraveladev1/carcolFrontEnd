@@ -1,67 +1,128 @@
 import React, { useEffect, useState } from 'react';
 import { Banner } from '../components/Banner';
 import { useTranslation } from 'react-i18next';
-import { TableGeneric } from '../components/TableGeneric'; // Reemplazamos DataTable por TableGeneric
+import { TableGeneric } from '../components/TableGeneric';
 import { headersTablePending } from '../utils/consts';
-import { Loader } from '../components/Loader'; // Importa el componente Loader
+import { Loader } from '../components/Loader';
+import { BookingAndDates } from '../components/BookingAndDates';
 
 export function Home() {
 	const { t } = useTranslation();
 	const [organizedData, setOrganizedData] = useState(null);
-	const [loading, setLoading] = useState(true); // Estado para manejar la carga
+	const [expId, setExpId] = useState(null);
+	const [loading, setLoading] = useState(true);
+	const [showBookingAndDates, setShowBookingAndDates] = useState({});
+
+	// Función para organizar los datos por exp_id
+	const groupByExpId = (data) => {
+		const result = {};
+		Object.keys(data).forEach((key) => {
+			const items = data[key];
+			items.forEach((item) => {
+				const { exp_id } = item;
+				if (!result[exp_id]) {
+					result[exp_id] = [];
+				}
+				result[exp_id].push(item);
+			});
+		});
+		return result;
+	};
+
+	// Función para mapear los nombres de las propiedades
+	const mapData = (data) => {
+		return data.map((item) => ({
+			contract: item.api_contract.main_identifier,
+			customer: item.api_contract.customer,
+			pricingConditions:
+				item.api_contract.pricing_conditions === 'differential' && item.api_contract.fixation_flag === null
+					? 'Differential: Pending '
+					: item.api_contract.pricing_conditions === 'differential' && item.api_contract.fixation_flag !== null
+						? 'Differential: Fixed '
+						: 'Fixed',
+			sample: item.api_contract.status_approval_sample ? item.api_contract.status_approval_sample : 'Pending',
+			packaging: item.packaging_capacity,
+
+			mark: item.brand_name,
+			...item,
+		}));
+	};
 
 	useEffect(() => {
-		const url = 'http://localhost:3000/api/exports/pendingExports';
+		const url = 'http://localhost:3000/api/exports/getPendingContainers';
 		fetch(url)
 			.then((response) => response.json())
 			.then((data) => {
-				const organizeDataByExportNumber = (data) => {
-					const groupedData = {};
-
-					data.forEach((record) => {
-						const { export_number, status_approval_sample, shipment_date, ...rest } = record;
-						const status =
-							status_approval_sample === null || status_approval_sample.trim() === ''
-								? 'Pending'
-								: status_approval_sample;
-						const updatedRecord = { ...rest, status_approval_sample: status, shipment_date };
-
-						if (!groupedData[export_number]) {
-							groupedData[export_number] = [];
-						}
-
-						groupedData[export_number].push(updatedRecord);
-					});
-
-					return groupedData;
-				};
-				const organizedData = organizeDataByExportNumber(data);
-				setOrganizedData(organizedData);
-				setLoading(false); // Cambia el estado a false una vez los datos están cargados
+				const groupedData = groupByExpId(data);
+				const mappedData = {};
+				Object.keys(groupedData).forEach((exp_id) => {
+					mappedData[exp_id] = mapData(groupedData[exp_id]);
+				});
+				setOrganizedData(mappedData);
+				setLoading(false);
 			})
 			.catch((error) => {
 				console.error('Error:', error);
-				setLoading(false); // Asegura que el loader desaparezca en caso de error
+				setLoading(false);
+			});
+	}, []);
+
+	// Función para manejar el click en el botón y mostrar/ocultar el componente BookingAndDates
+	const toggleBookingAndDates = (exp_id) => {
+		setShowBookingAndDates((prevState) => ({
+			...prevState,
+			[exp_id]: !prevState[exp_id], // Alterna entre mostrar y ocultar para ese exp_id
+		}));
+	};
+	useEffect(() => {
+		const url = 'http://localhost:3000/api/exports/getAllExports';
+		fetch(url)
+			.then((response) => response.json())
+			.then((data) => {
+				//console.log(data);
+				const getExportNumber = data.map((item) => item.export_number);
+				setExpId(getExportNumber);
+				//console.log(getExportNumber);
+
+				setLoading(false);
+			})
+			.catch((error) => {
+				console.error('Error:', error);
+				setLoading(false);
 			});
 	}, []);
 
 	if (loading) {
-		return <Loader />; // Muestra el loader mientras se cargan los datos
+		return <Loader />;
 	}
-
 	return (
 		<div className='bg-dark-background bg-cover bg-fixed'>
-			<section className='homeContainer max-w-[90%] m-auto'>
+			<section className='homeContainer max-w-[90%] m-auto pb-5'>
 				<Banner />
-				{/* organized data section */}
 				<h1 className='text-5xl font-bold my-8 uppercase text-yellow font-bayard'>{t('pendingTasks')}</h1>
-				{organizedData && (
-					<TableGeneric
-						headersTable={headersTablePending} // Los headers vienen de consts
-						dataTable={organizedData} // Pasamos los datos organizados
-						renderRowContent={(row) => row} // Pasamos la lógica de renderización
-					/>
-				)}
+				{/* organizedData contiene los datos agrupados */}
+				{organizedData &&
+					Object.keys(organizedData).map((exp_id) => (
+						<div key={exp_id} className='my-4'>
+							<div className='titleContainer flex flex-row justify-between items-center'>
+								<h2 className='text-3xl font-bold text-white mb-4 font-bayard uppercase'>{exp_id}</h2>
+
+								<button
+									className='bg-yellow-500 text-celeste font-bayard uppercase text-3xl  '
+									onClick={() => toggleBookingAndDates(exp_id)}
+								>
+									{showBookingAndDates[exp_id] ? t('addBookingAndDates') : t('addBookingAndDates')}
+								</button>
+							</div>
+
+							<TableGeneric
+								headersTable={headersTablePending}
+								dataTable={organizedData[exp_id]}
+								renderRowContent={(row) => row}
+							/>
+							{showBookingAndDates[exp_id] && <BookingAndDates exportNumber={exp_id} selectOptions={expId} />}
+						</div>
+					))}
 			</section>
 		</div>
 	);
