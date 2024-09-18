@@ -22,7 +22,7 @@
 	"estimatedDelivery": "Estimated Delivery",
 	"estimatedArrival": "Estimated Arrival",
 	"submit": "Submit",
-	"export": "Export Id",
+	"exportId": "Export Id",
 	"port": "Destination Port",
 	"approvalDate": "Approval Date",
 	"date": "Date",
@@ -42,5 +42,6 @@
 	"order": "Order",
 	"review": "Review",
 	"salesCode": "Sales Code",
-	"selectOption": "Select Option"
+	"selectOption": "Select Option",
+	"exportDate": "Export Date"
 }

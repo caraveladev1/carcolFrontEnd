@@ -37,7 +37,6 @@ export const headersTableCreateContainer = [
 ];
 
 export const labelsBoogkindAndDates = [
-	'export',
 	'booking',
 	'dateLoadingPort',
 	'estimatedDelivery',
@@ -46,4 +45,5 @@ export const labelsBoogkindAndDates = [
 	'order',
 	'review',
 	'salesCode',
+	'exportDate',
 ];

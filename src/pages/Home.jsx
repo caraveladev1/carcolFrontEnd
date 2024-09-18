@@ -12,6 +12,7 @@ export function Home() {
 	const [expId, setExpId] = useState(null);
 	const [loading, setLoading] = useState(true);
 	const [showBookingAndDates, setShowBookingAndDates] = useState({});
+	const [initialFormData, setInitialFormData] = useState({});
 
 	// Función para organizar los datos por exp_id
 	const groupByExpId = (data) => {
@@ -42,7 +43,6 @@ export function Home() {
 						: 'Fixed',
 			sample: item.api_contract.status_approval_sample ? item.api_contract.status_approval_sample : 'Pending',
 			packaging: item.packaging_capacity,
-
 			mark: item.brand_name,
 			...item,
 		}));
@@ -58,6 +58,7 @@ export function Home() {
 				Object.keys(groupedData).forEach((exp_id) => {
 					mappedData[exp_id] = mapData(groupedData[exp_id]);
 				});
+
 				setOrganizedData(mappedData);
 				setLoading(false);
 			})
@@ -71,19 +72,33 @@ export function Home() {
 	const toggleBookingAndDates = (exp_id) => {
 		setShowBookingAndDates((prevState) => ({
 			...prevState,
-			[exp_id]: !prevState[exp_id], // Alterna entre mostrar y ocultar para ese exp_id
+			[exp_id]: !prevState[exp_id],
+		}));
+		setInitialFormData((prevState) => ({
+			...prevState,
+			[exp_id]: {
+				booking: organizedData[exp_id]?.[0].booking || undefined,
+				exportDate: organizedData[exp_id]?.[0].export_date || undefined,
+				dateLoadingPort: organizedData[exp_id]?.[0].date_landing || undefined,
+				estimatedDelivery: organizedData[exp_id]?.[0].estimated_delivery || undefined,
+				estimatedArrival: organizedData[exp_id]?.[0].estimated_arrival || undefined,
+				announcement: organizedData[exp_id]?.[0].announcement || undefined,
+				order: organizedData[exp_id]?.[0].orders || undefined,
+				review: organizedData[exp_id]?.[0].review || undefined,
+				salesCode: organizedData[exp_id]?.[0].sales_code || undefined,
+				exportId: organizedData[exp_id]?.[0].exp_id || undefined,
+			},
 		}));
 	};
+	console.log(initialFormData);
+
 	useEffect(() => {
 		const url = 'http://localhost:3000/api/exports/getAllExports';
 		fetch(url)
 			.then((response) => response.json())
 			.then((data) => {
-				//console.log(data);
 				const getExportNumber = data.map((item) => item.export_number);
 				setExpId(getExportNumber);
-				//console.log(getExportNumber);
-
 				setLoading(false);
 			})
 			.catch((error) => {
@@ -95,6 +110,7 @@ export function Home() {
 	if (loading) {
 		return <Loader />;
 	}
+
 	return (
 		<div className='bg-dark-background bg-cover bg-fixed'>
 			<section className='homeContainer max-w-[90%] m-auto pb-5'>
@@ -108,7 +124,7 @@ export function Home() {
 								<h2 className='text-3xl font-bold text-white mb-4 font-bayard uppercase'>{exp_id}</h2>
 
 								<button
-									className='bg-yellow-500 text-celeste font-bayard uppercase text-3xl  '
+									className='bg-yellow-500 text-celeste font-bayard uppercase text-3xl'
 									onClick={() => toggleBookingAndDates(exp_id)}
 								>
 									{showBookingAndDates[exp_id] ? t('addBookingAndDates') : t('addBookingAndDates')}
@@ -120,7 +136,14 @@ export function Home() {
 								dataTable={organizedData[exp_id]}
 								renderRowContent={(row) => row}
 							/>
-							{showBookingAndDates[exp_id] && <BookingAndDates exportNumber={exp_id} selectOptions={expId} />}
+							{showBookingAndDates[exp_id] && (
+								<BookingAndDates
+									exportNumber={exp_id}
+									selectOptions={expId}
+									required={'required'}
+									initialFormData={initialFormData[exp_id]} // Pasa los datos al componente BookingAndDates
+								/>
+							)}
 						</div>
 					))}
 			</section>

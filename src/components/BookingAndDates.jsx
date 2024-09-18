@@ -1,9 +1,14 @@
-import React, { useState, memo } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SubmitButton } from './SubmitButton';
 import { labelsBoogkindAndDates } from '../utils/consts';
 
-export const BookingAndDates = memo(function BookingAndDates({ exportNumber, selectOptions }) {
+export const BookingAndDates = memo(function BookingAndDates({
+	exportNumber,
+	selectOptions,
+	required,
+	initialFormData,
+}) {
 	const { t } = useTranslation();
 
 	const [formData, setFormData] = useState({
@@ -11,8 +16,19 @@ export const BookingAndDates = memo(function BookingAndDates({ exportNumber, sel
 		dateLoadingPort: '',
 		estimatedDelivery: '',
 		estimatedArrival: '',
-		export: '',
+		exportId: '',
+		announcement: '',
+		order: '',
+		review: '',
+		salesCode: '',
+		exportDate: '',
 	});
+
+	useEffect(() => {
+		if (initialFormData) {
+			setFormData(initialFormData);
+		}
+	}, [initialFormData]);
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
@@ -20,7 +36,6 @@ export const BookingAndDates = memo(function BookingAndDates({ exportNumber, sel
 			...prevData,
 			[name]: value,
 		}));
-		console.log(formData);
 	};
 
 	const handleSubmit = async (e) => {
@@ -28,8 +43,8 @@ export const BookingAndDates = memo(function BookingAndDates({ exportNumber, sel
 		console.log({ ...formData, exportNumber });
 
 		try {
-			const response = await fetch('https://tu-api.com/endpoint', {
-				method: 'POST',
+			const response = await fetch('http://localhost:3000/api/exports/addBookingAndDates', {
+				method: 'PUT',
 				headers: {
 					'Content-Type': 'application/json',
 				},
@@ -40,8 +55,8 @@ export const BookingAndDates = memo(function BookingAndDates({ exportNumber, sel
 				throw new Error('Error en la solicitud');
 			}
 
-			const result = await response.json();
-			console.log('Resultado:', result);
+			window.alert('Container updated successfully');
+			window.location.reload();
 		} catch (error) {
 			console.error('Error al enviar los datos:', error);
 		}
@@ -59,7 +74,7 @@ export const BookingAndDates = memo(function BookingAndDates({ exportNumber, sel
 							>
 								{t(label)}
 							</label>
-							{label === 'export' ? (
+							{label === 'exportId' ? (
 								<select
 									id={label}
 									name={label}
@@ -88,6 +103,7 @@ export const BookingAndDates = memo(function BookingAndDates({ exportNumber, sel
 									id={label}
 									name={label}
 									value={formData[label]}
+									//required={required}
 									onChange={handleChange}
 									className='bg-transparent font-itf border-2  border-verdeTexto p-4 mt-4 w-full text-verdeTexto focus:outline-none focus:border-2 focus:border-verdeTexto uppercase'
 								/>
