@@ -5,6 +5,7 @@ import { Home } from './pages/Home';
 import '../I18n';
 import { createBrowserRouter, RouterProvider, Route } from 'react-router-dom';
 import { CreateContainer } from './pages/CreateContainer';
+import { ViewContainers } from './pages/ViewContainers';
 
 // Definir las rutas directamente en createBrowserRouter
 const router = createBrowserRouter([
@@ -15,6 +16,10 @@ const router = createBrowserRouter([
 	{
 		path: '/create',
 		element: <CreateContainer />,
+	},
+	{
+		path: '/view-containers',
+		element: <ViewContainers />,
 	},
 ]);
 

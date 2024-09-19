@@ -14,6 +14,19 @@ export const headersTablePending = [
 	'incoterm',
 	'pricingConditions',
 ];
+export const headersTableView = [
+	'contract',
+	'shipmentMonth',
+	'ico',
+	'secondary_ico_id',
+	'mark',
+	'customer',
+	'packaging',
+	'units',
+	'sample',
+	'incoterm',
+	'pricingConditions',
+];
 
 export const nameFilters = [
 	'capacityContainer',
@@ -47,3 +60,8 @@ export const labelsBoogkindAndDates = [
 	'salesCode',
 	'exportDate',
 ];
+
+export const containerCapacity = {
+	20: 20000.41,
+	40: 26308.34,
+};

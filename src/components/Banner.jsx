@@ -18,7 +18,7 @@ export function Banner() {
 					<Link to='/create'>
 						<button className='cursor-pointer text-3xl text-pink uppercase'>{t('createContainers')}</button>
 					</Link>
-					<Link to='/view'>
+					<Link to='/view-containers'>
 						<button className='cursor-pointer text-3xl text-yellow uppercase '>{t('viewContainers')}</button>
 					</Link>
 				</div>

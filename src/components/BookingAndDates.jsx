@@ -61,7 +61,14 @@ export const BookingAndDates = memo(function BookingAndDates({
 			console.error('Error al enviar los datos:', error);
 		}
 	};
-
+	const getCurrentDate = () => {
+		const today = new Date();
+		const year = today.getFullYear();
+		const month = String(today.getMonth() + 1).padStart(2, '0'); // Añadir 1 ya que los meses en JavaScript son de 0 a 11
+		const day = String(today.getDate()).padStart(2, '0');
+		return `${year}-${month}-${day}`;
+	};
+	const today = getCurrentDate();
 	return (
 		<div className='flex items-center justify-center w-full bg-beige'>
 			<form onSubmit={handleSubmit} className='grid grid-cols-4 gap-4 p-4'>
@@ -103,6 +110,15 @@ export const BookingAndDates = memo(function BookingAndDates({
 									id={label}
 									name={label}
 									value={formData[label]}
+									min={
+										label === 'exportDate' ||
+										label === 'dateLoadingPort' ||
+										label === 'estimatedDelivery' ||
+										label === 'estimatedArrival' ||
+										label.includes('date')
+											? today
+											: undefined
+									}
 									//required={required}
 									onChange={handleChange}
 									className='bg-transparent font-itf border-2  border-verdeTexto p-4 mt-4 w-full text-verdeTexto focus:outline-none focus:border-2 focus:border-verdeTexto uppercase'

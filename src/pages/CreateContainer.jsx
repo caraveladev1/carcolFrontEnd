@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { LabelGeneric } from '../components/LabelGeneric';
 import { useTranslation } from 'react-i18next';
-import { nameFilters, headersTableCreateContainer } from '../utils/consts';
+import { nameFilters, headersTableCreateContainer, containerCapacity } from '../utils/consts';
 import { Banner } from '../components/Banner';
 import { InputGeneric } from '../components/InputGeneric';
 import { Loader } from '../components/Loader';
@@ -60,6 +60,7 @@ export function CreateContainer() {
 					destinationPorts: item.destination_port,
 					exportCountry: item.origin,
 					incoterm: item.incoterm,
+					weight: item.estimated_kg,
 				}));
 
 				setIcoList(updatedIcoList);
@@ -143,36 +144,50 @@ export function CreateContainer() {
 			filters,
 			selectedIcos: selectedData,
 		};
+
+		const sumIcosWeight = selectedData.reduce((accumulator, element) => accumulator + parseInt(element.weight, 10), 0);
+
+		const selectedContainer = parseInt(payload.filters.capacityContainer, 10);
+		let selectedContainerValue;
+
+		if (containerCapacity.hasOwnProperty(selectedContainer)) {
+			selectedContainerValue = containerCapacity[selectedContainer];
+		}
+
 		console.log(payload);
 
-		fetch('http://localhost:3000/api/exports/createContainer', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify(payload),
-		})
-			.then((response) => {
-				if (!response.ok) {
-					throw new Error('Network response was not ok');
-				}
-				return response.json();
+		if (sumIcosWeight < selectedContainerValue) {
+			fetch('http://localhost:3000/api/exports/createContainer', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(payload),
 			})
-			.then(() => {
-				window.alert('Container created successfully');
-				window.location.reload();
-			})
-			.catch((error) => {
-				console.error('Error:', error);
-			});
+				.then((response) => {
+					if (!response.ok) {
+						throw new Error('Network response was not ok');
+					}
+					return response.json();
+				})
+				.then(() => {
+					window.alert('Container created successfully');
+					window.location.reload();
+				})
+				.catch((error) => {
+					console.error('Error:', error);
+				});
+		} else {
+			window.alert('The total weight of the icos exceeds the capacity of the container.');
+			return;
+		}
 	};
-
 	if (loading) {
 		return <Loader />;
 	}
 
 	return (
-		<div className='bg-dark-background bg-cover bg-fixed'>
+		<div className='bg-dark-background bg-cover bg-fixed min-h-screen'>
 			<section className='max-w-[90%] m-auto'>
 				<Banner />
 				<h1 className='text-5xl font-bold uppercase text-pink font-bayard'>{t('createContainer')}</h1>

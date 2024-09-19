@@ -90,7 +90,6 @@ export function Home() {
 			},
 		}));
 	};
-	console.log(initialFormData);
 
 	useEffect(() => {
 		const url = 'http://localhost:3000/api/exports/getAllExports';
@@ -112,7 +111,7 @@ export function Home() {
 	}
 
 	return (
-		<div className='bg-dark-background bg-cover bg-fixed'>
+		<div className='bg-dark-background bg-cover bg-fixed min-h-screen'>
 			<section className='homeContainer max-w-[90%] m-auto pb-5'>
 				<Banner />
 				<h1 className='text-5xl font-bold my-8 uppercase text-yellow font-bayard'>{t('pendingTasks')}</h1>
