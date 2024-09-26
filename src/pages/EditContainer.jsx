@@ -50,7 +50,7 @@ export function EditContainer() {
 			announcement: item.announcement,
 			review: item.review,
 			sales_code: item.sales_code,
-			export_date: item.export_date,
+			shipment: item.export_date,
 			container_capacity: item.container_capacity,
 			customer_country: item.customer_country,
 			destination_port: item.destination_port,
@@ -63,45 +63,38 @@ export function EditContainer() {
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				// Obtener datos de getAllContainers
 				const containersUrl = 'http://localhost:3000/api/exports/getAllContainers';
 				const containersResponse = await fetch(containersUrl);
 				const containersData = await containersResponse.json();
 				const expFiltered = containersData[id];
 
-				let mappedData = [];
-
 				if (expFiltered) {
-					mappedData = mapApiResponseToHeaders(expFiltered);
+					const mappedData = mapApiResponseToHeaders(expFiltered);
 					setIcoList(mappedData);
+
+					const exportsUrl = 'http://localhost:3000/api/exports/getAllExports';
+					const exportsResponse = await fetch(exportsUrl);
+					const exportsData = await exportsResponse.json();
+
+					const newFilters = {
+						booking: mappedData[0].booking ? [mappedData[0].booking] : [],
+						dateLoadingPort: mappedData[0].date_landing ? [mappedData[0].date_landing] : [],
+						estimatedDelivery: mappedData[0].estimated_delivery ? [mappedData[0].estimated_delivery] : [],
+						estimatedArrival: mappedData[0].estimated_arrival ? [mappedData[0].estimated_arrival] : [],
+						announcement: mappedData[0].announcement ? [mappedData[0].announcement] : [],
+						order: mappedData[0].orders ? [mappedData[0].orders] : [],
+						review: mappedData[0].review ? [mappedData[0].review] : [],
+						salesCode: mappedData[0].sales_code ? [mappedData[0].sales_code] : [],
+						exportDate: mappedData[0].export_date ? [mappedData[0].export_date] : [],
+						capacityContainer: mappedData[0].container_capacity ? [mappedData[0].container_capacity] : [],
+						exportCountry: [...new Set(exportsData.map((item) => item.origin))],
+						port: [...new Set(exportsData.map((item) => item.destination_port))],
+						incoterm: [...new Set(exportsData.map((item) => item.incoterm))],
+						ico: [...new Set(exportsData.map((item) => item.ico_id))],
+					};
+
+					setFilters(newFilters);
 				}
-
-				// Obtener datos de getAllExports
-				const exportsUrl = 'http://localhost:3000/api/exports/getAllExports';
-				const exportsResponse = await fetch(exportsUrl);
-				const exportsData = await exportsResponse.json();
-
-				// Asegurarse de que hay datos en mappedData
-
-				// Construir newFilters utilizando tanto firstMappedData como exportsData
-				const newFilters = {
-					booking: icoList[0].booking ? [icoList[0].booking] : [],
-					dateLoadingPort: icoList[0].date_landing ? [icoList[0].date_landing] : [],
-					estimatedDelivery: icoList[0].estimated_delivery ? [icoList[0].estimated_delivery] : [],
-					estimatedArrival: icoList[0].estimated_arrival ? [icoList[0].estimated_arrival] : [],
-					announcement: icoList[0].announcement ? [icoList[0].announcement] : [],
-					order: icoList[0].orders ? [icoList[0].orders] : [],
-					review: icoList[0].review ? [icoList[0].review] : [],
-					salesCode: icoList[0].sales_code ? [icoList[0].sales_code] : [],
-					exportDate: icoList[0].export_date ? [icoList[0].export_date] : [],
-					capacityContainer: icoList[0].container_capacity ? [icoList[0].container_capacity] : [],
-					exportCountry: [...new Set(exportsData.map((item) => item.origin))],
-					port: [...new Set(exportsData.map((item) => item.destination_port))],
-					incoterm: [...new Set(exportsData.map((item) => item.incoterm))],
-					ico: [...new Set(exportsData.map((item) => item.ico_id))],
-				};
-
-				setFilters(newFilters);
 			} catch (error) {
 				console.error('Error fetching data: ', error);
 			} finally {
@@ -111,9 +104,6 @@ export function EditContainer() {
 
 		fetchData();
 	}, [id]);
-
-	console.log(icoList);
-	console.log(filters);
 
 	const handleCheckboxChange = (ico_id) => {
 		setSelectedIcos((prevSelectedIcos) => {
@@ -208,7 +198,8 @@ export function EditContainer() {
 									}
 									filter={filter}
 									name={filter}
-									value={filters[filter]}
+									// Aquí aseguramos que defaultValue se establezca adecuadamente
+									defaultValue={filters[filter].length ? filters[filter][0] : ''}
 									className='col-span-3 p-2'
 									options={filters[filter] || []}
 								/>
