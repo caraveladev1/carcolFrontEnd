@@ -65,3 +65,33 @@ export const containerCapacity = {
 	20: 20000.41,
 	40: 26308.34,
 };
+
+export const viewContainerFilters = ['office', 'shipmentMonth', 'finalDate', 'packaging', 'contract', 'destination'];
+
+export const filtersEditContainer = [
+	'booking',
+	'dateLoadingPort',
+	'estimatedDelivery',
+	'estimatedArrival',
+	'announcement',
+	'order',
+	'review',
+	'salesCode',
+	'exportDate',
+	'capacityContainer',
+	'port',
+	'incoterm',
+	'ico',
+];
+
+export const headersTableEditContainer = [
+	'ico_id',
+	'secondary_ico_id',
+	'mark',
+	'packaging_capacity',
+	'units',
+	'sample',
+	'shipmentMonth',
+	'pricingConditions',
+	'select',
+];

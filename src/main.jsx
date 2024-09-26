@@ -6,6 +6,7 @@ import '../I18n';
 import { createBrowserRouter, RouterProvider, Route } from 'react-router-dom';
 import { CreateContainer } from './pages/CreateContainer';
 import { ViewContainers } from './pages/ViewContainers';
+import { EditContainer } from './pages/EditContainer';
 
 // Definir las rutas directamente en createBrowserRouter
 const router = createBrowserRouter([
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
 	{
 		path: '/view-containers',
 		element: <ViewContainers />,
+	},
+	{
+		path: '/edit-container/:id',
+		element: <EditContainer />,
 	},
 ]);
 
