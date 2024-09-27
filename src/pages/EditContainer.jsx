@@ -14,6 +14,7 @@ export function EditContainer() {
 	const { t } = useTranslation();
 	const [loading, setLoading] = useState(true);
 	const [icoList, setIcoList] = useState([]);
+	const [exportsData, setExportsData] = useState([]);
 	const [selectedIcos, setSelectedIcos] = useState(new Set());
 	const [filters, setFilters] = useState({
 		booking: [],
@@ -74,6 +75,7 @@ export function EditContainer() {
 					const exportsUrl = 'http://localhost:3000/api/exports/getAllExports';
 					const exportsResponse = await fetch(exportsUrl);
 					const exportsData = await exportsResponse.json();
+					setExportsData(exportsData);
 					//console.log(mappedData[0]);
 					const newFilters = {
 						booking: mappedData[0].booking ? [mappedData[0].booking] : [],
@@ -104,6 +106,31 @@ export function EditContainer() {
 
 		fetchData();
 	}, [id]);
+	const handleIcoChange = (e) => {
+		const selectedIcoId = e.target.value;
+
+		const selectedIcoData = exportsData.find((item) => item.ico_id === selectedIcoId);
+
+		if (selectedIcoData) {
+			const transformedIcoData = {
+				ico_id: selectedIcoData.ico_id,
+				secondary_ico_id: selectedIcoData.ico_secondary_id,
+				mark: selectedIcoData.mark,
+				packaging_capacity: selectedIcoData.packaging_capacity,
+				units: selectedIcoData.units,
+				sample: selectedIcoData.status_approval_sample === null ? 'Pending' : selectedIcoData.status_approval_sample,
+				shipmentMonth: selectedIcoData.shipment_date,
+				pricingConditions: selectedIcoData.pricing_conditions,
+				select: false,
+			};
+
+			setIcoList((prevIcoList) => [...prevIcoList, transformedIcoData]);
+			//setSelectedIcos((prevSelected) => new Set(prevSelected).add(selectedIcoId));
+		}
+
+		//console.log(`Seleccionado ICO ID: ${selectedIcoId}`);
+	};
+
 	const handleCheckboxChange = (ico_id) => {
 		setSelectedIcos((prevSelectedIcos) => {
 			const newSelectedIcos = new Set(prevSelectedIcos);
@@ -124,14 +151,19 @@ export function EditContainer() {
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		const selectedData = icoList.filter((ico) => selectedIcos.has(ico.ico_id));
 
+		// Filtrar solo los filtros seleccionados
+		const filteredFilters = Object.fromEntries(
+			Object.entries(filters).filter(([key, value]) => value), // Solo incluye el filtro si tiene un valor
+		);
+
+		// Payload con filtros seleccionados y todos los ICOs
 		const payload = {
-			filters,
-			selectedIcos: selectedData,
+			filters: filteredFilters,
+			selectedIcos: icoList, // Incluye todos los ICOs
 		};
 
-		const sumIcosWeight = selectedData.reduce((accumulator, element) => accumulator + parseInt(element.weight, 10), 0);
+		const sumIcosWeight = icoList.reduce((accumulator, element) => accumulator + parseInt(element.weight, 10), 0);
 		const selectedContainer = parseInt(payload.filters.capacityContainer, 10);
 		let selectedContainerValue;
 
@@ -139,6 +171,7 @@ export function EditContainer() {
 			selectedContainerValue = containerCapacity[selectedContainer];
 		}
 
+		// Verificar si el peso total de los ICOs no excede la capacidad del contenedor
 		if (sumIcosWeight < selectedContainerValue) {
 			fetch('http://localhost:3000/api/exports/createContainer', {
 				method: 'POST',
@@ -204,7 +237,6 @@ export function EditContainer() {
 									}
 									filter={filter}
 									name={filter}
-									// DefaultValue para los campos capacityContainer, port e incoterm desde icoList
 									defaultValue={
 										filter === 'capacityContainer'
 											? icoList[0].container_capacity || ''
@@ -224,6 +256,7 @@ export function EditContainer() {
 									options={
 										filter === 'capacityContainer' ? Object.keys(containerCapacity).map(String) : filters[filter] || []
 									}
+									onChange={filter === 'ico' ? handleIcoChange : undefined}
 								/>
 							</div>
 						))}
