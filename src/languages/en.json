@@ -44,5 +44,6 @@
 	"salesCode": "Sales Code",
 	"selectOption": "Select Option",
 	"exportDate": "Export Date",
-	"editContainer": "Edit Container"
+	"editContainer": "Edit Container",
+	"deleteSelected": "Delete Selected ICOS"
 }

@@ -154,7 +154,7 @@ export function CreateContainer() {
 			selectedContainerValue = containerCapacity[selectedContainer];
 		}
 
-		console.log(payload);
+		//console.log(payload);
 
 		if (sumIcosWeight < selectedContainerValue) {
 			fetch('http://localhost:3000/api/exports/createContainer', {

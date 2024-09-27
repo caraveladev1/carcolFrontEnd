@@ -104,7 +104,6 @@ export function EditContainer() {
 
 		fetchData();
 	}, [id]);
-
 	const handleCheckboxChange = (ico_id) => {
 		setSelectedIcos((prevSelectedIcos) => {
 			const newSelectedIcos = new Set(prevSelectedIcos);
@@ -115,6 +114,12 @@ export function EditContainer() {
 			}
 			return newSelectedIcos;
 		});
+	};
+	const handleDeleteSelected = () => {
+		// Filtra la lista actual para remover los elementos seleccionados
+		const updatedIcoList = icoList.filter((ico) => !selectedIcos.has(ico.ico_id));
+		setIcoList(updatedIcoList);
+		setSelectedIcos(new Set()); // Reiniciar la selección
 	};
 
 	const handleSubmit = (e) => {
@@ -223,11 +228,31 @@ export function EditContainer() {
 							</div>
 						))}
 					</div>
+
 					<div className='my-5 flex items-center justify-center gap-5'>
-						<SubmitButton className={'bg-pink w-[60%] mb-6'} label={t('submit')} />
+						<SubmitButton className={'bg-pink w-[60%] '} label={t('submit')} />
+						<button
+							type='button'
+							className='bg-naranja font-bayard text-2xl text-white p-4 '
+							onClick={handleDeleteSelected}
+						>
+							{t('deleteSelected')}
+						</button>
 					</div>
 
-					<TableGeneric headersTable={headersTableEditContainer} dataTable={icoList} />
+					<TableGeneric
+						headersTable={headersTableEditContainer}
+						dataTable={icoList.map((ico) => ({
+							...ico,
+							select: (
+								<input
+									type='checkbox'
+									checked={selectedIcos.has(ico.ico_id)}
+									onChange={() => handleCheckboxChange(ico.ico_id)}
+								/>
+							),
+						}))}
+					/>
 				</form>
 			</section>
 		</div>
