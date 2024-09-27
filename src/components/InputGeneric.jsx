@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 export function InputGeneric({ type = 'text', filter, defaultValue, options = [], onChange, required }) {
 	const { t } = useTranslation();
-
+	//console.log(defaultValue);
 	return (
 		<>
 			{type === 'select' ? (
@@ -15,14 +15,7 @@ export function InputGeneric({ type = 'text', filter, defaultValue, options = []
 					onChange={onChange}
 					required={required}
 				>
-					{/* Opción predeterminada */}
-					<option value='' disabled hidden>
-						{`${t('select')} ${t(filter)}`}
-					</option>
-					{/* Opción seleccionada por defecto */}
-					<option value={defaultValue} hidden>
-						{`${t('select')} ${t(filter)}`}
-					</option>
+					<option value=''>{t('selectOption')}</option>
 					{/* Renderizar las opciones que se pasan como prop */}
 					{options.map((option, index) => (
 						<option key={index} value={option}>

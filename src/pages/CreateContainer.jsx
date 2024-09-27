@@ -98,7 +98,7 @@ export function CreateContainer() {
 		setFilters((prevFilters) => ({ ...prevFilters, [name]: value }));
 	};
 
-	/* 	useEffect(() => {
+	useEffect(() => {
 		const filteredList = icoList.filter((item) => {
 			const shipmentMonth = new Date(item.shipmentMonth);
 			const shipmentMonthStart = new Date(filters.shipmentMonthStart);
@@ -123,7 +123,7 @@ export function CreateContainer() {
 		];
 
 		setFilteredIcoList(combinedList);
-	}, [filters, icoList, selectedIcos]); */
+	}, [filters, icoList, selectedIcos]);
 
 	const preparedDataTable = icoList.map((item) => ({
 		...item,

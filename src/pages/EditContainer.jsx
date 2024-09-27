@@ -30,6 +30,7 @@ export function EditContainer() {
 		port: [],
 		incoterm: [],
 		ico: [],
+		exportId: [],
 	});
 
 	const mapApiResponseToHeaders = (apiResponse) => {
@@ -50,9 +51,7 @@ export function EditContainer() {
 			announcement: item.announcement,
 			review: item.review,
 			sales_code: item.sales_code,
-			shipment: item.export_date,
 			container_capacity: item.container_capacity,
-			customer_country: item.customer_country,
 			destination_port: item.destination_port,
 			incoterm: item.incoterm,
 			orders: item.orders,
@@ -75,7 +74,7 @@ export function EditContainer() {
 					const exportsUrl = 'http://localhost:3000/api/exports/getAllExports';
 					const exportsResponse = await fetch(exportsUrl);
 					const exportsData = await exportsResponse.json();
-
+					//console.log(mappedData[0]);
 					const newFilters = {
 						booking: mappedData[0].booking ? [mappedData[0].booking] : [],
 						dateLoadingPort: mappedData[0].date_landing ? [mappedData[0].date_landing] : [],
@@ -85,8 +84,9 @@ export function EditContainer() {
 						order: mappedData[0].orders ? [mappedData[0].orders] : [],
 						review: mappedData[0].review ? [mappedData[0].review] : [],
 						salesCode: mappedData[0].sales_code ? [mappedData[0].sales_code] : [],
-						exportDate: mappedData[0].export_date ? [mappedData[0].export_date] : [],
-						capacityContainer: mappedData[0].container_capacity ? [mappedData[0].container_capacity] : [],
+						exportDate: mappedData[0].shipmentMonth ? [mappedData[0].shipmentMonth] : [],
+						capacityContainer: Object.keys(containerCapacity).map(Number),
+						exportId: [...new Set(exportsData.map((item) => item.export_number))],
 						exportCountry: [...new Set(exportsData.map((item) => item.origin))],
 						port: [...new Set(exportsData.map((item) => item.destination_port))],
 						incoterm: [...new Set(exportsData.map((item) => item.incoterm))],
@@ -181,7 +181,8 @@ export function EditContainer() {
 										filter === 'capacityContainer' ||
 										filter === 'exportCountry' ||
 										filter === 'incoterm' ||
-										filter === 'ico'
+										filter === 'ico' ||
+										filter === 'exportId'
 											? 'select'
 											: filter === 'booking' ||
 													filter === 'announcement' ||
@@ -198,10 +199,26 @@ export function EditContainer() {
 									}
 									filter={filter}
 									name={filter}
-									// Aquí aseguramos que defaultValue se establezca adecuadamente
-									defaultValue={filters[filter].length ? filters[filter][0] : ''}
+									// DefaultValue para los campos capacityContainer, port e incoterm desde icoList
+									defaultValue={
+										filter === 'capacityContainer'
+											? icoList[0].container_capacity || ''
+											: filter === 'port'
+												? icoList[0].destination_port || ''
+												: filter === 'incoterm'
+													? icoList[0].incoterm || ''
+													: filter === 'ico'
+														? ''
+														: filter === 'exportId'
+															? ''
+															: filters[filter] && filters[filter].length
+																? filters[filter][0]
+																: ''
+									}
 									className='col-span-3 p-2'
-									options={filters[filter] || []}
+									options={
+										filter === 'capacityContainer' ? Object.keys(containerCapacity).map(String) : filters[filter] || []
+									}
 								/>
 							</div>
 						))}

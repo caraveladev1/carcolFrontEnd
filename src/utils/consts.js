@@ -82,6 +82,7 @@ export const filtersEditContainer = [
 	'port',
 	'incoterm',
 	'ico',
+	'exportId',
 ];
 
 export const headersTableEditContainer = [
