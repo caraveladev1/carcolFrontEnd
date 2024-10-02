@@ -178,20 +178,18 @@ export function EditContainer() {
 
 		//console.log(`Seleccionado ICO ID: ${selectedIcoId}`);
 	};
-
 	const handleCheckboxChange = (ico_id) => {
 		setSelectedIcos((prevSelectedIcos) => {
 			const newSelectedIcos = new Set(prevSelectedIcos);
 			if (newSelectedIcos.has(ico_id)) {
 				newSelectedIcos.delete(ico_id);
 			} else {
-				newSelectedIcos.add({
-					ico_id: ico.ico_id,
-				});
+				newSelectedIcos.add(ico_id);
 			}
 			return newSelectedIcos;
 		});
 	};
+
 	const handleDeleteSelected = () => {
 		// Filtra la lista actual para remover los elementos seleccionados
 		const updatedIcoList = icoList.filter((ico) => !selectedIcos.has(ico.ico_id));
