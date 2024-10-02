@@ -164,7 +164,7 @@ export function ViewContainers() {
 										{`Booking: ${filteredData[exp_id][0]?.booking || 'No available'}`}
 									</p>
 									<p className='text-3xl font-bold text-celeste font-bayard uppercase'>
-										{`Landing on Port: ${filteredData[exp_id][0]?.landing || 'No available'}`}
+										{`Landing on Port: ${filteredData[exp_id][0]?.date_landing || 'No available'}`}
 									</p>
 								</div>
 							</div>

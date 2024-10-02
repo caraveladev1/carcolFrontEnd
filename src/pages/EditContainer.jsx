@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { LabelGeneric } from '../components/LabelGeneric';
 import { useTranslation } from 'react-i18next';
 import { filtersEditContainer, headersTableEditContainer, containerCapacity } from '../utils/consts';
@@ -10,6 +11,7 @@ import { TableGeneric } from '../components/TableGeneric';
 import { useParams } from 'react-router-dom';
 
 export function EditContainer() {
+	const navigate = useNavigate();
 	const { id } = useParams();
 	const { t } = useTranslation();
 	const [loading, setLoading] = useState(true);
@@ -19,7 +21,7 @@ export function EditContainer() {
 	const [filterValues, setFilterValues] = useState({});
 	const [filters, setFilters] = useState({
 		booking: [],
-		dateLoadingPort: [],
+		dateLandingPort: [],
 		estimatedDelivery: [],
 		estimatedArrival: [],
 		announcement: [],
@@ -35,22 +37,34 @@ export function EditContainer() {
 		exportId: [],
 	});
 	useEffect(() => {
-		const defaultValues = {};
-		filtersEditContainer.forEach((filter) => {
-			defaultValues[filter] =
-				filter === 'capacityContainer'
-					? icoList[0]?.container_capacity || ''
-					: filter === 'port'
-						? icoList[0]?.destination_port || ''
-						: filter === 'incoterm'
-							? icoList[0]?.incoterm || ''
-							: filter === 'exportId'
-								? ''
-								: filters[filter] && filters[filter].length
-									? filters[filter][0]
-									: '';
-		});
-		setFilterValues(defaultValues);
+		if (icoList.length > 0 && filters) {
+			const defaultValues = {};
+			filtersEditContainer.forEach((filter) => {
+				defaultValues[filter] = filters[filter] && filters[filter].length ? filters[filter][0] : '';
+			});
+			setFilterValues(defaultValues);
+		}
+	}, [icoList, filters]);
+
+	useEffect(() => {
+		if (icoList.length > 0 && filters) {
+			const defaultValues = {};
+			filtersEditContainer.forEach((filter) => {
+				defaultValues[filter] =
+					filter === 'capacityContainer'
+						? icoList[0]?.container_capacity || ''
+						: filter === 'port'
+							? icoList[0]?.destination_port || ''
+							: filter === 'incoterm'
+								? icoList[0]?.incoterm || ''
+								: filter === 'exportId'
+									? ''
+									: filters[filter] && filters[filter].length
+										? filters[filter][0]
+										: '';
+			});
+			setFilterValues(defaultValues);
+		}
 	}, [icoList, filters]);
 
 	const mapApiResponseToHeaders = (apiResponse) => {
@@ -109,7 +123,7 @@ export function EditContainer() {
 					//console.log(mappedData);
 					const newFilters = {
 						booking: mappedData[0].booking ? [mappedData[0].booking] : [],
-						dateLoadingPort: mappedData[0].date_landing ? [mappedData[0].date_landing] : [],
+						dateLandingPort: mappedData[0].date_landing ? [mappedData[0].date_landing] : [],
 						estimatedDelivery: mappedData[0].estimated_delivery ? [mappedData[0].estimated_delivery] : [],
 						estimatedArrival: mappedData[0].estimated_arrival ? [mappedData[0].estimated_arrival] : [],
 						announcement: mappedData[0].announcement ? [mappedData[0].announcement] : [],
@@ -193,7 +207,7 @@ export function EditContainer() {
 			filters: filterValues,
 			selectedIcos: icoList,
 		};
-		console.log(payload);
+		//console.log(payload);
 		const sumIcosWeight = icoList.reduce((accumulator, element) => accumulator + parseInt(element.weight, 10), 0);
 		const selectedContainer = parseInt(payload.filters.capacityContainer, 10);
 		let selectedContainerValue;
@@ -204,8 +218,8 @@ export function EditContainer() {
 
 		// Verificar si el peso total de los ICOs no excede la capacidad del contenedor
 		if (sumIcosWeight < selectedContainerValue) {
-			fetch('http://localhost:3000/api/exports/createContainer', {
-				method: 'POST',
+			fetch('http://localhost:3000/api/exports/updateContainer', {
+				method: 'PUT',
 				headers: {
 					'Content-Type': 'application/json',
 				},
@@ -219,7 +233,7 @@ export function EditContainer() {
 				})
 				.then(() => {
 					window.alert('Container created successfully');
-					//window.location.reload();
+					navigate('/view-containers');
 				})
 				.catch((error) => {
 					console.error('Error:', error);
@@ -262,7 +276,7 @@ export function EditContainer() {
 												: filter === 'estimatedDelivery' ||
 														filter === 'estimatedArrival' ||
 														filter === 'exportDate' ||
-														filter === 'dateLoadingPort'
+														filter === 'dateLandingPort'
 													? 'date'
 													: 'text'
 									}
@@ -290,8 +304,9 @@ export function EditContainer() {
 									onChange={(e) => {
 										setFilterValues((prev) => ({
 											...prev,
-											[filter]: e.target.value, // Actualiza el valor del filtro
+											[filter]: e.target.value,
 										}));
+										//console.log(`${filter} changed to ${e.target.value}`); // Debug
 										if (filter === 'ico') handleIcoChange(e);
 									}}
 								/>

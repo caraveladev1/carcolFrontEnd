@@ -103,7 +103,6 @@ export function CreateContainer() {
 			const shipmentMonth = new Date(item.shipmentMonth);
 			const shipmentMonthStart = new Date(filters.shipmentMonthStart);
 			const shipmentMonthFinal = new Date(filters.shipmentMonthFinal);
-
 			return (
 				(filters.port === '' || item.destinationPorts === filters.port) &&
 				(filters.exportCountry === '' || item.exportCountry === filters.exportCountry) &&
@@ -112,7 +111,6 @@ export function CreateContainer() {
 				(filters.shipmentMonthFinal === '' || shipmentMonth <= shipmentMonthFinal)
 			);
 		});
-
 		// Combinar y ordenar: ítems seleccionados primero, luego los ítems filtrados
 		const combinedList = [
 			...icoList.filter(
@@ -121,11 +119,10 @@ export function CreateContainer() {
 			),
 			...filteredList,
 		];
-
 		setFilteredIcoList(combinedList);
 	}, [filters, icoList, selectedIcos]);
 
-	const preparedDataTable = icoList.map((item) => ({
+	const preparedDataTable = filteredIcoList.map((item) => ({
 		...item,
 		select: (
 			<input

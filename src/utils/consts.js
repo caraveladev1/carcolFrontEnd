@@ -51,7 +51,7 @@ export const headersTableCreateContainer = [
 
 export const labelsBoogkindAndDates = [
 	'booking',
-	'dateLoadingPort',
+	'dateLandingPort',
 	'estimatedDelivery',
 	'estimatedArrival',
 	'announcement',
@@ -70,7 +70,7 @@ export const viewContainerFilters = ['office', 'shipmentMonth', 'finalDate', 'pa
 
 export const filtersEditContainer = [
 	'booking',
-	'dateLoadingPort',
+	'dateLandingPort',
 	'estimatedDelivery',
 	'estimatedArrival',
 	'announcement',

@@ -18,7 +18,7 @@
 	"pendingTasks": "Pending Tasks",
 	"addBookingAndDates": "Add Booking And Dates",
 	"booking": "Booking",
-	"dateLoadingPort": "Date Of Loading At Port",
+	"dateLandingPort": "Date Of Landing At Port",
 	"estimatedDelivery": "Estimated Delivery",
 	"estimatedArrival": "Estimated Arrival",
 	"submit": "Submit",

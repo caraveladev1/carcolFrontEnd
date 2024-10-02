@@ -13,7 +13,7 @@ export const BookingAndDates = memo(function BookingAndDates({
 
 	const [formData, setFormData] = useState({
 		booking: '',
-		dateLoadingPort: '',
+		dateLandingPort: '',
 		estimatedDelivery: '',
 		estimatedArrival: '',
 		exportId: '',
@@ -32,6 +32,7 @@ export const BookingAndDates = memo(function BookingAndDates({
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
+		//console.log(name, value);
 		setFormData((prevData) => ({
 			...prevData,
 			[name]: value,
@@ -40,7 +41,7 @@ export const BookingAndDates = memo(function BookingAndDates({
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		console.log({ ...formData, exportNumber });
+		//console.log({ ...formData, exportNumber });
 
 		try {
 			const response = await fetch('http://localhost:3000/api/exports/addBookingAndDates', {
@@ -56,7 +57,7 @@ export const BookingAndDates = memo(function BookingAndDates({
 			}
 
 			window.alert('Container updated successfully');
-			window.location.reload();
+			//window.location.reload();
 		} catch (error) {
 			console.error('Error al enviar los datos:', error);
 		}
@@ -112,7 +113,7 @@ export const BookingAndDates = memo(function BookingAndDates({
 									value={formData[label]}
 									min={
 										label === 'exportDate' ||
-										label === 'dateLoadingPort' ||
+										label === 'dateLandingPort' ||
 										label === 'estimatedDelivery' ||
 										label === 'estimatedArrival' ||
 										label.includes('date')

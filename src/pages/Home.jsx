@@ -79,7 +79,7 @@ export function Home() {
 			[exp_id]: {
 				booking: organizedData[exp_id]?.[0].booking || undefined,
 				exportDate: organizedData[exp_id]?.[0].export_date || undefined,
-				dateLoadingPort: organizedData[exp_id]?.[0].date_landing || undefined,
+				dateLandingPort: organizedData[exp_id]?.[0].date_landing || undefined,
 				estimatedDelivery: organizedData[exp_id]?.[0].estimated_delivery || undefined,
 				estimatedArrival: organizedData[exp_id]?.[0].estimated_arrival || undefined,
 				announcement: organizedData[exp_id]?.[0].announcement || undefined,
