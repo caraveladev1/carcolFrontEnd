@@ -89,7 +89,7 @@ export function ViewContainers() {
 	};
 
 	useEffect(() => {
-		const url = 'http://localhost:3000/api/exports/getAllContainers';
+		const url = 'https://backcarcolback-atasc5b8a2gpckhm.eastus2-01.azurewebsites.net/api/exports/getAllContainers';
 		fetch(url)
 			.then((response) => response.json())
 			.then((data) => {

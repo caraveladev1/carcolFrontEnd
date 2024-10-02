@@ -44,13 +44,16 @@ export const BookingAndDates = memo(function BookingAndDates({
 		//console.log({ ...formData, exportNumber });
 
 		try {
-			const response = await fetch('http://localhost:3000/api/exports/addBookingAndDates', {
-				method: 'PUT',
-				headers: {
-					'Content-Type': 'application/json',
+			const response = await fetch(
+				'https://backcarcolback-atasc5b8a2gpckhm.eastus2-01.azurewebsites.net/api/exports/addBookingAndDates',
+				{
+					method: 'PUT',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({ ...formData, exportNumber }),
 				},
-				body: JSON.stringify({ ...formData, exportNumber }),
-			});
+			);
 
 			if (!response.ok) {
 				throw new Error('Error en la solicitud');

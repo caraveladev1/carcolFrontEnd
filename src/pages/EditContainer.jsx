@@ -97,7 +97,8 @@ export function EditContainer() {
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const containersUrl = 'http://localhost:3000/api/exports/getAllContainers';
+				const containersUrl =
+					'https://backcarcolback-atasc5b8a2gpckhm.eastus2-01.azurewebsites.net/api/exports/getAllContainers';
 				const containersResponse = await fetch(containersUrl);
 				const containersData = await containersResponse.json();
 				const expFiltered = containersData[id];
@@ -106,7 +107,8 @@ export function EditContainer() {
 					const mappedData = mapApiResponseToHeaders(expFiltered);
 					setIcoList(mappedData);
 
-					const exportsUrl = 'http://localhost:3000/api/exports/getAllExports';
+					const exportsUrl =
+						'https://backcarcolback-atasc5b8a2gpckhm.eastus2-01.azurewebsites.net/api/exports/getAllExports';
 					const exportsResponse = await fetch(exportsUrl);
 					const exportsData = await exportsResponse.json();
 					setIcoList((prevIcoList) => {
@@ -216,7 +218,7 @@ export function EditContainer() {
 
 		// Verificar si el peso total de los ICOs no excede la capacidad del contenedor
 		if (sumIcosWeight < selectedContainerValue) {
-			fetch('http://localhost:3000/api/exports/updateContainer', {
+			fetch('https://backcarcolback-atasc5b8a2gpckhm.eastus2-01.azurewebsites.net/api/exports/updateContainer', {
 				method: 'PUT',
 				headers: {
 					'Content-Type': 'application/json',

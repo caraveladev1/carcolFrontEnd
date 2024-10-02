@@ -49,7 +49,7 @@ export function Home() {
 	};
 
 	useEffect(() => {
-		const url = 'http://localhost:3000/api/exports/getPendingContainers';
+		const url = 'https://backcarcolback-atasc5b8a2gpckhm.eastus2-01.azurewebsites.net/api/exports/getPendingContainers';
 		fetch(url)
 			.then((response) => response.json())
 			.then((data) => {
@@ -92,7 +92,7 @@ export function Home() {
 	};
 
 	useEffect(() => {
-		const url = 'http://localhost:3000/api/exports/getAllExports';
+		const url = 'https://backcarcolback-atasc5b8a2gpckhm.eastus2-01.azurewebsites.net/api/exports/getAllExports';
 		fetch(url)
 			.then((response) => response.json())
 			.then((data) => {
