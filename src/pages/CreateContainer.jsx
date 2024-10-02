@@ -7,8 +7,10 @@ import { InputGeneric } from '../components/InputGeneric';
 import { Loader } from '../components/Loader';
 import { SubmitButton } from '../components/SubmitButton';
 import { TableGeneric } from '../components/TableGeneric';
+import { useNavigate } from 'react-router-dom';
 
 export function CreateContainer() {
+	const navigate = useNavigate();
 	const { t } = useTranslation();
 	const [loading, setLoading] = useState(true);
 	const [icoList, setIcoList] = useState([]);
@@ -169,7 +171,7 @@ export function CreateContainer() {
 				})
 				.then(() => {
 					window.alert('Container created successfully');
-					window.location.reload();
+					navigate('/');
 				})
 				.catch((error) => {
 					console.error('Error:', error);
