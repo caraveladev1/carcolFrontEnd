@@ -16,6 +16,7 @@ export function EditContainer() {
 	const [icoList, setIcoList] = useState([]);
 	const [exportsData, setExportsData] = useState([]);
 	const [selectedIcos, setSelectedIcos] = useState(new Set());
+	const [filterValues, setFilterValues] = useState({});
 	const [filters, setFilters] = useState({
 		booking: [],
 		dateLoadingPort: [],
@@ -33,6 +34,24 @@ export function EditContainer() {
 		ico: [],
 		exportId: [],
 	});
+	useEffect(() => {
+		const defaultValues = {};
+		filtersEditContainer.forEach((filter) => {
+			defaultValues[filter] =
+				filter === 'capacityContainer'
+					? icoList[0]?.container_capacity || ''
+					: filter === 'port'
+						? icoList[0]?.destination_port || ''
+						: filter === 'incoterm'
+							? icoList[0]?.incoterm || ''
+							: filter === 'exportId'
+								? ''
+								: filters[filter] && filters[filter].length
+									? filters[filter][0]
+									: '';
+		});
+		setFilterValues(defaultValues);
+	}, [icoList, filters]);
 
 	const mapApiResponseToHeaders = (apiResponse) => {
 		return apiResponse.map((item) => ({
@@ -56,6 +75,7 @@ export function EditContainer() {
 			destination_port: item.destination_port,
 			incoterm: item.incoterm,
 			orders: item.orders,
+			weight: item.weight,
 			select: false,
 		}));
 	};
@@ -75,8 +95,18 @@ export function EditContainer() {
 					const exportsUrl = 'http://localhost:3000/api/exports/getAllExports';
 					const exportsResponse = await fetch(exportsUrl);
 					const exportsData = await exportsResponse.json();
+					setIcoList((prevIcoList) => {
+						return prevIcoList.map((ico) => {
+							const exportData = exportsData.find((exportItem) => exportItem.ico_id === ico.ico_id);
+							return {
+								...ico,
+								weight: exportData ? exportData.estimated_kg : ico.weight || 0, // Asigna el peso o deja el existente
+							};
+						});
+					});
+					//console.log(exportsData);
 					setExportsData(exportsData);
-					//console.log(mappedData[0]);
+					//console.log(mappedData);
 					const newFilters = {
 						booking: mappedData[0].booking ? [mappedData[0].booking] : [],
 						dateLoadingPort: mappedData[0].date_landing ? [mappedData[0].date_landing] : [],
@@ -93,6 +123,7 @@ export function EditContainer() {
 						port: [...new Set(exportsData.map((item) => item.destination_port))],
 						incoterm: [...new Set(exportsData.map((item) => item.incoterm))],
 						ico: [...new Set(exportsData.map((item) => item.ico_id))],
+						weight: [...new Set(exportsData.map((item) => item.estimated_kg))],
 					};
 
 					setFilters(newFilters);
@@ -106,6 +137,9 @@ export function EditContainer() {
 
 		fetchData();
 	}, [id]);
+
+	//console.log(filters);
+
 	const handleIcoChange = (e) => {
 		const selectedIcoId = e.target.value;
 
@@ -121,11 +155,11 @@ export function EditContainer() {
 				sample: selectedIcoData.status_approval_sample === null ? 'Pending' : selectedIcoData.status_approval_sample,
 				shipmentMonth: selectedIcoData.shipment_date,
 				pricingConditions: selectedIcoData.pricing_conditions,
+				weight: selectedIcoData.estimated_kg,
 				select: false,
 			};
 
 			setIcoList((prevIcoList) => [...prevIcoList, transformedIcoData]);
-			//setSelectedIcos((prevSelected) => new Set(prevSelected).add(selectedIcoId));
 		}
 
 		//console.log(`Seleccionado ICO ID: ${selectedIcoId}`);
@@ -137,7 +171,9 @@ export function EditContainer() {
 			if (newSelectedIcos.has(ico_id)) {
 				newSelectedIcos.delete(ico_id);
 			} else {
-				newSelectedIcos.add(ico_id);
+				newSelectedIcos.add({
+					ico_id: ico.ico_id,
+				});
 			}
 			return newSelectedIcos;
 		});
@@ -146,23 +182,18 @@ export function EditContainer() {
 		// Filtra la lista actual para remover los elementos seleccionados
 		const updatedIcoList = icoList.filter((ico) => !selectedIcos.has(ico.ico_id));
 		setIcoList(updatedIcoList);
-		setSelectedIcos(new Set()); // Reiniciar la selección
+		setSelectedIcos(new Set());
 	};
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
 
-		// Filtrar solo los filtros seleccionados
-		const filteredFilters = Object.fromEntries(
-			Object.entries(filters).filter(([key, value]) => value), // Solo incluye el filtro si tiene un valor
-		);
-
-		// Payload con filtros seleccionados y todos los ICOs
 		const payload = {
-			filters: filteredFilters,
-			selectedIcos: icoList, // Incluye todos los ICOs
+			old_id: id,
+			filters: filterValues,
+			selectedIcos: icoList,
 		};
-
+		console.log(payload);
 		const sumIcosWeight = icoList.reduce((accumulator, element) => accumulator + parseInt(element.weight, 10), 0);
 		const selectedContainer = parseInt(payload.filters.capacityContainer, 10);
 		let selectedContainerValue;
@@ -188,7 +219,7 @@ export function EditContainer() {
 				})
 				.then(() => {
 					window.alert('Container created successfully');
-					window.location.reload();
+					//window.location.reload();
 				})
 				.catch((error) => {
 					console.error('Error:', error);
@@ -256,7 +287,13 @@ export function EditContainer() {
 									options={
 										filter === 'capacityContainer' ? Object.keys(containerCapacity).map(String) : filters[filter] || []
 									}
-									onChange={filter === 'ico' ? handleIcoChange : undefined}
+									onChange={(e) => {
+										setFilterValues((prev) => ({
+											...prev,
+											[filter]: e.target.value, // Actualiza el valor del filtro
+										}));
+										if (filter === 'ico') handleIcoChange(e);
+									}}
 								/>
 							</div>
 						))}
