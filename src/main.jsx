@@ -3,13 +3,13 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import { Home } from './pages/Home';
 import '../I18n';
-import { createBrowserRouter, RouterProvider, Route } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, Route, createHashRouter } from 'react-router-dom';
 import { CreateContainer } from './pages/CreateContainer';
 import { ViewContainers } from './pages/ViewContainers';
 import { EditContainer } from './pages/EditContainer';
 
 // Definir las rutas directamente en createBrowserRouter
-const router = createBrowserRouter([
+const router = createHashRouter([
 	{
 		path: '/',
 		element: <Home />,
@@ -25,6 +25,10 @@ const router = createBrowserRouter([
 	{
 		path: '/edit-container/:id',
 		element: <EditContainer />,
+	},
+	{
+		path: '/*',
+		element: <Home />,
 	},
 ]);
 
