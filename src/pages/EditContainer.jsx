@@ -205,7 +205,7 @@ export function EditContainer() {
 			filters: filterValues,
 			selectedIcos: icoList,
 		};
-		//console.log(payload);
+		console.log(payload);
 		const sumIcosWeight = icoList.reduce((accumulator, element) => accumulator + parseInt(element.weight, 10), 0);
 		const selectedContainer = parseInt(payload.filters.capacityContainer, 10);
 		let selectedContainerValue;
