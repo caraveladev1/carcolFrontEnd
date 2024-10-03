@@ -97,7 +97,7 @@ export function EditContainer() {
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const containersUrl = `${API_BASE_URL}exports/getAllContainers`;
+				const containersUrl = `${API_BASE_URL}api/exports/getAllContainers`;
 				const containersResponse = await fetch(containersUrl);
 				const containersData = await containersResponse.json();
 				const expFiltered = containersData[id];
