@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Banner } from '../components/Banner';
 import { useTranslation } from 'react-i18next';
 import { TableGeneric } from '../components/TableGeneric';
-import { headersTablePending } from '../utils/consts';
+import { headersTablePending, API_BASE_URL } from '../utils/consts';
 import { Loader } from '../components/Loader';
 import { BookingAndDates } from '../components/BookingAndDates';
 
@@ -49,7 +49,7 @@ export function Home() {
 	};
 
 	useEffect(() => {
-		const url = 'https://backcarcolback-atasc5b8a2gpckhm.eastus2-01.azurewebsites.net/api/exports/getPendingContainers';
+		const url = `${API_BASE_URL}api/exports/getPendingContainers`;
 		fetch(url)
 			.then((response) => response.json())
 			.then((data) => {
@@ -92,7 +92,7 @@ export function Home() {
 	};
 
 	useEffect(() => {
-		const url = 'https://backcarcolback-atasc5b8a2gpckhm.eastus2-01.azurewebsites.net/api/exports/getAllExports';
+		const url = `${API_BASE_URL}api/exports/getAllExports`;
 		fetch(url)
 			.then((response) => response.json())
 			.then((data) => {

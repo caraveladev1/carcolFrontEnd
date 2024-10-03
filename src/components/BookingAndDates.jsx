@@ -1,7 +1,7 @@
 import React, { useState, useEffect, memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SubmitButton } from './SubmitButton';
-import { labelsBoogkindAndDates } from '../utils/consts';
+import { labelsBoogkindAndDates, API_BASE_URL } from '../utils/consts';
 
 export const BookingAndDates = memo(function BookingAndDates({
 	exportNumber,
@@ -44,16 +44,13 @@ export const BookingAndDates = memo(function BookingAndDates({
 		//console.log({ ...formData, exportNumber });
 
 		try {
-			const response = await fetch(
-				'https://backcarcolback-atasc5b8a2gpckhm.eastus2-01.azurewebsites.net/api/exports/addBookingAndDates',
-				{
-					method: 'PUT',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify({ ...formData, exportNumber }),
+			const response = await fetch(`${API_BASE_URL}api/exports/addBookingAndDates`, {
+				method: 'PUT',
+				headers: {
+					'Content-Type': 'application/json',
 				},
-			);
+				body: JSON.stringify({ ...formData, exportNumber }),
+			});
 
 			if (!response.ok) {
 				throw new Error('Error en la solicitud');

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { LabelGeneric } from '../components/LabelGeneric';
 import { useTranslation } from 'react-i18next';
-import { nameFilters, headersTableCreateContainer, containerCapacity } from '../utils/consts';
+import { nameFilters, headersTableCreateContainer, containerCapacity, API_BASE_URL } from '../utils/consts';
 import { Banner } from '../components/Banner';
 import { InputGeneric } from '../components/InputGeneric';
 import { Loader } from '../components/Loader';
@@ -35,7 +35,7 @@ export function CreateContainer() {
 	});
 
 	useEffect(() => {
-		const url = 'https://backcarcolback-atasc5b8a2gpckhm.eastus2-01.azurewebsites.net/api/exports/getAllExports';
+		const url = `${API_BASE_URL}api/exports/getAllExports`;
 		fetch(url)
 			.then((response) => response.json())
 			.then((data) => {
@@ -156,7 +156,7 @@ export function CreateContainer() {
 		//console.log(payload);
 
 		if (sumIcosWeight < selectedContainerValue) {
-			fetch('https://backcarcolback-atasc5b8a2gpckhm.eastus2-01.azurewebsites.net/api/exports/createContainer', {
+			fetch(`${API_BASE_URL}api/exports/createContainer`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',

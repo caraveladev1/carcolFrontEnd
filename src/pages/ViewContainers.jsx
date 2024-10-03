@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Banner } from '../components/Banner';
 import { useTranslation } from 'react-i18next';
 import { TableGeneric } from '../components/TableGeneric';
-import { headersTableView, viewContainerFilters } from '../utils/consts';
+import { headersTableView, viewContainerFilters, API_BASE_URL } from '../utils/consts';
 import { Loader } from '../components/Loader';
 import editContainer from '../assets/img/editContainer.webp';
 import { Link } from 'react-router-dom';
@@ -89,7 +89,7 @@ export function ViewContainers() {
 	};
 
 	useEffect(() => {
-		const url = 'https://backcarcolback-atasc5b8a2gpckhm.eastus2-01.azurewebsites.net/api/exports/getAllContainers';
+		const url = `${API_BASE_URL}api/exports/getAllContainers`;
 		fetch(url)
 			.then((response) => response.json())
 			.then((data) => {
