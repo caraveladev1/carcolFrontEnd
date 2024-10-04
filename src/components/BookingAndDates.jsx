@@ -57,7 +57,7 @@ export const BookingAndDates = memo(function BookingAndDates({
 			}
 
 			window.alert('Container updated successfully');
-			//window.location.reload();
+			window.location.reload();
 		} catch (error) {
 			console.error('Error al enviar los datos:', error);
 		}
