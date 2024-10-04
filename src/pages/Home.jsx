@@ -130,11 +130,6 @@ export function Home() {
 								</button>
 							</div>
 
-							<TableGeneric
-								headersTable={headersTablePending}
-								dataTable={organizedData[exp_id]}
-								renderRowContent={(row) => row}
-							/>
 							{showBookingAndDates[exp_id] && (
 								<BookingAndDates
 									exportNumber={exp_id}
@@ -143,6 +138,11 @@ export function Home() {
 									initialFormData={initialFormData[exp_id]} // Pasa los datos al componente BookingAndDates
 								/>
 							)}
+							<TableGeneric
+								headersTable={headersTablePending}
+								dataTable={organizedData[exp_id]}
+								renderRowContent={(row) => row}
+							/>
 						</div>
 					))}
 			</section>
