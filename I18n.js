@@ -13,14 +13,14 @@ i18n
 		debug: true, // activa los mensajes de depuración en la consola
 		resources: {
 			en: {
-				translation: en, // objetos de traducción para el idioma en inglés
+				translation: en,
 			},
 			es: {
-				translation: es, // objetos de traducción para el idioma español
+				translation: es,
 			},
 		},
 		interpolation: {
-			escapeValue: false, // no escapar las cadenas traducidas para evitar problemas de seguridad
+			escapeValue: false,
 		},
 	});
 
