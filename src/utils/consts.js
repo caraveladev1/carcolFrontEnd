@@ -1,4 +1,5 @@
-export const API_BASE_URL = 'https://bckcarcol-e4h2fag7bke3gvd6.eastus2-01.azurewebsites.net/';
+// export const API_BASE_URL = 'https://bckcarcol-e4h2fag7bke3gvd6.eastus2-01.azurewebsites.net/';
+export const API_BASE_URL = 'http://localhost:8080/';
 // Constantes de filtros
 export const placeholderFilter = ['office', 'exportMonth', 'packaging', 'contract', 'destination'];
 
@@ -41,12 +42,16 @@ export const nameFilters = [
 export const headersTableCreateContainer = [
 	'ico_id',
 	'secondary_ico_id',
+	'contract',
+	'customer',
+	'quality',
 	'mark',
 	'packaging_capacity',
 	'units',
 	'sample',
 	'shipmentMonth',
 	'pricingConditions',
+	'weight',
 	'select',
 ];
 

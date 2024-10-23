@@ -48,7 +48,10 @@ export function CreateContainer() {
 				const updatedIcoList = data.map((item) => ({
 					ico_id: item.ico_id,
 					secondary_ico_id: item.ico_secondary_id,
+					contract: item.main_identifier,
 					mark: item.mark,
+					customer: item.customer,
+					quality: item.quality,
 					packaging_capacity: `${item.packaging_type} ${item.packaging_capacity}`,
 					units: item.units,
 					sample: item.status_approval_sample === null ? 'Pending' : item.status_approval_sample,

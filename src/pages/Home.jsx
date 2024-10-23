@@ -114,7 +114,7 @@ export function Home() {
 		<div className='bg-dark-background bg-cover bg-fixed min-h-screen'>
 			<section className='homeContainer max-w-[90%] m-auto pb-5'>
 				<Banner />
-				<h1 className='text-5xl font-bold my-8 uppercase text-yellow font-bayard'>{t('pendingTasks')}</h1>
+				<h1 className='text-5xl font-bold my-8 uppercase text-celeste font-bayard'>{t('pendingTasks')}</h1>
 				{/* organizedData contiene los datos agrupados */}
 				{organizedData &&
 					Object.keys(organizedData).map((exp_id) => (

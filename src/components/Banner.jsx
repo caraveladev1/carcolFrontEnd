@@ -10,11 +10,12 @@ export function Banner() {
 		<section className='bannerSection w-full m-auto '>
 			<div className='flex flex-row items-center justify-between py-2 gap-6 font-bayard'>
 				<div className=''>
-					<Link to='/'>
-						<img className='cursor-pointer max-w-[50%]' src={logoCaravela} alt='Logo de caravela' />
-					</Link>
+					<img className='cursor-pointer max-w-[50%]' src={logoCaravela} alt='Logo de caravela' />
 				</div>
 				<div className=' flex gap-6'>
+					<Link to='/'>
+						<button className='cursor-pointer text-3xl text-celeste uppercase'>{t('pendingTasks')}</button>
+					</Link>
 					<Link to='/create'>
 						<button className='cursor-pointer text-3xl text-pink uppercase'>{t('createContainers')}</button>
 					</Link>
