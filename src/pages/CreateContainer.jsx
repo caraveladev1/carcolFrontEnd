@@ -196,8 +196,8 @@ export function CreateContainer() {
 				<form onSubmit={handleSubmit}>
 					<div className='grid grid-cols-4 gap-4'>
 						{nameFilters.map((filter) => (
-							<div key={filter} className='col-span-2 flex items-center gap-4'>
-								<LabelGeneric htmlFor={filter} filter={filter} className='col-span-1' />
+							<div key={filter} className='col-span-2 flex items-center gap-4 '>
+								<LabelGeneric htmlFor={filter} filter={filter} />
 								<InputGeneric
 									type={
 										filter === 'port' ||
@@ -212,7 +212,6 @@ export function CreateContainer() {
 									filter={filter}
 									name={filter}
 									defaultValue={filters[filter]}
-									className='col-span-3 p-2'
 									options={
 										filter === 'port'
 											? selectOptions.destinationPorts

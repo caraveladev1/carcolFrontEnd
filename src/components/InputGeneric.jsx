@@ -1,13 +1,13 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-export function InputGeneric({ type = 'text', filter, defaultValue, options = [], onChange, required }) {
+export function InputGeneric({ type = 'text', filter, defaultValue, options = [], onChange, required, className }) {
 	const { t } = useTranslation();
 
 	return (
 		<>
 			{type === 'select' ? (
-				<div className='w-full'>
+				<div className='w-full h-full '>
 					<input
 						list={`${filter}-options`}
 						id={filter}
@@ -20,7 +20,6 @@ export function InputGeneric({ type = 'text', filter, defaultValue, options = []
 						autoComplete='off'
 					/>
 					<datalist id={`${filter}-options`}>
-						{/* Renderizar las opciones que se pasan como prop */}
 						{options.map((option, index) => (
 							<option key={index} value={option} />
 						))}
@@ -32,7 +31,7 @@ export function InputGeneric({ type = 'text', filter, defaultValue, options = []
 					id={filter}
 					name={filter}
 					defaultValue={defaultValue}
-					className='bg-transparent font-bayard text-xl uppercase border-2 border-pink p-4 w-full text-pink focus:outline-none focus:border-2 focus:border-pink m-auto h-full'
+					className='bg-transparent font-bayard text-xl uppercase border-2 border-pink p-4 w-[94%] text-pink focus:outline-none focus:border-2 focus:border-pink  h-full'
 					onChange={onChange}
 					required={required}
 				/>
