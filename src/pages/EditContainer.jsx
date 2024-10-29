@@ -18,6 +18,7 @@ export function EditContainer() {
 	const [icoList, setIcoList] = useState([]);
 	const [exportsData, setExportsData] = useState([]);
 	const [selectedIcos, setSelectedIcos] = useState(new Set());
+	const [exportCountry, setExportCountry] = useState([]);
 	const [filterValues, setFilterValues] = useState({});
 	const [filters, setFilters] = useState({
 		booking: [],
@@ -64,6 +65,7 @@ export function EditContainer() {
 										: '';
 			});
 			setFilterValues(defaultValues);
+			//console.log(filterValues);
 		}
 	}, [icoList, filters]);
 
@@ -90,6 +92,7 @@ export function EditContainer() {
 			incoterm: item.incoterm,
 			orders: item.orders,
 			weight: item.weight,
+			export_country: item.export_country,
 			select: false,
 		}));
 	};
@@ -105,6 +108,8 @@ export function EditContainer() {
 				if (expFiltered) {
 					const mappedData = mapApiResponseToHeaders(expFiltered);
 					setIcoList(mappedData);
+					const export_country = mappedData[0].export_country;
+					setExportCountry(export_country);
 
 					const exportsUrl = `${API_BASE_URL}api/exports/getAllExports`;
 					const exportsResponse = await fetch(exportsUrl);
@@ -112,9 +117,10 @@ export function EditContainer() {
 					setIcoList((prevIcoList) => {
 						return prevIcoList.map((ico) => {
 							const exportData = exportsData.find((exportItem) => exportItem.ico_id === ico.ico_id);
+							//	console.log(exportData);
 							return {
 								...ico,
-								weight: exportData ? exportData.estimated_kg : ico.weight || 0, // Asigna el peso o deja el existente
+								weight: exportData ? exportData.estimated_kg : ico.weight || 0,
 							};
 						});
 					});
@@ -153,7 +159,7 @@ export function EditContainer() {
 	}, [id]);
 
 	//console.log(filters);
-
+	//console.log(exportCountry);
 	const handleIcoChange = (e) => {
 		const selectedIcoId = e.target.value;
 
@@ -164,7 +170,8 @@ export function EditContainer() {
 				ico_id: selectedIcoData.ico_id,
 				secondary_ico_id: selectedIcoData.ico_secondary_id,
 				mark: selectedIcoData.mark,
-				packaging_capacity: selectedIcoData.packaging_capacity,
+				export_country: selectedIcoData.origin,
+				packaging_capacity: `${selectedIcoData.packaging_type} ${selectedIcoData.packaging_capacity}`,
 				units: selectedIcoData.units,
 				sample: selectedIcoData.status_approval_sample === null ? 'Pending' : selectedIcoData.status_approval_sample,
 				shipmentMonth: selectedIcoData.shipment_date,
@@ -175,8 +182,7 @@ export function EditContainer() {
 
 			setIcoList((prevIcoList) => [...prevIcoList, transformedIcoData]);
 		}
-
-		//console.log(`Seleccionado ICO ID: ${selectedIcoId}`);
+		//console.log(selectedIcoData);
 	};
 	const handleCheckboxChange = (ico_id) => {
 		setSelectedIcos((prevSelectedIcos) => {
@@ -202,10 +208,12 @@ export function EditContainer() {
 
 		const payload = {
 			old_id: id,
+			export_country: exportCountry,
 			filters: filterValues,
 			selectedIcos: icoList,
 		};
-		//console.log(payload);
+
+		console.log(payload);
 		const sumIcosWeight = icoList.reduce((accumulator, element) => accumulator + parseInt(element.weight, 10), 0);
 		const selectedContainer = parseInt(payload.filters.capacityContainer, 10);
 		let selectedContainerValue;

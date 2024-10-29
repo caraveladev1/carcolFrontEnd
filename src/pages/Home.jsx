@@ -135,7 +135,7 @@ export function Home() {
 									exportNumber={exp_id}
 									selectOptions={expId}
 									required={'required'}
-									initialFormData={initialFormData[exp_id]} // Pasa los datos al componente BookingAndDates
+									initialFormData={initialFormData[exp_id]}
 								/>
 							)}
 							<TableGeneric

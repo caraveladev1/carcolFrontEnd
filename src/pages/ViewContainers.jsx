@@ -57,7 +57,7 @@ export function ViewContainers() {
 						? 'Differential: Fixed '
 						: 'Fixed',
 			sample: item.api_contract.status_approval_sample ? item.api_contract.status_approval_sample : 'Pending',
-			packaging: item.packaging_capacity,
+			packaging: `${item.packaging_capacity}`,
 			mark: item.brand_name,
 			shipmentMonth: item.export_date,
 			office: item.export_country,
