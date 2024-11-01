@@ -9,6 +9,7 @@ import { Loader } from '../components/Loader';
 import { SubmitButton } from '../components/SubmitButton';
 import { TableGeneric } from '../components/TableGeneric';
 import { useParams } from 'react-router-dom';
+import { Announcements } from '../components/Announcements';
 
 export function EditContainer() {
 	const navigate = useNavigate();
@@ -37,6 +38,8 @@ export function EditContainer() {
 		ico: [],
 		exportId: [],
 	});
+	const [isAnnouncementsOpen, setIsAnnouncementsOpen] = useState(false);
+
 	useEffect(() => {
 		if (icoList.length > 0 && filters) {
 			const defaultValues = {};
@@ -249,7 +252,13 @@ export function EditContainer() {
 			return;
 		}
 	};
+	const openAnnouncements = () => {
+		setIsAnnouncementsOpen(true);
+	};
 
+	const closeAnnouncements = () => {
+		setIsAnnouncementsOpen(false);
+	};
 	if (loading) {
 		return <Loader />;
 	}
@@ -329,6 +338,13 @@ export function EditContainer() {
 						>
 							{t('deleteSelected')}
 						</button>
+						<button
+							type='button'
+							className='bg-morado font-bayard text-2xl text-white p-4 '
+							onClick={openAnnouncements}
+						>
+							{t('addAnnouncements')}
+						</button>
 					</div>
 
 					<TableGeneric
@@ -345,6 +361,7 @@ export function EditContainer() {
 						}))}
 					/>
 				</form>
+				{isAnnouncementsOpen && <Announcements onClose={closeAnnouncements} ico={icoList} />}
 			</section>
 		</div>
 	);

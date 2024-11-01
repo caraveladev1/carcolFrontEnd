@@ -5,6 +5,7 @@ import { TableGeneric } from '../components/TableGeneric';
 import { headersTablePending, API_BASE_URL } from '../utils/consts';
 import { Loader } from '../components/Loader';
 import { BookingAndDates } from '../components/BookingAndDates';
+import { InputGeneric } from '../components/InputGeneric';
 
 export function Home() {
 	const { t } = useTranslation();
@@ -14,7 +15,18 @@ export function Home() {
 	const [showBookingAndDates, setShowBookingAndDates] = useState({});
 	const [initialFormData, setInitialFormData] = useState({});
 
-	// Función para organizar los datos por exp_id
+	// Estados para los filtros
+	const [filters, setFilters] = useState({
+		initialDate: '',
+		finalDate: '',
+		exportCountry: '',
+		destinationPort: '',
+	});
+
+	// Opciones únicas para los filtros de tipo select
+	const [countryOptions, setCountryOptions] = useState([]);
+	const [portOptions, setPortOptions] = useState([]);
+
 	const groupByExpId = (data) => {
 		const result = {};
 		Object.keys(data).forEach((key) => {
@@ -30,7 +42,6 @@ export function Home() {
 		return result;
 	};
 
-	// Función para mapear los nombres de las propiedades
 	const mapData = (data) => {
 		return data.map((item) => ({
 			contract: item.api_contract.main_identifier,
@@ -59,6 +70,20 @@ export function Home() {
 					mappedData[exp_id] = mapData(groupedData[exp_id]);
 				});
 
+				// Obtener opciones únicas para exportCountry y destinationPort
+				const countries = new Set();
+				const ports = new Set();
+
+				Object.keys(mappedData).forEach((key) => {
+					mappedData[key].forEach((item) => {
+						countries.add(item.export_country);
+						ports.add(item.destination_port);
+					});
+				});
+
+				setCountryOptions(Array.from(countries));
+				setPortOptions(Array.from(ports));
+
 				setOrganizedData(mappedData);
 				setLoading(false);
 			})
@@ -68,7 +93,6 @@ export function Home() {
 			});
 	}, []);
 
-	// Función para manejar el click en el botón y mostrar/ocultar el componente BookingAndDates
 	const toggleBookingAndDates = (exp_id) => {
 		setShowBookingAndDates((prevState) => ({
 			...prevState,
@@ -106,45 +130,106 @@ export function Home() {
 			});
 	}, []);
 
+	const handleFilterChange = (e) => {
+		const { name, value } = e.target;
+		setFilters((prevFilters) => ({ ...prevFilters, [name]: value }));
+	};
+
+	// Filtrar los datos según los filtros seleccionados
+	const filteredData = () => {
+		if (!organizedData) return {};
+
+		return Object.keys(organizedData).reduce((result, exp_id) => {
+			const filteredItems = organizedData[exp_id].filter((item) => {
+				const withinDateRange =
+					(!filters.initialDate || new Date(item.api_contract.shipment_date) >= new Date(filters.initialDate)) &&
+					(!filters.finalDate || new Date(item.api_contract.shipment_date) <= new Date(filters.finalDate));
+				const matchesExportCountry = !filters.exportCountry || item.export_country.includes(filters.exportCountry);
+				const matchesDestinationPort =
+					!filters.destinationPort || item.destination_port.includes(filters.destinationPort);
+
+				return withinDateRange && matchesExportCountry && matchesDestinationPort;
+			});
+
+			if (filteredItems.length > 0) {
+				result[exp_id] = filteredItems;
+			}
+			return result;
+		}, {});
+	};
+	//console.log(filters);
 	if (loading) {
 		return <Loader />;
 	}
-
+	//console.log(organizedData);
 	return (
 		<div className='bg-dark-background bg-cover bg-fixed min-h-screen'>
 			<section className='homeContainer max-w-[90%] m-auto pb-5'>
 				<Banner />
 				<h1 className='text-5xl font-bold my-8 uppercase text-celeste font-bayard'>{t('pendingTasks')}</h1>
-				{/* organizedData contiene los datos agrupados */}
-				{organizedData &&
-					Object.keys(organizedData).map((exp_id) => (
-						<div key={exp_id} className='my-4'>
-							<div className='titleContainer flex flex-row justify-between items-center'>
-								<h2 className='text-3xl font-bold text-white mb-4 font-bayard uppercase'>{exp_id}</h2>
 
-								<button
-									className='bg-yellow-500 text-celeste font-bayard uppercase text-3xl'
-									onClick={() => toggleBookingAndDates(exp_id)}
-								>
-									{showBookingAndDates[exp_id] ? t('addBookingAndDates') : t('addBookingAndDates')}
-								</button>
-							</div>
+				{/* Filtros */}
+				<div className='filters-container gap-6 flex flex-row '>
+					<InputGeneric
+						type='date'
+						filter='initialDate'
+						onChange={handleFilterChange}
+						required={false}
+						defaultValue={filters.initialDate}
+					/>
+					<InputGeneric
+						type='date'
+						filter='finalDate'
+						onChange={handleFilterChange}
+						required={false}
+						defaultValue={filters.finalDate}
+					/>
+					<InputGeneric
+						type='select'
+						filter='exportCountry'
+						onChange={handleFilterChange}
+						required={false}
+						defaultValue={filters.exportCountry}
+						options={countryOptions}
+					/>
+					<InputGeneric
+						type='select'
+						filter='destination'
+						onChange={handleFilterChange}
+						required={false}
+						defaultValue={filters.destinationPort}
+						options={portOptions}
+					/>
+				</div>
 
-							{showBookingAndDates[exp_id] && (
-								<BookingAndDates
-									exportNumber={exp_id}
-									selectOptions={expId}
-									required={'required'}
-									initialFormData={initialFormData[exp_id]}
-								/>
-							)}
-							<TableGeneric
-								headersTable={headersTablePending}
-								dataTable={organizedData[exp_id]}
-								renderRowContent={(row) => row}
-							/>
+				{Object.keys(filteredData()).map((exp_id) => (
+					<div key={exp_id} className='my-4'>
+						<div className='titleContainer flex flex-row justify-between items-center'>
+							<h2 className='text-3xl font-bold text-white mb-4 font-bayard uppercase'>{exp_id}</h2>
+
+							<button
+								className='bg-yellow-500 text-celeste font-bayard uppercase text-3xl'
+								onClick={() => toggleBookingAndDates(exp_id)}
+							>
+								{showBookingAndDates[exp_id] ? t('addBookingAndDates') : t('addBookingAndDates')}
+							</button>
 						</div>
-					))}
+
+						{showBookingAndDates[exp_id] && (
+							<BookingAndDates
+								exportNumber={exp_id}
+								selectOptions={expId}
+								required={'required'}
+								initialFormData={initialFormData[exp_id]}
+							/>
+						)}
+						<TableGeneric
+							headersTable={headersTablePending}
+							dataTable={filteredData()[exp_id]}
+							renderRowContent={(row) => row}
+						/>
+					</div>
+				))}
 			</section>
 		</div>
 	);

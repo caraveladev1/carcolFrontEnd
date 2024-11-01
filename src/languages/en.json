@@ -47,5 +47,6 @@
 	"editContainer": "Edit Container",
 	"deleteSelected": "Delete Selected ICOS",
 	"weight": "Weight",
-	"quality": "Quality"
+	"quality": "Quality",
+	"addAnnouncements": "Add Announcements"
 }

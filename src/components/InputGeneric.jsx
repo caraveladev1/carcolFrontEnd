@@ -1,7 +1,16 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-export function InputGeneric({ type = 'text', filter, defaultValue, options = [], onChange, required, className }) {
+export function InputGeneric({
+	type = 'text',
+	filter,
+	defaultValue,
+	options = [],
+	onChange,
+	required,
+	placeholder,
+	className,
+}) {
 	const { t } = useTranslation();
 
 	return (
@@ -13,7 +22,7 @@ export function InputGeneric({ type = 'text', filter, defaultValue, options = []
 						id={filter}
 						name={filter}
 						defaultValue={defaultValue}
-						className='bg-transparent font-bayard text-xl uppercase border-2 border-pink p-4 w-full text-pink focus:outline-none focus:border-2 focus:border-pink m-auto h-full'
+						className='bg-transparent font-bayard text-xl uppercase border-2 border-pink p-5 w-full text-pink focus:outline-none focus:border-2 focus:border-pink h-full '
 						onChange={onChange}
 						required={required}
 						placeholder={`Select ${t(filter)}`}
@@ -41,6 +50,7 @@ export function InputGeneric({ type = 'text', filter, defaultValue, options = []
 					id={filter}
 					name={filter}
 					defaultValue={defaultValue}
+					placeholder={placeholder}
 					className='bg-transparent font-bayard text-xl uppercase border-2 border-pink p-4 w-full text-pink focus:outline-none focus:border-2 focus:border-pink m-auto h-full'
 					onChange={onChange}
 					required={required}

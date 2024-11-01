@@ -60,10 +60,10 @@ export const labelsBoogkindAndDates = [
 	'dateLandingPort',
 	'estimatedDelivery',
 	'estimatedArrival',
-	'announcement',
+	/* 'announcement',
 	'order',
 	'review',
-	'salesCode',
+	'salesCode', */
 	'exportDate',
 ];
 
@@ -79,10 +79,10 @@ export const filtersEditContainer = [
 	'dateLandingPort',
 	'estimatedDelivery',
 	'estimatedArrival',
-	'announcement',
+	/* 'announcement',
 	'order',
 	'review',
-	'salesCode',
+	'salesCode', */
 	'exportDate',
 	'capacityContainer',
 	'port',
