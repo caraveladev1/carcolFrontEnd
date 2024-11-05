@@ -331,7 +331,7 @@ export function EditContainer() {
 					</div>
 
 					<div className='my-5 flex items-center justify-center gap-5'>
-						<SubmitButton className={'bg-pink w-[60%] '} label={t('submit')} />
+						<SubmitButton className='bg-pink w-[60%] ' buttonText='submit' />
 						<button
 							type='button'
 							className='bg-naranja font-bayard text-2xl text-white p-4 '

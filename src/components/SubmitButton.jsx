@@ -7,7 +7,7 @@ export function SubmitButton({ color, typeButton, className, onClick, buttonText
 		<button
 			type={typeButton}
 			onClick={onClick}
-			className={`bg-${color} font-bayard text-2xl text-white p-4 ${className}`}
+			className={`bg-${color} font-bayard text-2xl text-white p-4 h-full ${className}`}
 		>
 			{t(buttonText)}
 		</button>
