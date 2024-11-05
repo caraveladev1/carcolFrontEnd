@@ -48,5 +48,6 @@
 	"deleteSelected": "Delete Selected ICOS",
 	"weight": "Weight",
 	"quality": "Quality",
-	"addAnnouncements": "Add Announcements"
+	"addAnnouncements": "Add Announcements",
+	"setLoaded": "Loaded"
 }

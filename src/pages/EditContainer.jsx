@@ -97,6 +97,7 @@ export function EditContainer() {
 			weight: item.weight,
 			export_country: item.export_country,
 			select: false,
+			is_pending: item.is_pending,
 		}));
 	};
 
@@ -160,7 +161,7 @@ export function EditContainer() {
 
 		fetchData();
 	}, [id]);
-
+	//console.log(icoList);
 	//console.log(filters);
 	//console.log(exportCountry);
 	const handleIcoChange = (e) => {

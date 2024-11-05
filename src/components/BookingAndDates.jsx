@@ -53,7 +53,7 @@ export const BookingAndDates = memo(function BookingAndDates({
 			});
 
 			if (!response.ok) {
-				throw new Error('Error en la solicitud');
+				window.alert('Error al enviar los datos');
 			}
 
 			window.alert('Container updated successfully');
@@ -62,10 +62,27 @@ export const BookingAndDates = memo(function BookingAndDates({
 			console.error('Error al enviar los datos:', error);
 		}
 	};
+	async function setLoaded() {
+		try {
+			const response = await fetch(`${API_BASE_URL}api/exports/setLoaded`, {
+				method: 'PUT',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ setLoaded: '1', exportNumber }),
+			});
+
+			if (!response.ok) {
+				window.alert('Error al enviar los datos');
+			}
+		} catch (error) {
+			console.error('Error al enviar los datos:', error);
+		}
+	}
 	const getCurrentDate = () => {
 		const today = new Date();
 		const year = today.getFullYear();
-		const month = String(today.getMonth() + 1).padStart(2, '0'); // Añadir 1 ya que los meses en JavaScript son de 0 a 11
+		const month = String(today.getMonth() + 1).padStart(2, '0');
 		const day = String(today.getDate()).padStart(2, '0');
 		return `${year}-${month}-${day}`;
 	};
@@ -128,7 +145,10 @@ export const BookingAndDates = memo(function BookingAndDates({
 						</div>
 					</React.Fragment>
 				))}
-				<SubmitButton className='col-span-4' color='verdeTexto' typeButton='submit' />
+				<div className='flex flex-row gap-4 justify-between	w-full col-span-4'>
+					<SubmitButton className='w-full' color='verdeTexto' typeButton='submit' buttonText='submit' />
+					<SubmitButton className='w-full' color='naranja' onClick={setLoaded} buttonText='setLoaded' />
+				</div>
 			</form>
 		</div>
 	);
