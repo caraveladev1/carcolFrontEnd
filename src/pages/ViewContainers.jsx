@@ -8,7 +8,7 @@ import editContainer from '../assets/img/editContainer.webp';
 import { Link } from 'react-router-dom';
 import { Filter } from '../components/Filter';
 import commentsButton from '../assets/img/commentsButton.webp';
-
+import { Comments } from '../components/Comments';
 export function ViewContainers() {
 	const { t } = useTranslation();
 	const [organizedData, setOrganizedData] = useState(null);
@@ -22,7 +22,8 @@ export function ViewContainers() {
 		shipmentMonth: '',
 		finalDate: '',
 	});
-
+	const [isCommentsOpen, setIsCommentsOpen] = useState(false);
+	const [selectedIco, setSelectedIco] = useState(null);
 	const handleFilterChange = (filterName, value) => {
 		setFilters((prevFilters) => ({
 			...prevFilters,
@@ -45,7 +46,15 @@ export function ViewContainers() {
 		});
 		return result;
 	};
+	const handleButtonClick = (item) => {
+		setSelectedIco(item.ico);
+		setIsCommentsOpen(true);
+	};
 
+	const closeComments = () => {
+		setIsCommentsOpen(false);
+		setSelectedIco(null);
+	};
 	// Función para mapear los nombres de las propiedades
 	const mapData = (data) => {
 		return data.map((item) => ({
@@ -62,9 +71,9 @@ export function ViewContainers() {
 			mark: item.brand_name,
 			shipmentMonth: item.export_date,
 			comments: (
-				<div className='flex flex-row max-w-[20%] justify-center items-center m-auto'>
+				<div className='flex flex-row justify-center items-center m-auto '>
 					{item.comments}
-					<button className='btn-class ' onClick={() => handleButtonClick(item)}>
+					<button className='btn-class max-w-[20%] ' onClick={() => handleButtonClick(item)}>
 						<img src={commentsButton} />
 					</button>
 				</div>
@@ -186,6 +195,7 @@ export function ViewContainers() {
 							</div>
 						</div>
 					))}
+				{isCommentsOpen && <Comments ico={selectedIco} onClose={closeComments} />}
 			</section>
 		</div>
 	);

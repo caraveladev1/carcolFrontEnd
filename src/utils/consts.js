@@ -28,6 +28,7 @@ export const headersTableView = [
 	'sample',
 	'incoterm',
 	'pricingConditions',
+	'comments',
 ];
 
 export const nameFilters = [

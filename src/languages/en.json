@@ -49,5 +49,6 @@
 	"weight": "Weight",
 	"quality": "Quality",
 	"addAnnouncements": "Add Announcements",
-	"setLoaded": "Loaded"
+	"setLoaded": "Loaded",
+	"typeComment": "Type your comment here"
 }

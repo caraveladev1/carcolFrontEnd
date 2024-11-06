@@ -51,7 +51,7 @@ export function InputGeneric({
 					name={filter}
 					defaultValue={defaultValue}
 					placeholder={placeholder}
-					className='bg-transparent font-bayard text-xl uppercase border-2 border-pink p-4 w-full text-pink focus:outline-none focus:border-2 focus:border-pink m-auto h-full'
+					className='bg-transparent font-bayard text-xl uppercase border-2 border-pink p-5 w-full text-pink focus:outline-none focus:border-2 focus:border-pink m-auto h-full'
 					onChange={onChange}
 					required={required}
 				/>
