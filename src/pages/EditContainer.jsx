@@ -98,6 +98,7 @@ export function EditContainer() {
 			export_country: item.export_country,
 			select: false,
 			is_pending: item.is_pending,
+			comment_id: item.comment_id,
 		}));
 	};
 
@@ -217,7 +218,7 @@ export function EditContainer() {
 			selectedIcos: icoList,
 		};
 
-		console.log(payload);
+		//console.log(payload);
 		const sumIcosWeight = icoList.reduce((accumulator, element) => accumulator + parseInt(element.weight, 10), 0);
 		const selectedContainer = parseInt(payload.filters.capacityContainer, 10);
 		let selectedContainerValue;

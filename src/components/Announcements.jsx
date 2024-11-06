@@ -25,7 +25,7 @@ export function Announcements({ onClose, ico }) {
 				[field]: value,
 			},
 		}));
-		console.log(formData);
+		//console.log(formData);
 	};
 
 	function addAnnoucements() {
@@ -38,19 +38,20 @@ export function Announcements({ onClose, ico }) {
 		})
 			.then((response) => response.json())
 			.then((data) => {
-				console.log('Success:', data);
+				window.alert('Announcements added successfully');
+				window.location.reload();
 			})
 			.catch((error) => {
 				console.error('Error:', error);
 			});
 	}
 	return (
-		<div className='announcementContainer fixed inset-0 bg-black/50 flex justify-center items-center'>
-			<div className='popup w-[80%] min-h-fit bg-beige pt-12 px-4 relative'>
+		<div className='announcementContainer fixed inset-0 bg-black/50 flex justify-center items-center '>
+			<div className='popup w-[80%] overflow-auto max-h-[70%]  bg-beige pt-12 px-4 relative'>
 				<button className='absolute top-0 right-0 bg-red-500 text-white p-1' onClick={onClose}>
 					<p className='font-bayard text-2xl px-4'>Close</p>
 				</button>
-				<div className='container space-y-4'>
+				<div className='container space-y-4 '>
 					{ico && ico.length > 0 ? (
 						ico.map((item, index) => (
 							<div key={index} className='grid grid-cols-5 gap-4'>

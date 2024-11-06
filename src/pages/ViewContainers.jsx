@@ -7,6 +7,7 @@ import { Loader } from '../components/Loader';
 import editContainer from '../assets/img/editContainer.webp';
 import { Link } from 'react-router-dom';
 import { Filter } from '../components/Filter';
+import commentsButton from '../assets/img/commentsButton.webp';
 
 export function ViewContainers() {
 	const { t } = useTranslation();
@@ -60,6 +61,14 @@ export function ViewContainers() {
 			packaging: `${item.packaging_capacity}`,
 			mark: item.brand_name,
 			shipmentMonth: item.export_date,
+			comments: (
+				<div className='flex flex-row max-w-[20%] justify-center items-center m-auto'>
+					{item.comments}
+					<button className='btn-class ' onClick={() => handleButtonClick(item)}>
+						<img src={commentsButton} />
+					</button>
+				</div>
+			),
 			office: item.export_country,
 			destination: item.destination_port,
 			...item,

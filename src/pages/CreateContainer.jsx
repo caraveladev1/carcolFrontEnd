@@ -233,7 +233,7 @@ export function CreateContainer() {
 								/>
 							</div>
 						))}
-						<SubmitButton className='bg-celeste col-span-2' typeButton='submit' />
+						<SubmitButton className='bg-celeste col-span-2' typeButton='submit' buttonText='submit' />
 					</div>
 				</form>
 				<TableGeneric headersTable={headersTableCreateContainer} dataTable={preparedDataTable} />
