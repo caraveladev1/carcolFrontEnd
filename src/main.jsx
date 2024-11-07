@@ -7,6 +7,7 @@ import { createBrowserRouter, RouterProvider, Route, createHashRouter } from 're
 import { CreateContainer } from './pages/CreateContainer';
 import { ViewContainers } from './pages/ViewContainers';
 import { EditContainer } from './pages/EditContainer';
+import { ExportedContainers } from './pages/ExportedContainers';
 
 // Definir las rutas directamente en createBrowserRouter
 const router = createHashRouter([
@@ -25,6 +26,10 @@ const router = createHashRouter([
 	{
 		path: '/edit-container/:id',
 		element: <EditContainer />,
+	},
+	{
+		path: '/exported-containers',
+		element: <ExportedContainers />,
 	},
 	{
 		path: '/*',

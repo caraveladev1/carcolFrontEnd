@@ -50,5 +50,7 @@
 	"quality": "Quality",
 	"addAnnouncements": "Add Announcements",
 	"setLoaded": "Loaded",
-	"typeComment": "Type your comment here"
+	"typeComment": "Type your comment here",
+	"exportedContainers": "Exported Containers",
+	"setExported": "Container Exported"
 }

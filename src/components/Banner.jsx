@@ -22,6 +22,9 @@ export function Banner() {
 					<Link to='/view-containers'>
 						<button className='cursor-pointer text-3xl text-yellow uppercase '>{t('viewContainers')}</button>
 					</Link>
+					<Link to='/exported-containers'>
+						<button className='cursor-pointer text-3xl text-beige uppercase '>{t('exportedContainers')}</button>
+					</Link>
 				</div>
 			</div>
 		</section>

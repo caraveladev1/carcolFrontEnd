@@ -99,6 +99,7 @@ export function EditContainer() {
 			select: false,
 			is_pending: item.is_pending,
 			comment_id: item.comment_id,
+			is_exported: item.is_exported,
 		}));
 	};
 
@@ -265,6 +266,33 @@ export function EditContainer() {
 		return <Loader />;
 	}
 
+	function setExported() {
+		try {
+			const apiSetExported = `${API_BASE_URL}api/exports/setExported`;
+
+			fetch(apiSetExported, {
+				method: 'PUT',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					id: id,
+					is_exported: '1',
+				}),
+			})
+				.then((response) => response.json())
+
+				.catch((error) => {
+					console.error('Error:', error);
+				});
+
+			window.alert('Container set as exported successfully');
+			navigate('/view-containers');
+		} catch (error) {
+			console.log(error);
+		}
+	}
+
 	return (
 		<div className='bg-dark-background bg-cover bg-fixed min-h-screen'>
 			<section className='max-w-[90%] m-auto'>
@@ -346,6 +374,9 @@ export function EditContainer() {
 							onClick={openAnnouncements}
 						>
 							{t('addAnnouncements')}
+						</button>
+						<button type='button' className='bg-yellow font-bayard text-2xl text-white p-4 ' onClick={setExported}>
+							{t('setExported')}
 						</button>
 					</div>
 
