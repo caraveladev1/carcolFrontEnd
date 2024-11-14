@@ -3,33 +3,59 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import { Home } from './pages/Home';
 import '../I18n';
-import { createBrowserRouter, RouterProvider, Route, createHashRouter } from 'react-router-dom';
+import { createHashRouter, RouterProvider, Route } from 'react-router-dom';
 import { CreateContainer } from './pages/CreateContainer';
 import { ViewContainers } from './pages/ViewContainers';
 import { EditContainer } from './pages/EditContainer';
 import { ExportedContainers } from './pages/ExportedContainers';
+import { Login } from './pages/Login';
+import { ProtectedRoute } from './components/ProtectedRoute'; // Importa el componente ProtectedRoute
 
-// Definir las rutas directamente en createBrowserRouter
+// Definir las rutas directamente en createHashRouter
 const router = createHashRouter([
 	{
+		path: '/login',
+		element: <Login />,
+	},
+	{
 		path: '/',
-		element: <Home />,
+		element: (
+			<ProtectedRoute>
+				<Home />
+			</ProtectedRoute>
+		),
 	},
 	{
 		path: '/create',
-		element: <CreateContainer />,
+		element: (
+			<ProtectedRoute>
+				<CreateContainer />
+			</ProtectedRoute>
+		),
 	},
 	{
 		path: '/view-containers',
-		element: <ViewContainers />,
+		element: (
+			<ProtectedRoute>
+				<ViewContainers />
+			</ProtectedRoute>
+		),
 	},
 	{
 		path: '/edit-container/:id',
-		element: <EditContainer />,
+		element: (
+			<ProtectedRoute>
+				<EditContainer />
+			</ProtectedRoute>
+		),
 	},
 	{
 		path: '/exported-containers',
-		element: <ExportedContainers />,
+		element: (
+			<ProtectedRoute>
+				<ExportedContainers />
+			</ProtectedRoute>
+		),
 	},
 	{
 		path: '/*',
