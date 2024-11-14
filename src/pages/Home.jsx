@@ -77,7 +77,7 @@ export function Home() {
 				Object.keys(mappedData).forEach((key) => {
 					mappedData[key].forEach((item) => {
 						countries.add(item.export_country);
-						ports.add(item.destination_port);
+						ports.add(item.api_contract.destination_port);
 					});
 				});
 
@@ -133,6 +133,7 @@ export function Home() {
 	const handleFilterChange = (e) => {
 		const { name, value } = e.target;
 		setFilters((prevFilters) => ({ ...prevFilters, [name]: value }));
+		console.log('Filters actualizados:', { ...filters, [name]: value });
 	};
 
 	// Filtrar los datos según los filtros seleccionados
@@ -146,7 +147,9 @@ export function Home() {
 					(!filters.finalDate || new Date(item.api_contract.shipment_date) <= new Date(filters.finalDate));
 				const matchesExportCountry = !filters.exportCountry || item.export_country.includes(filters.exportCountry);
 				const matchesDestinationPort =
-					!filters.destinationPort || item.destination_port.includes(filters.destinationPort);
+					!filters.destinationPort ||
+					(item.api_contract.destination_port &&
+						item.api_contract.destination_port.toLowerCase().includes(filters.destinationPort.toLowerCase()));
 
 				return withinDateRange && matchesExportCountry && matchesDestinationPort;
 			});
@@ -157,6 +160,7 @@ export function Home() {
 			return result;
 		}, {});
 	};
+
 	//console.log(filters);
 	if (loading) {
 		return <Loader />;
@@ -194,7 +198,7 @@ export function Home() {
 					/>
 					<InputGeneric
 						type='select'
-						filter='destination'
+						filter='destinationPort'
 						onChange={handleFilterChange}
 						required={false}
 						defaultValue={filters.destinationPort}
