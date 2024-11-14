@@ -39,7 +39,7 @@ export function Announcements({ onClose, ico }) {
 			.then((response) => response.json())
 			.then((data) => {
 				window.alert('Announcements added successfully');
-				window.location.reload();
+				//window.location.reload();
 			})
 			.catch((error) => {
 				console.error('Error:', error);

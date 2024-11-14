@@ -28,26 +28,17 @@ export function Comments({ ico, onClose }) {
 	const handleCommentSubmit = (e) => {
 		e.preventDefault();
 
-		// Crear el nuevo comentario
 		const newCommentObject = { comentario: newComment };
-
-		// Actualizar el estado de los comentarios
 		const updatedComments = [...comments, newCommentObject];
 
-		// Actualizar los comentarios en el estado
-		setComments(updatedComments);
-
-		// Limpiar el campo de entrada
 		setNewComment('');
 
-		// Crear el objeto para enviar a la API
 		const postData = {
 			id: commentId,
 			ico: ico,
 			comment: updatedComments,
 		};
 
-		// Enviar el nuevo comentario al servidor
 		fetch(`${API_BASE_URL}api/exports/comment/add`, {
 			method: 'POST',
 			headers: {
@@ -57,8 +48,9 @@ export function Comments({ ico, onClose }) {
 		})
 			.then((response) => response.json())
 			.then((data) => {
-				window.alert('Comment added successfully');
-				window.location.reload();
+				// Actualiza el estado con la respuesta de la API si es necesario
+				setComments((prevComments) => [...prevComments, newCommentObject]);
+				alert('Comment added successfully');
 			})
 			.catch((error) => console.error('Error al agregar el comentario:', error));
 	};
