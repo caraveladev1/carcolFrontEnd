@@ -58,18 +58,21 @@ export function ViewContainers() {
 	// Función para mapear los nombres de las propiedades
 	const mapData = (data) => {
 		return data.map((item) => ({
-			contract: item.api_contract.main_identifier,
-			customer: item.api_contract.customer,
-			pricingConditions:
-				item.api_contract.pricing_conditions === 'differential' && item.api_contract.fixation_flag === null
+			contract: item.contract_atlas.contract,
+			customer: item.contract_atlas.customer,
+			price_type:
+				item.price_type === 'differential' && item.fixed_price_status === null
 					? 'Differential: Pending '
-					: item.api_contract.pricing_conditions === 'differential' && item.api_contract.fixation_flag !== null
+					: item.price_type === 'differential' && item.fixed_price_status !== null
 						? 'Differential: Fixed '
 						: 'Fixed',
-			sample: item.api_contract.status_approval_sample ? item.api_contract.status_approval_sample : 'Pending',
-			packaging: `${item.packaging_capacity}`,
+			sample: item.contract_atlas.customer_cupping_state ? item.contract_atlas.customer_cupping_state : 'Pending',
+			packaging: item.packaging_capacity,
 			mark: item.brand_name,
+			destinationPort: item.contract_atlas.destination_port,
 			shipmentMonth: item.export_date,
+			weight: item.contract_atlas.estimated_kg,
+			quality: item.contract_atlas.quality,
 			comments: (
 				<div className='flex flex-row justify-center items-center m-auto '>
 					{item.comments}

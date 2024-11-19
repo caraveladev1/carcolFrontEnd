@@ -36,7 +36,7 @@
 	"capacityContainer": "Container Capacity",
 	"incoterm": "Incoterm",
 	"exportCountry": "Export Country",
-	"pricingConditions": "Pricing Conditions",
+	"price_type": "Pricing Conditions",
 	"container": "Container",
 	"announcement": "Announcement",
 	"order": "Order",
@@ -52,5 +52,6 @@
 	"setLoaded": "Loaded",
 	"typeComment": "Type your comment here",
 	"exportedContainers": "Exported Containers",
-	"setExported": "Container Exported"
+	"setExported": "Container Exported",
+	"icosDestination": "ICOs destination"
 }

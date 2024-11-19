@@ -41,29 +41,29 @@ export function CreateContainer() {
 			.then((data) => {
 				const shipmentPorts = [...new Set(data.map((item) => item.shipment_port))];
 				const destinationPorts = [...new Set(data.map((item) => item.destination_port))];
-				const exportCountry = [...new Set(data.map((item) => item.origin))];
+				const exportCountry = [...new Set(data.map((item) => item.origin_iso))];
 				const capacityContainer = [20, 40];
 				const incoterm = [...new Set(data.map((item) => item.incoterm))];
 
 				const updatedIcoList = data.map((item) => ({
-					ico_id: item.ico_id,
-					secondary_ico_id: item.ico_secondary_id,
-					contract: item.main_identifier,
+					ico_id: item.ico,
+					secondary_ico_id: item.secondary_ico,
+					contract: item.contract,
 					mark: item.mark,
 					customer: item.customer,
 					quality: item.quality,
-					packaging_capacity: `${item.packaging_type} ${item.packaging_capacity}`,
+					packaging_capacity: item.packaging_type,
 					units: item.units,
-					sample: item.status_approval_sample === null ? 'Pending' : item.status_approval_sample,
+					sample: item.customer_cupping_state === null ? 'Pending' : item.customer_cupping_state,
 					shipmentMonth: item.shipment_date,
-					pricingConditions:
-						item.pricing_conditions === 'differential' && item.fixation_flag === null
+					price_type:
+						item.price_type === 'differential' && item.fixed_price_status === null
 							? 'Differential: Pending '
-							: item.pricing_conditions === 'differential' && item.fixation_flag !== null
+							: item.price_type === 'differential' && item.fixed_price_status !== null
 								? 'Differential: Fixed '
 								: 'Fixed',
-					destinationPorts: item.destination_port,
-					exportCountry: item.origin,
+					destinationPort: item.destination_port,
+					exportCountry: item.origin_iso,
 					incoterm: item.incoterm,
 					weight: item.estimated_kg,
 				}));
@@ -174,7 +174,7 @@ export function CreateContainer() {
 				})
 				.then(() => {
 					window.alert('Container created successfully');
-					navigate('/');
+					navigate('/view-containers');
 				})
 				.catch((error) => {
 					console.error('Error:', error);

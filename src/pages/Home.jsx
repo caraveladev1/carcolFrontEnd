@@ -44,17 +44,21 @@ export function Home() {
 
 	const mapData = (data) => {
 		return data.map((item) => ({
-			contract: item.api_contract.main_identifier,
-			customer: item.api_contract.customer,
-			pricingConditions:
-				item.api_contract.pricing_conditions === 'differential' && item.api_contract.fixation_flag === null
+			contract: item.contract_atlas.contract,
+			customer: item.contract_atlas.customer,
+			price_type:
+				item.contract_atlas.price_type === 'differential' && item.contract_atlas.fixed_price_status === null
 					? 'Differential: Pending '
-					: item.api_contract.pricing_conditions === 'differential' && item.api_contract.fixation_flag !== null
+					: item.contract_atlas.price_type === 'differential' && item.contract_atlas.fixed_price_status !== null
 						? 'Differential: Fixed '
 						: 'Fixed',
-			sample: item.api_contract.status_approval_sample ? item.api_contract.status_approval_sample : 'Pending',
+			sample: item.contract_atlas.customer_cupping_state ? item.contract_atlas.customer_cupping_state : 'Pending',
 			packaging: item.packaging_capacity,
 			mark: item.brand_name,
+			shipmentMonth: item.contract_atlas.shipment_date,
+			destinationPort: item.contract_atlas.destination_port,
+			weight: item.contract_atlas.estimated_kg,
+			quality: item.contract_atlas.quality,
 			...item,
 		}));
 	};
@@ -77,7 +81,7 @@ export function Home() {
 				Object.keys(mappedData).forEach((key) => {
 					mappedData[key].forEach((item) => {
 						countries.add(item.export_country);
-						ports.add(item.api_contract.destination_port);
+						ports.add(item.contract_atlas.destination_port);
 					});
 				});
 
@@ -85,6 +89,7 @@ export function Home() {
 				setPortOptions(Array.from(ports));
 
 				setOrganizedData(mappedData);
+
 				setLoading(false);
 			})
 			.catch((error) => {
@@ -133,7 +138,7 @@ export function Home() {
 	const handleFilterChange = (e) => {
 		const { name, value } = e.target;
 		setFilters((prevFilters) => ({ ...prevFilters, [name]: value }));
-		console.log('Filters actualizados:', { ...filters, [name]: value });
+		//	console.log('Filters actualizados:', { ...filters, [name]: value });
 	};
 
 	// Filtrar los datos según los filtros seleccionados
@@ -143,13 +148,13 @@ export function Home() {
 		return Object.keys(organizedData).reduce((result, exp_id) => {
 			const filteredItems = organizedData[exp_id].filter((item) => {
 				const withinDateRange =
-					(!filters.initialDate || new Date(item.api_contract.shipment_date) >= new Date(filters.initialDate)) &&
-					(!filters.finalDate || new Date(item.api_contract.shipment_date) <= new Date(filters.finalDate));
-				const matchesExportCountry = !filters.exportCountry || item.export_country.includes(filters.exportCountry);
+					(!filters.initialDate || new Date(item.contract_atlas.shipment_date) >= new Date(filters.initialDate)) &&
+					(!filters.finalDate || new Date(item.contract_atlas.shipment_date) <= new Date(filters.finalDate));
+				const matchesExportCountry = !filters.exportCountry || item.origin_iso.includes(filters.exportCountry);
 				const matchesDestinationPort =
 					!filters.destinationPort ||
-					(item.api_contract.destination_port &&
-						item.api_contract.destination_port.toLowerCase().includes(filters.destinationPort.toLowerCase()));
+					(item.contract_atlas.destination_port &&
+						item.contract_atlas.destination_port.toLowerCase().includes(filters.destinationPort.toLowerCase()));
 
 				return withinDateRange && matchesExportCountry && matchesDestinationPort;
 			});
@@ -165,7 +170,7 @@ export function Home() {
 	if (loading) {
 		return <Loader />;
 	}
-	//console.log(organizedData);
+	//(organizedData);
 	return (
 		<div className='bg-dark-background bg-cover bg-fixed min-h-screen'>
 			<section className='homeContainer max-w-[90%] m-auto pb-5'>

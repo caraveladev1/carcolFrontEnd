@@ -40,6 +40,7 @@ export function EditContainer() {
 	});
 	const [isAnnouncementsOpen, setIsAnnouncementsOpen] = useState(false);
 
+	//console.log(selectedIcos);
 	useEffect(() => {
 		if (icoList.length > 0 && filters) {
 			const defaultValues = {};
@@ -80,9 +81,9 @@ export function EditContainer() {
 			packaging_capacity: item.packaging_capacity,
 			units: item.units,
 			sample:
-				item.api_contract?.status_approval_sample === null ? 'Pending' : item.api_contract?.status_approval_sample,
-			shipmentMonth: item.export_date,
-			pricingConditions: item.api_contract?.pricing_conditions,
+				item.contract_atlas?.customer_cupping_state === null ? 'Pending' : item.contract_atlas?.customer_cupping_state,
+			shipmentMonth: item.contract_atlas?.shipment_date,
+			price_type: item.contract_atlas?.price_type,
 			booking: item.booking,
 			date_landing: item.date_landing,
 			estimated_delivery: item.estimated_delivery,
@@ -91,14 +92,16 @@ export function EditContainer() {
 			review: item.review,
 			sales_code: item.sales_code,
 			container_capacity: item.container_capacity,
-			destination_port: item.destination_port,
+			destinationPort: item.contract_atlas.destination_port,
+			destinationPortFilter: item.destination_port,
 			incoterm: item.incoterm,
 			orders: item.orders,
-			weight: item.weight,
+			weight: item.contract_atlas.estimated_kg,
 			export_country: item.export_country,
 			select: false,
 			is_pending: item.is_pending,
 			comment_id: item.comment_id,
+			quality: item.contract_atlas.quality,
 			is_exported: item.is_exported,
 		}));
 	};
@@ -120,19 +123,19 @@ export function EditContainer() {
 					const exportsUrl = `${API_BASE_URL}api/exports/getAllExports`;
 					const exportsResponse = await fetch(exportsUrl);
 					const exportsData = await exportsResponse.json();
+
 					setIcoList((prevIcoList) => {
 						return prevIcoList.map((ico) => {
 							const exportData = exportsData.find((exportItem) => exportItem.ico_id === ico.ico_id);
-							//	console.log(exportData);
 							return {
 								...ico,
 								weight: exportData ? exportData.estimated_kg : ico.weight || 0,
 							};
 						});
 					});
-					//console.log(exportsData);
+
 					setExportsData(exportsData);
-					//console.log(mappedData);
+
 					const newFilters = {
 						booking: mappedData[0].booking ? [mappedData[0].booking] : [],
 						dateLandingPort: mappedData[0].date_landing ? [mappedData[0].date_landing] : [],
@@ -144,12 +147,13 @@ export function EditContainer() {
 						salesCode: mappedData[0].sales_code ? [mappedData[0].sales_code] : [],
 						exportDate: mappedData[0].shipmentMonth ? [mappedData[0].shipmentMonth] : [],
 						capacityContainer: Object.keys(containerCapacity).map(Number),
-						exportId: [...new Set(exportsData.map((item) => item.export_number))],
+						exportId: [...new Set(exportsData.map((item) => item.export))],
 						exportCountry: [...new Set(exportsData.map((item) => item.origin))],
 						port: [...new Set(exportsData.map((item) => item.destination_port))],
 						incoterm: [...new Set(exportsData.map((item) => item.incoterm))],
-						ico: [...new Set(exportsData.map((item) => item.ico_id))],
+						ico: [...new Set(exportsData.map((item) => item.ico))],
 						weight: [...new Set(exportsData.map((item) => item.estimated_kg))],
+						icosDestination: [...new Set(exportsData.map((item) => item.destination_port))],
 					};
 
 					setFilters(newFilters);
@@ -163,33 +167,40 @@ export function EditContainer() {
 
 		fetchData();
 	}, [id]);
-	//console.log(icoList);
-	//console.log(filters);
-	//console.log(exportCountry);
-	const handleIcoChange = (e) => {
-		const selectedIcoId = e.target.value;
 
-		const selectedIcoData = exportsData.find((item) => item.ico_id === selectedIcoId);
+	const handleIcoChange = (e) => {
+		const selectedIco = e.target.value;
+
+		const selectedIcoData = exportsData.find((item) => String(item.ico) === String(selectedIco));
 
 		if (selectedIcoData) {
 			const transformedIcoData = {
-				ico_id: selectedIcoData.ico_id,
-				secondary_ico_id: selectedIcoData.ico_secondary_id,
-				mark: selectedIcoData.mark,
-				export_country: selectedIcoData.origin,
-				packaging_capacity: `${selectedIcoData.packaging_type} ${selectedIcoData.packaging_capacity}`,
-				units: selectedIcoData.units,
-				sample: selectedIcoData.status_approval_sample === null ? 'Pending' : selectedIcoData.status_approval_sample,
 				shipmentMonth: selectedIcoData.shipment_date,
-				pricingConditions: selectedIcoData.pricing_conditions,
+				ico_id: selectedIcoData.ico,
+				secondary_ico_id: selectedIcoData.secondary_ico,
+				mark: selectedIcoData.mark,
+				export_country: selectedIcoData.origin_iso,
+				packaging_capacity: `${selectedIcoData.packaging_type} ${selectedIcoData.estimated_kg} KG`,
+				units: selectedIcoData.units,
+				sample: selectedIcoData.fixed_price_status === null ? 'Pending' : selectedIcoData.fixed_price_status,
+				price_type: selectedIcoData.price_type,
+				destinationPort: selectedIcoData.destination_port,
 				weight: selectedIcoData.estimated_kg,
+				quality: selectedIcoData.quality,
 				select: false,
 			};
 
-			setIcoList((prevIcoList) => [...prevIcoList, transformedIcoData]);
+			setIcoList((prevIcoList) => {
+				if (prevIcoList.some((ico) => ico.ico_id === selectedIco)) {
+					return prevIcoList;
+				}
+				return [...prevIcoList, transformedIcoData];
+			});
+		} else {
+			console.log('No se encontró el ICO con id:', selectedIco);
 		}
-		//console.log(selectedIcoData);
 	};
+
 	const handleCheckboxChange = (ico_id) => {
 		setSelectedIcos((prevSelectedIcos) => {
 			const newSelectedIcos = new Set(prevSelectedIcos);
@@ -203,7 +214,6 @@ export function EditContainer() {
 	};
 
 	const handleDeleteSelected = () => {
-		// Filtra la lista actual para remover los elementos seleccionados
 		const updatedIcoList = icoList.filter((ico) => !selectedIcos.has(ico.ico_id));
 		setIcoList(updatedIcoList);
 		setSelectedIcos(new Set());
@@ -219,17 +229,27 @@ export function EditContainer() {
 			selectedIcos: icoList,
 		};
 
-		//console.log(payload);
-		const sumIcosWeight = icoList.reduce((accumulator, element) => accumulator + parseInt(element.weight, 10), 0);
+		console.log(icoList);
+
+		const sumIcosWeight = payload.selectedIcos.reduce((accumulator, element) => {
+			const weight = parseInt(element.weight, 10);
+			return accumulator + (isNaN(weight) ? 0 : weight); // Asegúrate de manejar NaN
+		}, 0);
+
 		const selectedContainer = parseInt(payload.filters.capacityContainer, 10);
 		let selectedContainerValue;
 
 		if (containerCapacity.hasOwnProperty(selectedContainer)) {
 			selectedContainerValue = containerCapacity[selectedContainer];
+		} else {
+			window.alert('Invalid container capacity selected.');
+			return;
 		}
 
-		// Verificar si el peso total de los ICOs no excede la capacidad del contenedor
-		if (sumIcosWeight < selectedContainerValue) {
+		console.log('Sum of ICO weights:', sumIcosWeight);
+		console.log('Selected container capacity:', selectedContainerValue);
+
+		if (sumIcosWeight <= selectedContainerValue) {
 			fetch(`${API_BASE_URL}api/exports/updateContainer`, {
 				method: 'PUT',
 				headers: {
@@ -251,10 +271,11 @@ export function EditContainer() {
 					console.error('Error:', error);
 				});
 		} else {
-			window.alert('The total weight of the icos exceeds the capacity of the container.');
+			window.alert('The total weight of the ICOs exceeds the capacity of the container.');
 			return;
 		}
 	};
+
 	const openAnnouncements = () => {
 		setIsAnnouncementsOpen(true);
 	};
@@ -292,7 +313,7 @@ export function EditContainer() {
 			console.log(error);
 		}
 	}
-
+	//(filterValues);
 	return (
 		<div className='bg-dark-background bg-cover bg-fixed min-h-screen'>
 			<section className='max-w-[90%] m-auto'>
@@ -310,7 +331,8 @@ export function EditContainer() {
 										filter === 'exportCountry' ||
 										filter === 'incoterm' ||
 										filter === 'ico' ||
-										filter === 'exportId'
+										filter === 'exportId' ||
+										filter === 'icosDestination'
 											? 'select'
 											: filter === 'booking' ||
 													filter === 'announcement' ||
@@ -331,7 +353,7 @@ export function EditContainer() {
 										filter === 'capacityContainer'
 											? icoList[0].container_capacity || ''
 											: filter === 'port'
-												? icoList[0].destination_port || ''
+												? icoList[0].destinationPortFilter || ''
 												: filter === 'incoterm'
 													? icoList[0].incoterm || ''
 													: filter === 'ico'

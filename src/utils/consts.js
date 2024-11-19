@@ -1,20 +1,24 @@
 export const API_BASE_URL = 'https://bckcarcol-e4h2fag7bke3gvd6.eastus2-01.azurewebsites.net/';
 //export const API_BASE_URL = 'http://localhost:8080/';
 // Constantes de filtros
-export const placeholderFilter = ['office', 'exportMonth', 'packaging', 'contract', 'destination'];
+export const placeholderFilter = ['office', 'exportMonth', 'packaging', 'contract', 'destinationPort'];
 
 // Encabezados de tabla Home (pendings)
 export const headersTablePending = [
 	'contract',
+	'shipmentMonth',
 	'ico',
 	'secondary_ico_id',
 	'mark',
 	'customer',
 	'packaging',
 	'units',
+	'destinationPort',
 	'sample',
 	'incoterm',
-	'pricingConditions',
+	'price_type',
+	'weight',
+	'quality',
 ];
 export const headersTableView = [
 	'contract',
@@ -25,9 +29,12 @@ export const headersTableView = [
 	'customer',
 	'packaging',
 	'units',
+	'destinationPort',
 	'sample',
 	'incoterm',
-	'pricingConditions',
+	'price_type',
+	'weight',
+	'quality',
 	'comments',
 ];
 
@@ -51,7 +58,8 @@ export const headersTableCreateContainer = [
 	'units',
 	'sample',
 	'shipmentMonth',
-	'pricingConditions',
+	'destinationPort',
+	'price_type',
 	'weight',
 	'select',
 ];
@@ -73,33 +81,39 @@ export const containerCapacity = {
 	40: 26308.34,
 };
 
-export const viewContainerFilters = ['office', 'shipmentMonth', 'finalDate', 'packaging', 'contract', 'destination'];
+export const viewContainerFilters = [
+	'office',
+	'shipmentMonth',
+	'finalDate',
+	'packaging',
+	'contract',
+	'destinationPort',
+];
 
 export const filtersEditContainer = [
 	'booking',
 	'dateLandingPort',
-	'estimatedDelivery',
-	'estimatedArrival',
-	/* 'announcement',
-	'order',
-	'review',
-	'salesCode', */
-	'exportDate',
 	'capacityContainer',
+	'estimatedArrival',
+	'exportDate',
 	'port',
 	'incoterm',
-	'ico',
+	'icosDestination',
 	'exportId',
+	'ico',
 ];
 
 export const headersTableEditContainer = [
+	'shipmentMonth',
 	'ico_id',
 	'secondary_ico_id',
 	'mark',
 	'packaging_capacity',
 	'units',
 	'sample',
-	'shipmentMonth',
-	'pricingConditions',
+	'destinationPort',
+	'price_type',
+	'weight',
+	'quality',
 	'select',
 ];

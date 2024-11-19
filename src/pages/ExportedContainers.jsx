@@ -40,16 +40,20 @@ export function ExportedContainers() {
 
 	const mapData = (data) => {
 		return data.map((item) => ({
-			contract: item.api_contract.main_identifier,
-			customer: item.api_contract.customer,
-			pricingConditions:
-				item.api_contract.pricing_conditions === 'differential' && item.api_contract.fixation_flag === null
+			contract: item.contract_atlas.contract,
+			customer: item.contract_atlas.customer,
+			price_type:
+				item.contract_atlas.pricing_conditions === 'differential' && item.contract_atlas.fixation_flag === null
 					? 'Differential: Pending '
-					: item.api_contract.pricing_conditions === 'differential' && item.api_contract.fixation_flag !== null
+					: item.contract_atlas.pricing_conditions === 'differential' && item.contract_atlas.fixation_flag !== null
 						? 'Differential: Fixed '
 						: 'Fixed',
-			sample: item.api_contract.status_approval_sample ? item.api_contract.status_approval_sample : 'Pending',
+			sample: item.contract_atlas.status_approval_sample ? item.contract_atlas.status_approval_sample : 'Pending',
 			packaging: item.packaging_capacity,
+			destinationPort: item.destination_port,
+			shipmentMonth: item.contract_atlas.shipment_date,
+			weight: item.contract_atlas.estimated_kg,
+			quality: item.contract_atlas.quality,
 			mark: item.brand_name,
 			...item,
 		}));
@@ -101,8 +105,8 @@ export function ExportedContainers() {
 		return Object.keys(organizedData).reduce((result, exp_id) => {
 			const filteredItems = organizedData[exp_id].filter((item) => {
 				const withinDateRange =
-					(!filters.initialDate || new Date(item.api_contract.shipment_date) >= new Date(filters.initialDate)) &&
-					(!filters.finalDate || new Date(item.api_contract.shipment_date) <= new Date(filters.finalDate));
+					(!filters.initialDate || new Date(item.contract_atlas.shipment_date) >= new Date(filters.initialDate)) &&
+					(!filters.finalDate || new Date(item.contract_atlas.shipment_date) <= new Date(filters.finalDate));
 				const matchesExportCountry = !filters.exportCountry || item.export_country.includes(filters.exportCountry);
 				const matchesDestinationPort =
 					!filters.destinationPort || item.destination_port.includes(filters.destinationPort);
@@ -153,7 +157,7 @@ export function ExportedContainers() {
 					/>
 					<InputGeneric
 						type='select'
-						filter='destination'
+						filter='destinationPort'
 						onChange={handleFilterChange}
 						required={false}
 						defaultValue={filters.destinationPort}
