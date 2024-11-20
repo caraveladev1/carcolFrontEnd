@@ -58,7 +58,7 @@ export function EditContainer() {
 					filter === 'capacityContainer'
 						? icoList[0]?.container_capacity || ''
 						: filter === 'port'
-							? icoList[0]?.destination_port || ''
+							? icoList[0]?.destinationPortFilter || ''
 							: filter === 'incoterm'
 								? icoList[0]?.incoterm || ''
 								: filter === 'exportId'
@@ -116,6 +116,7 @@ export function EditContainer() {
 				if (expFiltered) {
 					const mappedData = mapApiResponseToHeaders(expFiltered);
 					setIcoList(mappedData);
+					//	console.log(mappedData);
 					const export_country = mappedData[0].export_country;
 					setExportCountry(export_country);
 
@@ -136,7 +137,7 @@ export function EditContainer() {
 					setExportsData(exportsData);
 
 					const filteredIcos = exportsData.filter((ico) => ico.destination_port === filterValues.icosDestination);
-					console.log(filteredIcos);
+					//console.log(filteredIcos);
 
 					const newFilters = {
 						booking: mappedData[0].booking ? [mappedData[0].booking] : [],
@@ -231,7 +232,7 @@ export function EditContainer() {
 			selectedIcos: icoList,
 		};
 
-		//	console.log(icoList);
+		//console.log(payload);
 
 		const sumIcosWeight = payload.selectedIcos.reduce((accumulator, element) => {
 			const weight = parseInt(element.weight, 10);
