@@ -81,14 +81,7 @@ export const containerCapacity = {
 	40: 26308.34,
 };
 
-export const viewContainerFilters = [
-	'office',
-	'shipmentMonth',
-	'finalDate',
-	'packaging',
-	'contract',
-	'destinationPort',
-];
+export const viewContainerFilters = ['office', 'shipmentMonth', 'finalDate', 'packaging', 'contract', 'destination'];
 
 export const filtersEditContainer = [
 	'booking',

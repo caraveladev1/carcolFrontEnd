@@ -39,7 +39,6 @@ export function EditContainer() {
 		exportId: [],
 	});
 	const [isAnnouncementsOpen, setIsAnnouncementsOpen] = useState(false);
-
 	//console.log(selectedIcos);
 	useEffect(() => {
 		if (icoList.length > 0 && filters) {
@@ -136,6 +135,9 @@ export function EditContainer() {
 
 					setExportsData(exportsData);
 
+					const filteredIcos = exportsData.filter((ico) => ico.destination_port === filterValues.icosDestination);
+					console.log(filteredIcos);
+
 					const newFilters = {
 						booking: mappedData[0].booking ? [mappedData[0].booking] : [],
 						dateLandingPort: mappedData[0].date_landing ? [mappedData[0].date_landing] : [],
@@ -151,7 +153,7 @@ export function EditContainer() {
 						exportCountry: [...new Set(exportsData.map((item) => item.origin))],
 						port: [...new Set(exportsData.map((item) => item.destination_port))],
 						incoterm: [...new Set(exportsData.map((item) => item.incoterm))],
-						ico: [...new Set(exportsData.map((item) => item.ico))],
+						ico: [...new Set(filteredIcos.map((item) => item.ico))],
 						weight: [...new Set(exportsData.map((item) => item.estimated_kg))],
 						icosDestination: [...new Set(exportsData.map((item) => item.destination_port))],
 					};
@@ -166,7 +168,7 @@ export function EditContainer() {
 		};
 
 		fetchData();
-	}, [id]);
+	}, [id /* , filterValues.icosDestination */]);
 
 	const handleIcoChange = (e) => {
 		const selectedIco = e.target.value;
@@ -229,11 +231,11 @@ export function EditContainer() {
 			selectedIcos: icoList,
 		};
 
-		console.log(icoList);
+		//	console.log(icoList);
 
 		const sumIcosWeight = payload.selectedIcos.reduce((accumulator, element) => {
 			const weight = parseInt(element.weight, 10);
-			return accumulator + (isNaN(weight) ? 0 : weight); // Asegúrate de manejar NaN
+			return accumulator + (isNaN(weight) ? 0 : weight);
 		}, 0);
 
 		const selectedContainer = parseInt(payload.filters.capacityContainer, 10);
@@ -246,8 +248,8 @@ export function EditContainer() {
 			return;
 		}
 
-		console.log('Sum of ICO weights:', sumIcosWeight);
-		console.log('Selected container capacity:', selectedContainerValue);
+		//console.log('Sum of ICO weights:', sumIcosWeight);
+		//	console.log('Selected container capacity:', selectedContainerValue);
 
 		if (sumIcosWeight <= selectedContainerValue) {
 			fetch(`${API_BASE_URL}api/exports/updateContainer`, {
@@ -330,7 +332,7 @@ export function EditContainer() {
 										filter === 'capacityContainer' ||
 										filter === 'exportCountry' ||
 										filter === 'incoterm' ||
-										filter === 'ico' ||
+										filter === 'ico' || // Aseguramos que sea tipo select
 										filter === 'exportId' ||
 										filter === 'icosDestination'
 											? 'select'
@@ -357,7 +359,7 @@ export function EditContainer() {
 												: filter === 'incoterm'
 													? icoList[0].incoterm || ''
 													: filter === 'ico'
-														? ''
+														? '' // Se establece vacío inicialmente para que el usuario seleccione
 														: filter === 'exportId'
 															? ''
 															: filters[filter] && filters[filter].length
@@ -366,15 +368,33 @@ export function EditContainer() {
 									}
 									className='col-span-3 p-2'
 									options={
-										filter === 'capacityContainer' ? Object.keys(containerCapacity).map(String) : filters[filter] || []
+										filter === 'capacityContainer'
+											? Object.keys(containerCapacity).map(String)
+											: filter === 'ico'
+												? filters['ico'] // Los valores del filtro `ico`
+												: filter === 'icosDestination'
+													? filters['icosDestination'] // Los valores del filtro `icosDestination`
+													: filters[filter] || []
 									}
 									onChange={(e) => {
 										setFilterValues((prev) => ({
 											...prev,
 											[filter]: e.target.value,
 										}));
-										//console.log(`${filter} changed to ${e.target.value}`); // Debug
 										if (filter === 'ico') handleIcoChange(e);
+										if (filter === 'icosDestination') {
+											const selectedDestination = e.target.value;
+
+											// Filtrar los valores de `ico` en base al destino seleccionado
+											const filteredIcos = exportsData
+												.filter((item) => item.destination_port === selectedDestination)
+												.map((item) => item.ico);
+
+											setFilters((prevFilters) => ({
+												...prevFilters,
+												ico: [...new Set(filteredIcos)], // Actualizamos el filtro `ico`
+											}));
+										}
 									}}
 								/>
 							</div>
