@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { API_BASE_URL } from '../utils/consts';
+import { Loader } from './Loader';
 
 export function ProtectedRoute({ children }) {
 	const [isValid, setIsValid] = useState(null);
@@ -43,7 +44,7 @@ export function ProtectedRoute({ children }) {
 
 	// Mientras se valida el token, muestra un estado de carga.
 	if (isValid === null) {
-		return <div>Loading...</div>;
+		return <Loader />;
 	}
 
 	// Si el token es inválido o no está presente, redirige al login.
