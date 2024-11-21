@@ -97,7 +97,7 @@ export function CreateContainer() {
 			return newSelectedIcos;
 		});
 	};
-	console.log(selectOptions);
+	///console.log(selectOptions);
 	const handleFilterChange = (e) => {
 		const { name, value } = e.target;
 		setFilters((prevFilters) => ({ ...prevFilters, [name]: value }));
