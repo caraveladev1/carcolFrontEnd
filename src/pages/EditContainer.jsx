@@ -363,9 +363,11 @@ export function EditContainer() {
 														? '' // Se establece vacío inicialmente para que el usuario seleccione
 														: filter === 'exportId'
 															? ''
-															: filters[filter] && filters[filter].length
-																? filters[filter][0]
-																: ''
+															: filter === 'icosDestination'
+																? ''
+																: filters[filter] && filters[filter].length
+																	? filters[filter][0]
+																	: ''
 									}
 									className='col-span-3 p-2'
 									options={
