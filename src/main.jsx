@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import { Home } from './pages/Home';
 import '../I18n';
-import { BrowserRouter, Routes, Route } from 'react-router-dom'; // Importa BrowserRouter, Routes y Route
+import { HashRouter, Routes, Route } from 'react-router-dom'; // Importa BrowserRouter, Routes y Route
 import { CreateContainer } from './pages/CreateContainer';
 import { ViewContainers } from './pages/ViewContainers';
 import { EditContainer } from './pages/EditContainer';
@@ -13,7 +13,7 @@ import { ProtectedRoute } from './components/ProtectedRoute'; // Importa el comp
 
 ReactDOM.createRoot(document.getElementById('root')).render(
 	<React.StrictMode>
-		<BrowserRouter>
+		<HashRouter>
 			{' '}
 			{/* Usamos BrowserRouter aquí */}
 			<Routes>
@@ -62,6 +62,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 				/>
 				<Route path='/*' element={<Home />} /> {/* Ruta comodín para redirigir */}
 			</Routes>
-		</BrowserRouter>
+		</HashRouter>
 	</React.StrictMode>,
 );
