@@ -97,7 +97,7 @@ export function CreateContainer() {
 			return newSelectedIcos;
 		});
 	};
-
+	console.log(selectOptions);
 	const handleFilterChange = (e) => {
 		const { name, value } = e.target;
 		setFilters((prevFilters) => ({ ...prevFilters, [name]: value }));
@@ -109,7 +109,7 @@ export function CreateContainer() {
 			const shipmentMonthStart = new Date(filters.shipmentMonthStart);
 			const shipmentMonthFinal = new Date(filters.shipmentMonthFinal);
 			return (
-				(filters.port === '' || item.destinationPorts === filters.port) &&
+				(filters.port === '' || item.destinationPort === filters.port) &&
 				(filters.exportCountry === '' || item.exportCountry === filters.exportCountry) &&
 				(filters.incoterm === '' || item.incoterm === filters.incoterm) &&
 				(filters.shipmentMonthStart === '' || shipmentMonth >= shipmentMonthStart) &&

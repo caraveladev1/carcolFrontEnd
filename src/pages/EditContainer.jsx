@@ -183,7 +183,7 @@ export function EditContainer() {
 				secondary_ico_id: selectedIcoData.secondary_ico,
 				mark: selectedIcoData.mark,
 				export_country: selectedIcoData.origin_iso,
-				packaging_capacity: `${selectedIcoData.packaging_type} ${selectedIcoData.estimated_kg} KG`,
+				packaging_capacity: selectedIcoData.packaging_type,
 				units: selectedIcoData.units,
 				sample: selectedIcoData.fixed_price_status === null ? 'Pending' : selectedIcoData.fixed_price_status,
 				price_type: selectedIcoData.price_type,
