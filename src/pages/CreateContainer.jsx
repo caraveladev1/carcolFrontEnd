@@ -117,14 +117,10 @@ export function CreateContainer() {
 			);
 		});
 		// Combinar y ordenar: ítems seleccionados primero, luego los ítems filtrados
-		const combinedList = [
-			...icoList.filter(
-				(item) =>
-					selectedIcos.has(item.ico_id) && !filteredList.some((filteredItem) => filteredItem.ico_id === item.ico_id),
-			),
-			...filteredList,
-		];
-		setFilteredIcoList(combinedList);
+		setFilteredIcoList([
+			...icoList.filter((item) => selectedIcos.has(item.ico_id)),
+			...filteredList.filter((item) => !selectedIcos.has(item.ico_id)),
+		]);
 	}, [filters, icoList, selectedIcos]);
 
 	const preparedDataTable = filteredIcoList.map((item) => ({
