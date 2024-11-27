@@ -19,8 +19,8 @@ export function Home() {
 	const [filters, setFilters] = useState({
 		initialDate: '',
 		finalDate: '',
-		exportCountry: '',
-		destinationPort: '',
+		exportCountry: [],
+		destinationPort: [],
 	});
 
 	// Opciones únicas para los filtros de tipo select
@@ -57,8 +57,10 @@ export function Home() {
 			mark: item.brand_name,
 			shipmentMonth: item.contract_atlas.shipment_date,
 			destinationPort: item.contract_atlas.destination_port,
+			destinationContainer: item.destination_port,
 			weight: item.contract_atlas.estimated_kg,
 			quality: item.contract_atlas.quality,
+			origin: item.export_country,
 			...item,
 		}));
 	};
@@ -81,7 +83,7 @@ export function Home() {
 				Object.keys(mappedData).forEach((key) => {
 					mappedData[key].forEach((item) => {
 						countries.add(item.export_country);
-						ports.add(item.contract_atlas.destination_port);
+						ports.add(item.destination_port);
 					});
 				});
 
@@ -137,8 +139,10 @@ export function Home() {
 
 	const handleFilterChange = (e) => {
 		const { name, value } = e.target;
-		setFilters((prevFilters) => ({ ...prevFilters, [name]: value }));
-		//	console.log('Filters actualizados:', { ...filters, [name]: value });
+		setFilters((prevFilters) => ({
+			...prevFilters,
+			[name]: Array.isArray(value) ? value : [value], // Asegurarse de manejar arrays
+		}));
 	};
 
 	// Filtrar los datos según los filtros seleccionados
@@ -148,13 +152,14 @@ export function Home() {
 		return Object.keys(organizedData).reduce((result, exp_id) => {
 			const filteredItems = organizedData[exp_id].filter((item) => {
 				const withinDateRange =
-					(!filters.initialDate || new Date(item.contract_atlas.shipment_date) >= new Date(filters.initialDate)) &&
-					(!filters.finalDate || new Date(item.contract_atlas.shipment_date) <= new Date(filters.finalDate));
-				const matchesExportCountry = !filters.exportCountry || item.origin_iso.includes(filters.exportCountry);
+					(!filters.initialDate || new Date(item.date_landing) >= new Date(filters.initialDate)) &&
+					(!filters.finalDate || new Date(item.date_landing) <= new Date(filters.finalDate));
+
+				const matchesExportCountry = filters.exportCountry.length === 0 || filters.exportCountry.includes(item.origin);
+
 				const matchesDestinationPort =
-					!filters.destinationPort ||
-					(item.contract_atlas.destination_port &&
-						item.contract_atlas.destination_port.toLowerCase().includes(filters.destinationPort.toLowerCase()));
+					filters.destinationPort.length === 0 ||
+					(item.destinationContainer && filters.destinationPort.includes(item.destinationContainer));
 
 				return withinDateRange && matchesExportCountry && matchesDestinationPort;
 			});
@@ -200,14 +205,16 @@ export function Home() {
 						required={false}
 						defaultValue={filters.exportCountry}
 						options={countryOptions}
+						multiple={true}
 					/>
 					<InputGeneric
 						type='select'
 						filter='destinationPort'
 						onChange={handleFilterChange}
 						required={false}
-						defaultValue={filters.destinationPort}
+						defaultValue={filters.destinationContainer}
 						options={portOptions}
+						multiple={true}
 					/>
 				</div>
 

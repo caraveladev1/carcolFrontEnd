@@ -85,6 +85,7 @@ export function EditContainer() {
 			price_type: item.contract_atlas?.price_type,
 			booking: item.booking,
 			date_landing: item.date_landing,
+			export_date: item.export_date,
 			estimated_delivery: item.estimated_delivery,
 			estimated_arrival: item.estimated_arrival,
 			announcement: item.announcement,
@@ -148,7 +149,7 @@ export function EditContainer() {
 						order: mappedData[0].orders ? [mappedData[0].orders] : [],
 						review: mappedData[0].review ? [mappedData[0].review] : [],
 						salesCode: mappedData[0].sales_code ? [mappedData[0].sales_code] : [],
-						exportDate: mappedData[0].shipmentMonth ? [mappedData[0].shipmentMonth] : [],
+						exportDate: mappedData[0].export_date ? [mappedData[0].export_date] : [],
 						capacityContainer: Object.keys(containerCapacity).map(Number),
 						exportId: [...new Set(exportsData.map((item) => item.export))],
 						exportCountry: [...new Set(exportsData.map((item) => item.origin))],
@@ -369,7 +370,7 @@ export function EditContainer() {
 																	? filters[filter][0]
 																	: ''
 									}
-									className='col-span-3 p-2'
+									//className='col-span-3 p-2'
 									options={
 										filter === 'capacityContainer'
 											? Object.keys(containerCapacity).map(String)

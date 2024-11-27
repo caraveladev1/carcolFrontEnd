@@ -6,32 +6,31 @@ import { headersTableView, viewContainerFilters, API_BASE_URL } from '../utils/c
 import { Loader } from '../components/Loader';
 import editContainer from '../assets/img/editContainer.webp';
 import { Link } from 'react-router-dom';
-import { Filter } from '../components/Filter';
+import { InputGeneric } from '../components/InputGeneric';
 import commentsButton from '../assets/img/commentsButton.webp';
 import { Comments } from '../components/Comments';
+
 export function ViewContainers() {
 	const { t } = useTranslation();
 	const [organizedData, setOrganizedData] = useState(null);
 	const [loading, setLoading] = useState(true);
 	const [filters, setFilters] = useState({
-		office: '',
-		exportMonth: '',
-		packaging: '',
-		contract: '',
-		destination: '',
-		shipmentMonth: '',
+		office: [],
+		exportMonth: [],
+		packaging: [],
+		contract: [],
+		destination: [],
+		initialDate: '',
 		finalDate: '',
 	});
+
+	const [officeOptions, setofficeOptions] = useState([]);
+	const [packagingOptions, setPackagingOptions] = useState([]);
+	const [contractOptions, setContractOptions] = useState([]);
+	const [destinationOptions, setDestinationOptions] = useState([]);
 	const [isCommentsOpen, setIsCommentsOpen] = useState(false);
 	const [selectedIco, setSelectedIco] = useState(null);
-	const handleFilterChange = (filterName, value) => {
-		setFilters((prevFilters) => ({
-			...prevFilters,
-			[filterName]: value,
-		}));
-	};
 
-	// Función para organizar los datos por exp_id
 	const groupByExpId = (data) => {
 		const result = {};
 		Object.keys(data).forEach((key) => {
@@ -46,6 +45,7 @@ export function ViewContainers() {
 		});
 		return result;
 	};
+
 	const handleButtonClick = (item) => {
 		setSelectedIco(item.ico);
 		setIsCommentsOpen(true);
@@ -55,7 +55,7 @@ export function ViewContainers() {
 		setIsCommentsOpen(false);
 		setSelectedIco(null);
 	};
-	// Función para mapear los nombres de las propiedades
+
 	const mapData = (data) => {
 		return data.map((item) => ({
 			contract: item.contract_atlas.contract,
@@ -66,13 +66,14 @@ export function ViewContainers() {
 					: item.price_type === 'differential' && item.fixed_price_status !== null
 						? 'Differential: Fixed '
 						: 'Fixed',
-			sample: item.contract_atlas.customer_cupping_state ? item.contract_atlas.customer_cupping_state : 'Pending',
+			sample: item.contract_atlas.customer_cupping_state || 'Pending',
 			packaging: item.packaging_capacity,
 			mark: item.brand_name,
 			destinationPort: item.contract_atlas.destination_port,
-			shipmentMonth: item.export_date,
+			shipmentMonth: item.contract_atlas.shipment_date,
 			weight: item.contract_atlas.estimated_kg,
 			quality: item.contract_atlas.quality,
+			export_date: item.export_date,
 			comments: (
 				<div className='flex flex-row justify-center items-center m-auto '>
 					{item.comments}
@@ -89,22 +90,48 @@ export function ViewContainers() {
 	const filterData = (data) => {
 		return Object.keys(data).reduce((filteredData, exp_id) => {
 			const filteredItems = data[exp_id].filter((item) => {
-				const itemShipmentMonth = new Date(item.shipmentMonth); // Convierte la fecha a objeto Date
+				// Fechas: convertir fechas relevantes y filtrar por rango
+				const itemDate = new Date(item.date_landing || item.export_date);
 
+				const withinDateRange =
+					(!filters.initialDate || itemDate >= new Date(filters.initialDate)) &&
+					(!filters.finalDate || itemDate <= new Date(filters.finalDate));
+
+				// Filtro por país de exportación
+				const matchesExportCountry =
+					!filters.exportCountry || filters.exportCountry.length === 0 || filters.exportCountry.includes(item.origin);
+
+				// Filtro por puerto de destino
+				const matchesDestinationPort =
+					!filters.destinationPort ||
+					filters.destinationPort.length === 0 ||
+					(item.destinationContainer && filters.destinationPort.includes(item.destinationContainer));
+
+				// Filtros adicionales (office, packaging, contract, destination)
+				const matchesOffice = !filters.office || filters.office.length === 0 || filters.office.includes(item.office);
+				const matchesPackaging =
+					!filters.packaging || filters.packaging.length === 0 || filters.packaging.includes(item.packaging);
+				const matchesContract =
+					!filters.contract || filters.contract.length === 0 || filters.contract.includes(item.contract);
+				const matchesDestination =
+					!filters.destination || filters.destination.length === 0 || filters.destination.includes(item.destination);
+
+				// Retornar si cumple todas las condiciones
 				return (
-					(!filters.office || item.office === filters.office) &&
-					(!filters.shipmentMonth || itemShipmentMonth >= new Date(filters.shipmentMonth)) && // Fecha inicio
-					(!filters.finalDate || itemShipmentMonth <= new Date(filters.finalDate)) && // Fecha final
-					(!filters.packaging || item.packaging_capacity === filters.packaging) &&
-					(!filters.contract || item.contract === filters.contract) &&
-					(!filters.destination || item.destination === filters.destination)
+					withinDateRange &&
+					matchesExportCountry &&
+					matchesDestinationPort &&
+					matchesOffice &&
+					matchesPackaging &&
+					matchesContract &&
+					matchesDestination
 				);
 			});
 
+			// Agregar resultados filtrados al objeto final
 			if (filteredItems.length > 0) {
 				filteredData[exp_id] = filteredItems;
 			}
-			//console.log(filteredData);
 			return filteredData;
 		}, {});
 	};
@@ -120,6 +147,22 @@ export function ViewContainers() {
 					mappedData[exp_id] = mapData(groupedData[exp_id]);
 				});
 
+				const office = new Set();
+				const destination = new Set();
+				const packaging = new Set();
+				const contract = new Set();
+				Object.keys(mappedData).forEach((key) => {
+					mappedData[key].forEach((item) => {
+						office.add(item.export_country);
+						destination.add(item.destination_port);
+						packaging.add(item.packaging_capacity);
+						contract.add(item.contract_atlas.contract);
+					});
+				});
+				setofficeOptions(Array.from(office));
+				setDestinationOptions(Array.from(destination));
+				setPackagingOptions(Array.from(packaging));
+				setContractOptions(Array.from(contract));
 				setOrganizedData(mappedData);
 				setLoading(false);
 			})
@@ -135,6 +178,39 @@ export function ViewContainers() {
 
 	const filteredData = filterData(organizedData);
 
+	const handleFilterChange = (e) => {
+		const { name, value } = e.target;
+
+		setFilters((prevFilters) => {
+			// Si el filtro es de rango de fechas, manejarlo directamente
+			if (name === 'initialDate' || name === 'finalDate') {
+				return {
+					...prevFilters,
+					[name]: value, // Actualiza la fecha como valor único
+				};
+			}
+
+			// Para otros filtros, manejar valores como arrays
+			const currentValues = prevFilters[name] || [];
+			let updatedValues;
+
+			if (Array.isArray(value)) {
+				// Si `value` es un array, úsalo directamente
+				updatedValues = value;
+			} else {
+				// Si no, agregar o quitar el valor actual del array
+				updatedValues = currentValues.includes(value)
+					? currentValues.filter((v) => v !== value) // Remover si ya existe
+					: [...currentValues, value]; // Agregar si no existe
+			}
+
+			return {
+				...prevFilters,
+				[name]: updatedValues,
+			};
+		});
+	};
+
 	return (
 		<div className='bg-dark-background bg-cover bg-fixed min-h-screen'>
 			<section className='homeContainer max-w-[90%] m-auto pb-5'>
@@ -143,30 +219,59 @@ export function ViewContainers() {
 
 				{/* Renderizado de los filtros */}
 				<div className='filtersContainer flex flex-row justify-between gap-6'>
-					{viewContainerFilters.map((filterName) => {
-						const isShipmentMonth = filterName === 'shipmentMonth' || filterName === 'finalDate';
-						const options = !isShipmentMonth
-							? [
-									...new Set(
-										Object.values(organizedData)
-											.flat()
-											.map((item) => item[filterName]),
-									),
-								]
-							: [];
+					{/* Filtro para las fechas */}
+					<InputGeneric
+						type='date'
+						filter='initialDate'
+						onChange={(e) => handleFilterChange('initialDate', e.target.value)}
+						required={false}
+						defaultValue={filters.initialDate}
+					/>
+					<InputGeneric
+						type='date'
+						filter='finalDate'
+						onChange={(e) => handleFilterChange('finalDate', e.target.value)}
+						required={false}
+						defaultValue={filters.finalDate}
+					/>
 
-						return (
-							<Filter
-								key={filterName}
-								placeholder={filterName}
-								options={options}
-								type={isShipmentMonth ? 'date' : 'select'}
-								className='border-2 border-pink text-xl font-bayard uppercase text-pink'
-								onChange={(e) => handleFilterChange(filterName, e.target.value)}
-								value={filters[filterName]} // Asegúrate de pasar el valor actual del filtro
-							/>
-						);
-					})}
+					{/* Filtros de selección múltiple */}
+					<InputGeneric
+						type='select'
+						filter='office'
+						onChange={handleFilterChange}
+						required={false}
+						defaultValue={filters.office}
+						options={officeOptions}
+						multiple={true}
+					/>
+					<InputGeneric
+						type='select'
+						filter='packaging'
+						onChange={handleFilterChange}
+						required={false}
+						defaultValue={filters.packaging}
+						options={packagingOptions}
+						multiple={true}
+					/>
+					<InputGeneric
+						type='select'
+						filter='contract'
+						onChange={handleFilterChange}
+						required={false}
+						defaultValue={filters.contract}
+						options={contractOptions}
+						multiple={true}
+					/>
+					<InputGeneric
+						type='select'
+						filter='destination'
+						onChange={handleFilterChange}
+						required={false}
+						defaultValue={filters.destination}
+						options={destinationOptions}
+						multiple={true}
+					/>
 				</div>
 
 				{/* Renderización de los datos filtrados */}
@@ -180,11 +285,11 @@ export function ViewContainers() {
 										<img className='max-w-[50%] ' src={editContainer} alt='Edit Container' />
 									</Link>
 								</div>
-								<div className='flex flex-row justify-end gap-6 items-center'>
-									<p className='text-3xl font-bold text-pink font-bayard uppercase'>
+								<div className='containerData flex flex-row gap-4'>
+									<p className='text-xl font-bold text-pink font-bayard uppercase'>
 										{`Booking: ${filteredData[exp_id][0]?.booking || 'No available'}`}
 									</p>
-									<p className='text-3xl font-bold text-celeste font-bayard uppercase'>
+									<p className='text-xl font-bold text-celeste font-bayard uppercase'>
 										{`Landing on Port: ${filteredData[exp_id][0]?.date_landing || 'No available'}`}
 									</p>
 								</div>

@@ -1,5 +1,5 @@
-export const API_BASE_URL = 'https://bckcarcol-e4h2fag7bke3gvd6.eastus2-01.azurewebsites.net/';
-//export const API_BASE_URL = 'http://localhost:8080/';
+//export const API_BASE_URL = 'https://bckcarcol-e4h2fag7bke3gvd6.eastus2-01.azurewebsites.net/';
+export const API_BASE_URL = 'http://localhost:8080/';
 // Constantes de filtros
 export const placeholderFilter = ['office', 'exportMonth', 'packaging', 'contract', 'destinationPort'];
 
@@ -10,15 +10,15 @@ export const headersTablePending = [
 	'ico',
 	'secondary_ico_id',
 	'mark',
-	'customer',
+	'quality',
 	'packaging',
+	'customer',
 	'units',
 	'destinationPort',
 	'sample',
 	'incoterm',
 	'price_type',
 	'weight',
-	'quality',
 ];
 export const headersTableView = [
 	'contract',
@@ -26,15 +26,15 @@ export const headersTableView = [
 	'ico',
 	'secondary_ico_id',
 	'mark',
-	'customer',
+	'quality',
 	'packaging',
+	'customer',
 	'units',
 	'destinationPort',
 	'sample',
 	'incoterm',
 	'price_type',
 	'weight',
-	'quality',
 	'comments',
 ];
 
@@ -52,9 +52,9 @@ export const headersTableCreateContainer = [
 	'secondary_ico_id',
 	'contract',
 	'customer',
-	'quality',
 	'mark',
 	'packaging_capacity',
+	'quality',
 	'units',
 	'sample',
 	'shipmentMonth',
@@ -81,7 +81,7 @@ export const containerCapacity = {
 	40: 26308.34,
 };
 
-export const viewContainerFilters = ['office', 'shipmentMonth', 'finalDate', 'packaging', 'contract', 'destination'];
+export const viewContainerFilters = ['office', 'initialDate', 'finalDate', 'packaging', 'contract', 'destination'];
 
 export const filtersEditContainer = [
 	'booking',
@@ -101,12 +101,12 @@ export const headersTableEditContainer = [
 	'ico_id',
 	'secondary_ico_id',
 	'mark',
+	'quality',
 	'packaging_capacity',
 	'units',
 	'sample',
 	'destinationPort',
 	'price_type',
 	'weight',
-	'quality',
 	'select',
 ];

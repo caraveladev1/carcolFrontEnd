@@ -16,7 +16,7 @@
 	"shipmentMonthFinal": "Shipment month final",
 	"comments": "Comments",
 	"pendingTasks": "Pending Tasks",
-	"addBookingAndDates": "Add Booking And Dates",
+	"addBookingAndDates": "Edit",
 	"booking": "Booking",
 	"dateLandingPort": "Date Of Landing At Port",
 	"estimatedDelivery": "Estimated Delivery",
@@ -53,5 +53,8 @@
 	"typeComment": "Type your comment here",
 	"exportedContainers": "Exported Containers",
 	"setExported": "Container Exported",
-	"icosDestination": "ICOs destination"
+	"icosDestination": "ICOs destination",
+	"initialDate": "Fecha Inicial",
+	"finalDate": "Fecha Final",
+	"destination": "Destination"
 }
