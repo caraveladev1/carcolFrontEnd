@@ -67,9 +67,9 @@ export const headersTableCreateContainer = [
 export const labelsBoogkindAndDates = [
 	'booking',
 	'dateLandingPort',
-	'estimatedDelivery',
 	'estimatedArrival',
 	/* 'announcement',
+	'estimatedDelivery',
 	'order',
 	'review',
 	'salesCode', */
