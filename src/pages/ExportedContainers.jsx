@@ -15,8 +15,8 @@ export function ExportedContainers() {
 	const [filters, setFilters] = useState({
 		initialDate: '',
 		finalDate: '',
-		exportCountry: '',
-		destinationPort: '',
+		exportCountry: [],
+		destinationPort: [],
 	});
 
 	// Opciones únicas para los filtros de tipo select
@@ -43,18 +43,20 @@ export function ExportedContainers() {
 			contract: item.contract_atlas.contract,
 			customer: item.contract_atlas.customer,
 			price_type:
-				item.contract_atlas.pricing_conditions === 'differential' && item.contract_atlas.fixation_flag === null
+				item.contract_atlas.price_type === 'differential' && item.contract_atlas.fixed_price_status === null
 					? 'Differential: Pending '
-					: item.contract_atlas.pricing_conditions === 'differential' && item.contract_atlas.fixation_flag !== null
+					: item.contract_atlas.price_type === 'differential' && item.contract_atlas.fixed_price_status !== null
 						? 'Differential: Fixed '
 						: 'Fixed',
-			sample: item.contract_atlas.status_approval_sample ? item.contract_atlas.status_approval_sample : 'Pending',
+			sample: item.contract_atlas.customer_cupping_state ? item.contract_atlas.customer_cupping_state : 'Pending',
 			packaging: item.packaging_capacity,
-			destinationPort: item.destination_port,
+			mark: item.brand_name,
 			shipmentMonth: item.contract_atlas.shipment_date,
+			destinationPort: item.contract_atlas.destination_port,
+			destinationContainer: item.destination_port,
 			weight: item.contract_atlas.estimated_kg,
 			quality: item.contract_atlas.quality,
-			mark: item.brand_name,
+			origin: item.export_country,
 			...item,
 		}));
 	};
@@ -95,7 +97,10 @@ export function ExportedContainers() {
 
 	const handleFilterChange = (e) => {
 		const { name, value } = e.target;
-		setFilters((prevFilters) => ({ ...prevFilters, [name]: value }));
+		setFilters((prevFilters) => ({
+			...prevFilters,
+			[name]: Array.isArray(value) ? value : [value], // Asegurarse de manejar arrays
+		}));
 	};
 
 	// Filtrar los datos según los filtros seleccionados
@@ -105,11 +110,14 @@ export function ExportedContainers() {
 		return Object.keys(organizedData).reduce((result, exp_id) => {
 			const filteredItems = organizedData[exp_id].filter((item) => {
 				const withinDateRange =
-					(!filters.initialDate || new Date(item.contract_atlas.shipment_date) >= new Date(filters.initialDate)) &&
-					(!filters.finalDate || new Date(item.contract_atlas.shipment_date) <= new Date(filters.finalDate));
-				const matchesExportCountry = !filters.exportCountry || item.export_country.includes(filters.exportCountry);
+					(!filters.initialDate || new Date(item.date_landing) >= new Date(filters.initialDate)) &&
+					(!filters.finalDate || new Date(item.date_landing) <= new Date(filters.finalDate));
+
+				const matchesExportCountry = filters.exportCountry.length === 0 || filters.exportCountry.includes(item.origin);
+
 				const matchesDestinationPort =
-					!filters.destinationPort || item.destination_port.includes(filters.destinationPort);
+					filters.destinationPort.length === 0 ||
+					(item.destinationContainer && filters.destinationPort.includes(item.destinationContainer));
 
 				return withinDateRange && matchesExportCountry && matchesDestinationPort;
 			});
@@ -154,6 +162,7 @@ export function ExportedContainers() {
 						required={false}
 						defaultValue={filters.exportCountry}
 						options={countryOptions}
+						multiple={true}
 					/>
 					<InputGeneric
 						type='select'
@@ -162,6 +171,7 @@ export function ExportedContainers() {
 						required={false}
 						defaultValue={filters.destinationPort}
 						options={portOptions}
+						multiple={true}
 					/>
 				</div>
 
