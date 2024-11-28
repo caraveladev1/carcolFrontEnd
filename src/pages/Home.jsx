@@ -237,6 +237,7 @@ export function Home() {
 								selectOptions={expId}
 								required={'required'}
 								initialFormData={initialFormData[exp_id]}
+								relatedData={organizedData[exp_id]}
 							/>
 						)}
 						<TableGeneric
