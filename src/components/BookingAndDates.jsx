@@ -87,7 +87,7 @@ export const BookingAndDates = memo(function BookingAndDates({
 
 		if (invalidEntries.length > 0) {
 			window.alert(
-				'La muestra y/o la fijación no son válidas para cargar el contenedor. Por favor, revisa los datos antes de continuar.',
+				'The sample and/or fixation are not valid for loading the container. Please check the data before proceeding.',
 			);
 			console.warn('Datos no válidos:', invalidEntries);
 			return;
