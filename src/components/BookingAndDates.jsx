@@ -72,17 +72,15 @@ export const BookingAndDates = memo(function BookingAndDates({
 		console.log('Datos relacionados:', relatedData);
 
 		const invalidEntries = relatedData.filter((item) => {
-			// Verificar si falta contract_atlas o si el estado del cliente no es Approved
 			if (!item.contract_atlas || item.contract_atlas.customer_cupping_state !== 'Approved') {
 				return true;
 			}
 
-			// Validar price_type y fixed_price_status
 			if (item.contract_atlas.price_type !== 'fixed' && item.contract_atlas.fixed_price_status !== 'fixed') {
 				return true;
 			}
 
-			return false; // Si pasa todas las validaciones, no es inválido
+			return false;
 		});
 
 		if (invalidEntries.length > 0) {
