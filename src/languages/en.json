@@ -33,7 +33,7 @@
 	"ico_id": "ICO",
 	"secondary_ico_id": "Secondary ICO",
 	"packaging_capacity": "Packaging Capacity",
-	"capacityContainer": "Container Capacity",
+	"capacityContainer": "Capacity",
 	"incoterm": "Incoterm",
 	"exportCountry": "Export Country",
 	"price_type": "Pricing Conditions",
@@ -56,5 +56,6 @@
 	"icosDestination": "ICOs destination",
 	"initialDate": "Fecha Inicial",
 	"finalDate": "Fecha Final",
-	"destination": "Destination"
+	"destination": "Destination",
+	"originPort": "Origin Port"
 }

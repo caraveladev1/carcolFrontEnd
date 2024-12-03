@@ -23,6 +23,7 @@ export function CreateContainer() {
 		exportCountry: [],
 		capacityContainer: [],
 		incoterm: [],
+		originPort: [],
 	});
 
 	const [filters, setFilters] = useState({
@@ -32,6 +33,7 @@ export function CreateContainer() {
 		incoterm: '',
 		shipmentMonthStart: '',
 		shipmentMonthFinal: '',
+		originPort: '',
 	});
 
 	useEffect(() => {
@@ -42,6 +44,7 @@ export function CreateContainer() {
 				const shipmentPorts = [...new Set(data.map((item) => item.shipment_port))];
 				const destinationPorts = [...new Set(data.map((item) => item.destination_port))];
 				const exportCountry = [...new Set(data.map((item) => item.origin_iso))];
+				const originPort = [...new Set(data.map((item) => item.origin_port))];
 				const capacityContainer = [20, 40];
 				const incoterm = [...new Set(data.map((item) => item.incoterm))];
 
@@ -66,6 +69,7 @@ export function CreateContainer() {
 					exportCountry: item.origin_iso,
 					incoterm: item.incoterm,
 					weight: item.estimated_kg,
+					originPort: item.origin_port,
 				}));
 
 				setIcoList(updatedIcoList);
@@ -77,6 +81,7 @@ export function CreateContainer() {
 					exportCountry,
 					capacityContainer,
 					incoterm,
+					originPort,
 				});
 				setLoading(false);
 			})
@@ -152,7 +157,7 @@ export function CreateContainer() {
 			selectedContainerValue = containerCapacity[selectedContainer];
 		}
 
-		//console.log(payload);
+		console.log(payload);
 
 		if (sumIcosWeight < selectedContainerValue) {
 			fetch(`${API_BASE_URL}api/exports/createContainer`, {
@@ -199,7 +204,8 @@ export function CreateContainer() {
 										filter === 'port' ||
 										filter === 'capacityContainer' ||
 										filter === 'exportCountry' ||
-										filter === 'incoterm'
+										filter === 'incoterm' ||
+										filter === 'originPort'
 											? 'select'
 											: filter === 'shipmentMonthStart' || filter === 'shipmentMonthFinal'
 												? 'date'
@@ -217,14 +223,17 @@ export function CreateContainer() {
 													? selectOptions.capacityContainer
 													: filter === 'incoterm'
 														? selectOptions.incoterm
-														: []
+														: filter === 'originPort'
+															? selectOptions.originPort
+															: []
 									}
 									onChange={handleFilterChange}
 									required={
 										filter === 'port' ||
 										filter === 'capacityContainer' ||
 										filter === 'exportCountry' ||
-										filter === 'incoterm'
+										filter === 'incoterm' ||
+										filter === 'originPort'
 									}
 								/>
 							</div>

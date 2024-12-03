@@ -48,18 +48,18 @@ export function InputGeneric({
 				<div className='relative w-full'>
 					<button
 						type='button'
-						className={`bg-transparent font-bayard text-xl uppercase border-2 border-pink p-5 w-full text-pink focus:outline-none focus:border-2 focus:border-pink ${className}`}
+						className={`bg-transparent font-bayard text-start text-xl uppercase border-2 border-pink p-5 w-full h-full  text-pink focus:outline-none focus:border-2 focus:border-pink ${className}`}
 						onClick={toggleDropdown}
 					>
 						{selectedValues.length > 0 ? selectedValues.join(', ') : placeholder || `Select ${t(filter)}`}
 					</button>
 
 					{dropdownOpen && (
-						<ul className='absolute bg-white border border-pink w-full  max-h-72 overflow-y-auto z-10'>
+						<ul className='absolute bg-white border border-pink w-full  max-h-72 overflow-y-auto z-10 '>
 							{options.map((option, index) => (
 								<li
 									key={index}
-									className={`p-1 font-bayard text-2xl text-pink cursor-pointer hover:bg-pink hover:text-white ${
+									className={`p-1 font-bayard text-2xl text-pink cursor-pointer hover:bg-pink  h-full hover:text-white s ${
 										selectedValues.includes(option) ? 'bg-pink text-white' : ''
 									}`}
 									onClick={() => handleOptionClick(option)}

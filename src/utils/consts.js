@@ -1,5 +1,5 @@
-export const API_BASE_URL = 'https://bckcarcol-e4h2fag7bke3gvd6.eastus2-01.azurewebsites.net/';
-//export const API_BASE_URL = 'http://localhost:8080/';
+//export const API_BASE_URL = 'https://bckcarcol-e4h2fag7bke3gvd6.eastus2-01.azurewebsites.net/';
+export const API_BASE_URL = 'http://localhost:8080/';
 // Constantes de filtros
 export const placeholderFilter = ['office', 'exportMonth', 'packaging', 'contract', 'destinationPort'];
 
@@ -7,6 +7,7 @@ export const placeholderFilter = ['office', 'exportMonth', 'packaging', 'contrac
 export const headersTablePending = [
 	'contract',
 	'shipmentMonth',
+	'originPort',
 	'ico',
 	'secondary_ico_id',
 	'mark',
@@ -23,6 +24,7 @@ export const headersTablePending = [
 export const headersTableView = [
 	'contract',
 	'shipmentMonth',
+	'originPort',
 	'ico',
 	'secondary_ico_id',
 	'mark',
@@ -45,11 +47,13 @@ export const nameFilters = [
 	'shipmentMonthFinal',
 	'port',
 	'incoterm',
+	'originPort',
 ];
 
 export const headersTableCreateContainer = [
 	'ico_id',
 	'secondary_ico_id',
+	'originPort',
 	'contract',
 	'customer',
 	'mark',
@@ -64,17 +68,7 @@ export const headersTableCreateContainer = [
 	'select',
 ];
 
-export const labelsBoogkindAndDates = [
-	'booking',
-	'dateLandingPort',
-	'estimatedArrival',
-	/* 'announcement',
-	'estimatedDelivery',
-	'order',
-	'review',
-	'salesCode', */
-	'exportDate',
-];
+export const labelsBoogkindAndDates = ['booking', 'dateLandingPort', 'estimatedArrival', 'exportDate'];
 
 export const containerCapacity = {
 	20: 20000.41,
@@ -88,16 +82,16 @@ export const filtersEditContainer = [
 	'dateLandingPort',
 	'capacityContainer',
 	'estimatedArrival',
-	'exportDate',
 	'port',
-	'incoterm',
-	'icosDestination',
+	'exportDate',
+	'originPort',
 	'exportId',
-	'ico',
+	'incoterm',
 ];
 
 export const headersTableEditContainer = [
 	'shipmentMonth',
+	'originPort',
 	'ico_id',
 	'secondary_ico_id',
 	'mark',

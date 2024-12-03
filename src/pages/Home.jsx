@@ -61,6 +61,7 @@ export function Home() {
 			weight: item.contract_atlas.estimated_kg,
 			quality: item.contract_atlas.quality,
 			origin: item.export_country,
+			originPort: item.origin_port,
 			...item,
 		}));
 	};

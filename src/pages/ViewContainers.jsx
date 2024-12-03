@@ -84,6 +84,7 @@ export function ViewContainers() {
 			),
 			office: item.export_country,
 			destination: item.destination_port,
+			originPort: item.origin_port,
 			...item,
 		}));
 	};

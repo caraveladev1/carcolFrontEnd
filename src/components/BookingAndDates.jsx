@@ -72,7 +72,7 @@ export const BookingAndDates = memo(function BookingAndDates({
 		console.log('Datos relacionados:', relatedData);
 
 		const invalidEntries = relatedData.filter((item) => {
-			if (!item.contract_atlas || item.contract_atlas.customer_cupping_state !== 'Approved') {
+			if (!item.contract_atlas || item.contract_atlas.customer_cupping_state === 'Pending') {
 				return true;
 			}
 
@@ -104,6 +104,7 @@ export const BookingAndDates = memo(function BookingAndDates({
 				window.alert('Error al enviar los datos');
 			} else {
 				window.alert('Container updated successfully');
+				window.location.reload();
 			}
 		} catch (error) {
 			console.error('Error al enviar los datos:', error);
