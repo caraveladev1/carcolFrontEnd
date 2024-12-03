@@ -11,7 +11,7 @@ export function FiltersEditContainer({ filterValues, selectedIcos }) {
 
 	// Extraer valores por defecto y opciones
 	const { containers: defaultValues, contract_atlas: optionValues } = filterValues;
-
+	console.log(defaultValues);
 	// Opciones dinámicas para los select
 	const containerOptions = Object.entries(containerCapacity).map(([key, value]) => ({
 		label: key,
@@ -23,29 +23,36 @@ export function FiltersEditContainer({ filterValues, selectedIcos }) {
 			? 'text'
 			: ['dateLandingPort', 'estimatedArrival', 'exportDate'].includes(filter)
 				? 'date'
-				: ['containerCapacity', 'port', 'incoterm', 'exportId', 'originPort'].includes(filter)
+				: ['capacityContainer', 'port', 'incoterm', 'exportId', 'originPort'].includes(filter)
 					? 'select'
 					: 'text';
 	// Definir valores por defecto para los filtros
+	// Definir valores por defecto para los filtros, verificando si es null o undefined
 	const defaultValuesFormatted = {
 		booking: defaultValues[0]?.booking || `Enter ${t('booking')}`,
-		dateLandingPort: defaultValues[0]?.date_landing || `Enter ${t('booking')}`,
-		containerCapacity: [defaultValues[0]?.container_capacity || `Enter ${t('dateLandingPort')}`], // Array para múltiples selecciones
+		dateLandingPort: defaultValues[0]?.date_landing || `Enter ${t('dateLandingPort')}`,
+		capacityContainer: defaultValues[0]?.container_capacity
+			? [defaultValues[0]?.container_capacity]
+			: [`Enter ${t('capacityContainer')}`], // Comprobación para null
 		estimatedArrival: defaultValues[0]?.estimated_arrival || `Enter ${t('estimatedArrival')}`,
-		port: [defaultValues[0]?.destination_port] || `Enter ${t('port')}`, // Array para múltiples selecciones
-		originPort: [defaultValues[0]?.origin_port] || `Enter ${t('originPort')}`, // Array para múltiples selecciones
+		port: defaultValues[0]?.destination_port ? [defaultValues[0]?.destination_port] : [`Enter ${t('port')}`], // Comprobación para null
+		originPort: defaultValues[0]?.origin_port ? [defaultValues[0]?.origin_port] : [`Enter ${t('originPort')}`], // Comprobación para null
 		exportDate: defaultValues[0]?.export_date || `Enter ${t('exportDate')}`,
-		incoterm: [defaultValues[0]?.incoterm] || `Enter ${t('incoterm')}`, // Array para múltiples selecciones
-		exportId: [defaultValues[0]?.exp_id] || `Enter ${t('exportId')}`, // Array para múltiples selecciones
+		incoterm: defaultValues[0]?.incoterm ? [defaultValues[0]?.incoterm] : [`Enter ${t('incoterm')}`], // Comprobación para null
+		exportId: defaultValues[0]?.exp_id ? [defaultValues[0]?.exp_id] : [`Enter ${t('exportId')}`], // Comprobación para null
 	};
 
 	// Opciones dinámicas para los filtros
+	// Opciones dinámicas para los filtros, incluyendo el valor por defecto
 	const optionsByFilter = {
-		capacityContainer: containerLabels,
-		port: [...new Set(optionValues.map((option) => option.destination_port || 'N/A'))],
-		originPort: [...new Set(optionValues.map((option) => option.origin_port || 'N/A'))],
-		incoterm: [...new Set(optionValues.map((option) => option.incoterm || 'N/A'))],
-		exportId: [...new Set(optionValues.map((option) => option.export || 'N/A'))],
+		capacityContainer: [defaultValues[0]?.container_capacity, ...containerLabels],
+		port: [
+			defaultValues[0]?.destination_port,
+			...new Set(optionValues.map((option) => option.destination_port || 'N/A')),
+		],
+		originPort: [defaultValues[0]?.origin_port, ...new Set(optionValues.map((option) => option.origin_port || 'N/A'))],
+		incoterm: [defaultValues[0]?.incoterm, ...new Set(optionValues.map((option) => option.incoterm || 'N/A'))],
+		exportId: [defaultValues[0]?.exp_id, ...new Set(optionValues.map((option) => option.export || 'N/A'))],
 	};
 
 	// Filtros que admiten selección múltiple

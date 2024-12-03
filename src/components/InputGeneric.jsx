@@ -55,7 +55,7 @@ export function InputGeneric({
 					</button>
 
 					{dropdownOpen && (
-						<ul className='absolute bg-white border border-pink w-full  max-h-72 overflow-y-auto z-10 '>
+						<ul className='absolute bg-white border border-pink w-full  max-h-72 overflow-y-auto z-10 mt-4 '>
 							{options.map((option, index) => (
 								<li
 									key={index}

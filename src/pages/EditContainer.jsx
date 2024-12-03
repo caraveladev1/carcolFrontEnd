@@ -67,6 +67,7 @@ export function EditContainer() {
 							: '-',
 				weight: atlasData.estimated_kg || '-',
 				select: atlasData.ico,
+				originPort: atlasData.origin_port,
 			};
 		});
 	};
