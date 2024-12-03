@@ -6,7 +6,7 @@ import { Loader } from '../components/Loader';
 import { TableGeneric } from '../components/TableGeneric';
 import { FiltersEditContainer } from '../components/FiltersEditContainer';
 import { useParams } from 'react-router-dom';
-import { API_BASE_URL, headersTableEditContainer, filtersEditContainer } from '../utils/consts';
+import { API_BASE_URL, headersTableEditContainer } from '../utils/consts';
 
 export function EditContainer() {
 	const navigate = useNavigate();
