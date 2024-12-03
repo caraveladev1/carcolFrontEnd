@@ -112,7 +112,32 @@ export function FiltersEditContainer({ filterValues, selectedIcos, oldExportId }
 				console.error('Error:', error);
 			});
 	};
+	function setExported() {
+		try {
+			const apiSetExported = `${API_BASE_URL}api/exports/setExported`;
 
+			fetch(apiSetExported, {
+				method: 'PUT',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					id: oldExportIdData,
+					is_exported: '1',
+				}),
+			})
+				.then((response) => response.json())
+
+				.catch((error) => {
+					console.error('Error:', error);
+				});
+
+			window.alert('Container set as exported successfully');
+			navigate('/view-containers');
+		} catch (error) {
+			console.log(error);
+		}
+	}
 	return (
 		<form onSubmit={handleSubmit}>
 			<div className='grid grid-cols-4 gap-4'>
@@ -142,7 +167,13 @@ export function FiltersEditContainer({ filterValues, selectedIcos, oldExportId }
 						</div>
 					);
 				})}
-				<SubmitButton className='bg-celeste col-span-2' typeButton='submit' buttonText='submit' />
+				<SubmitButton className='bg-celeste col-span-1' typeButton='submit' buttonText='submit' />
+				<SubmitButton
+					className='bg-pink col-span-1'
+					typeButton='button'
+					buttonText='setExported'
+					onClick={setExported}
+				/>
 			</div>
 		</form>
 	);
