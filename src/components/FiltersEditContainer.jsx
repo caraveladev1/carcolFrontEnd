@@ -56,6 +56,7 @@ export function FiltersEditContainer({ filterValues, selectedIcos, oldExportId }
 	const [flterValuesUpdated, setFlterValuesUpdated] = useState(defaultValuesFormatted);
 	const handleSubmit = (e) => {
 		e.preventDefault();
+
 		const payload = {
 			old_id: oldExportIdData,
 			states: defaultValues,
@@ -65,7 +66,54 @@ export function FiltersEditContainer({ filterValues, selectedIcos, oldExportId }
 			),
 		};
 
-		//	console.log(payload);
+		//console.log('Payload completo:', payload);
+
+		// Verificar si defaultValues[0].is_pending === '1'
+		if (defaultValues[0]?.is_pending === '1') {
+			// Crear un nuevo payload con solo los campos requeridos
+			const limitedPayload = {
+				old_id: oldExportIdData,
+				filters: {
+					exportDate: flterValuesUpdated.exportDate,
+					estimatedArrival: flterValuesUpdated.estimatedArrival,
+				},
+			};
+
+			//	console.log('Payload reducido:', limitedPayload);
+
+			// Enviar los datos limitados al servidor
+			fetch(`${API_BASE_URL}api/exports/updateContainerAfterLoaded`, {
+				method: 'PUT',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(limitedPayload),
+			})
+				.then((response) => {
+					if (
+						(!response.ok && limitedPayload.filters.exportDate === null) ||
+						limitedPayload.filters.estimatedArrival === null
+					) {
+						window.alert(
+							'The container is loaded, you only update "Estimated Arrival" and "Export date". Please fill in the required fields',
+						);
+						throw new error();
+					}
+					return response.json();
+				})
+				.then(() => {
+					window.alert(
+						'Container updated successfully. \n\nPlease noted: The container is loaded, only going to be updated "Estimated Arrival" and "Export date" fields.',
+					);
+					navigate('/view-containers');
+				})
+				.catch((error) => {
+					console.error('Error:', error);
+				});
+
+			return;
+		}
+
 		// Sumar pesos de los ICOs
 		const sumIcosWeight = payload.selectedIcos.reduce((accumulator, element) => {
 			const weight = parseInt(element.weight, 10);
@@ -86,7 +134,7 @@ export function FiltersEditContainer({ filterValues, selectedIcos, oldExportId }
 			return;
 		}
 
-		// Proceder con el envío de datos si la validación pasa
+		// Proceder con el envío de datos completos si la validación pasa
 		fetch(`${API_BASE_URL}api/exports/updateContainer`, {
 			method: 'PUT',
 			headers: {
@@ -108,6 +156,7 @@ export function FiltersEditContainer({ filterValues, selectedIcos, oldExportId }
 				console.error('Error:', error);
 			});
 	};
+
 	function setExported() {
 		if (defaultValues[0].is_pending === '1') {
 			try {
