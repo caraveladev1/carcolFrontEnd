@@ -13,7 +13,7 @@ export function FiltersEditContainer({ filterValues, selectedIcos, oldExportId }
 	const oldExportIdData = oldExportId;
 	// Extraer valores por defecto y opciones
 	const { containers: defaultValues, contract_atlas: optionValues } = filterValues;
-	//console.log(optionValues);
+	//	console.log(defaultValues);
 	// Opciones dinámicas para los select
 	const containerOptions = Object.entries(containerCapacity).map(([key, value]) => ({
 		label: key,
@@ -54,29 +54,25 @@ export function FiltersEditContainer({ filterValues, selectedIcos, oldExportId }
 
 	// Estado inicial
 	const [flterValuesUpdated, setFlterValuesUpdated] = useState(defaultValuesFormatted);
-
 	const handleSubmit = (e) => {
 		e.preventDefault();
-
 		const payload = {
 			old_id: oldExportIdData,
+			states: defaultValues,
 			selectedIcos: selectedIcosData,
 			filters: Object.fromEntries(
-				Object.entries(flterValuesUpdated).map(([key, value]) => [
-					key,
-					Array.isArray(value) ? value[0] : value, // Extrae el primer elemento si es un array
-				]),
+				Object.entries(flterValuesUpdated).map(([key, value]) => [key, Array.isArray(value) ? value[0] : value]),
 			),
 		};
-		console.log(payload);
+
+		//	console.log(payload);
 		// Sumar pesos de los ICOs
 		const sumIcosWeight = payload.selectedIcos.reduce((accumulator, element) => {
-			const weight = parseInt(element.weight, 10); // Convertir peso a número
-			return accumulator + (isNaN(weight) ? 0 : weight); // Sumar sólo valores válidos
+			const weight = parseInt(element.weight, 10);
+			return accumulator + (isNaN(weight) ? 0 : weight);
 		}, 0);
 
-		// Validar capacidad del contenedor seleccionado
-		const selectedContainerKey = payload.filters.capacityContainer; // Ahora es un valor único
+		const selectedContainerKey = payload.filters.capacityContainer;
 		const selectedContainerValue = containerCapacity[selectedContainerKey];
 
 		if (!selectedContainerValue) {
@@ -113,29 +109,33 @@ export function FiltersEditContainer({ filterValues, selectedIcos, oldExportId }
 			});
 	};
 	function setExported() {
-		try {
-			const apiSetExported = `${API_BASE_URL}api/exports/setExported`;
+		if (defaultValues[0].is_pending === '1') {
+			try {
+				const apiSetExported = `${API_BASE_URL}api/exports/setExported`;
 
-			fetch(apiSetExported, {
-				method: 'PUT',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({
-					id: oldExportIdData,
-					is_exported: '1',
-				}),
-			})
-				.then((response) => response.json())
+				fetch(apiSetExported, {
+					method: 'PUT',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						id: oldExportIdData,
+						is_exported: '1',
+					}),
+				})
+					.then((response) => response.json())
 
-				.catch((error) => {
-					console.error('Error:', error);
-				});
+					.catch((error) => {
+						console.error('Error:', error);
+					});
 
-			window.alert('Container set as exported successfully');
-			navigate('/view-containers');
-		} catch (error) {
-			console.log(error);
+				window.alert('Container set as exported successfully');
+				navigate('/view-containers');
+			} catch (error) {
+				console.log(error);
+			}
+		} else {
+			window.alert('Container is not loaded');
 		}
 	}
 	return (
