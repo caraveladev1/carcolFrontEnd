@@ -21,10 +21,9 @@ export function InputGeneric({
 	const handleOptionClick = (option) => {
 		let updatedValues;
 
-		// Si el select es múltiple, actualizamos el array de valores seleccionados
 		if (multiple) {
-			if (option === '') {
-				// Si el placeholder (''), desmarcar todas las opciones
+			// Si se selecciona "Delete selected", borramos todas las selecciones
+			if (option === 'Delete selected') {
 				updatedValues = [];
 			} else {
 				// Si la opción ya está seleccionada, eliminarla
@@ -37,7 +36,7 @@ export function InputGeneric({
 			}
 		} else {
 			// Si no es múltiple, simplemente seleccionamos un único valor
-			updatedValues = option;
+			updatedValues = [option];
 		}
 
 		setSelectedValues(updatedValues);
@@ -56,28 +55,29 @@ export function InputGeneric({
 				<div className='relative w-full'>
 					<button
 						type='button'
-						className={`bg-transparent font-bayard text-start text-xl uppercase border-2 border-pink p-5 w-full h-full text-pink focus:outline-none focus:border-2 focus:border-pink ${className}`}
+						className={`bg-transparent font-bayard text-xl uppercase border-2 border-pink p-5 w-full text-pink focus:outline-none focus:border-2 focus:border-pink text-start ${className}`}
 						onClick={toggleDropdown}
 					>
-						{/* Si no hay valores seleccionados, mostrar el placeholder */}
+						{/* Mostrar placeholder si no hay valores seleccionados */}
 						{selectedValues.length === 0 ? placeholder || `Select ${t(filter)}` : selectedValues.join(', ')}
 					</button>
 
 					{dropdownOpen && (
-						<ul className='absolute bg-white border border-pink w-full max-h-72 overflow-y-auto z-10 mt-4'>
-							{/* Opción de placeholder al principio */}
+						<ul className='absolute bg-white border border-pink w-full max-h-72 overflow-y-auto z-10'>
+							{/* Opción para borrar la selección */}
 							<li
-								className={`p-1 font-bayard text-2xl text-pink cursor-pointer hover:bg-pink h-full hover:text-white ${selectedValues.length === 0 ? 'bg-gray-200' : ''}`}
-								onClick={() => handleOptionClick('')} // Usamos '' para simular el placeholder
+								className='p-1 font-bayard text-2xl text-pink cursor-pointer hover:bg-pink hover:text-white'
+								onClick={() => handleOptionClick('Delete selected')}
 							>
-								{placeholder || `Select ${t(filter)}`}
+								Delete selected
 							</li>
-
 							{/* Opciones dinámicas */}
 							{options.map((option, index) => (
 								<li
 									key={index}
-									className={`p-1 font-bayard text-2xl text-pink cursor-pointer hover:bg-pink h-full hover:text-white ${selectedValues.includes(option) ? 'bg-pink text-white' : ''}`}
+									className={`p-1 font-bayard text-2xl text-pink cursor-pointer hover:bg-pink hover:text-white ${
+										selectedValues.includes(option) ? 'bg-pink text-white' : ''
+									}`}
 									onClick={() => handleOptionClick(option)}
 								>
 									{option}
