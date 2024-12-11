@@ -175,7 +175,7 @@ export function ViewContainers() {
 
 	// filteredData[exp_id][0]?.weight	const totalWeight =
 	const filteredData = filterData(organizedData);
-	console.log(filteredData);
+	//console.log(filteredData);
 
 	const handleFilterChange = (e) => {
 		const { name, value } = e.target;
