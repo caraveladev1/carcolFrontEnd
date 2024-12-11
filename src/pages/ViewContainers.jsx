@@ -173,7 +173,9 @@ export function ViewContainers() {
 		return <Loader />;
 	}
 
+	// filteredData[exp_id][0]?.weight	const totalWeight =
 	const filteredData = filterData(organizedData);
+	console.log(filteredData);
 
 	const handleFilterChange = (e) => {
 		const { name, value } = e.target;
@@ -266,33 +268,45 @@ export function ViewContainers() {
 				</div>
 
 				{filteredData &&
-					Object.keys(filteredData).map((exp_id) => (
-						<div key={exp_id} className='my-4 gap-6'>
-							<div className='titleContainer flex flex-row justify-between gap-10 items-center'>
-								<div className='flex flex-row justify-between items-center gap-6'>
-									<h2 className='text-3xl font-bold text-white font-bayard uppercase'>{exp_id}</h2>
-									<Link to={`/edit-container/${exp_id}`}>
-										<img className='max-w-[50%]' src={editContainer} alt='Edit Container' />
-									</Link>
+					Object.keys(filteredData).map((exp_id) => {
+						// Calcular el peso total de forma sencilla
+						const totalWeight = filteredData[exp_id].reduce((sum, item) => {
+							// Convertir a número o tomar 0 si no es válido
+							const weight = parseFloat(item.weight) || 0;
+							return sum + weight;
+						}, 0);
+
+						return (
+							<div key={exp_id} className='my-4 gap-6'>
+								<div className='titleContainer flex flex-row justify-between gap-10 items-center'>
+									<div className='flex flex-row justify-between items-center gap-6'>
+										<h2 className='text-3xl font-bold text-white font-bayard uppercase'>{exp_id}</h2>
+										<Link to={`/edit-container/${exp_id}`}>
+											<img className='max-w-[50%]' src={editContainer} alt='Edit Container' />
+										</Link>
+									</div>
+									<div className='containerData flex flex-row gap-4'>
+										<p className='text-xl font-bold text-pink font-bayard uppercase'>
+											{`Total Weight: ${totalWeight || 'No available'}`}
+										</p>
+										<p className='text-xl font-bold text-pink font-bayard uppercase'>
+											{`Booking: ${filteredData[exp_id][0]?.booking || 'No available'}`}
+										</p>
+										<p className='text-xl font-bold text-celeste font-bayard uppercase'>
+											{`Landing on Port: ${filteredData[exp_id][0]?.date_landing || 'No available'}`}
+										</p>
+									</div>
 								</div>
-								<div className='containerData flex flex-row gap-4'>
-									<p className='text-xl font-bold text-pink font-bayard uppercase'>
-										{`Booking: ${filteredData[exp_id][0]?.booking || 'No available'}`}
-									</p>
-									<p className='text-xl font-bold text-celeste font-bayard uppercase'>
-										{`Landing on Port: ${filteredData[exp_id][0]?.date_landing || 'No available'}`}
-									</p>
+								<div className='my-4'>
+									<TableGeneric
+										headersTable={headersTableView}
+										dataTable={filteredData[exp_id]}
+										renderRowContent={(row) => row}
+									/>
 								</div>
 							</div>
-							<div className='my-4'>
-								<TableGeneric
-									headersTable={headersTableView}
-									dataTable={filteredData[exp_id]}
-									renderRowContent={(row) => row}
-								/>
-							</div>
-						</div>
-					))}
+						);
+					})}
 
 				{isCommentsOpen && <Comments ico={selectedIco} onClose={closeComments} />}
 				{isAnnouncementsOpen && <Announcements ico={selectedIco} onClose={closeAnnouncements} />}
