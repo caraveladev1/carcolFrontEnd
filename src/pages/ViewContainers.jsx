@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom';
 import { InputGeneric } from '../components/InputGeneric';
 import commentsButton from '../assets/img/commentsButton.webp';
 import { Comments } from '../components/Comments';
+import { Announcements } from '../components/Announcements';
 
 export function ViewContainers() {
 	const { t } = useTranslation();
@@ -30,6 +31,7 @@ export function ViewContainers() {
 	const [destinationOptions, setDestinationOptions] = useState([]);
 	const [isCommentsOpen, setIsCommentsOpen] = useState(false);
 	const [selectedIco, setSelectedIco] = useState(null);
+	const [isAnnouncementsOpen, setIsAnnouncementsOpen] = useState(false);
 
 	const groupByExpId = (data) => {
 		const result = {};
@@ -46,13 +48,23 @@ export function ViewContainers() {
 		return result;
 	};
 
-	const handleButtonClick = (item) => {
+	const handleCommentsButtonClick = (item) => {
 		setSelectedIco(item.ico);
 		setIsCommentsOpen(true);
 	};
 
+	const handleAnnouncementsButtonClick = (item) => {
+		setSelectedIco(item.ico);
+		setIsAnnouncementsOpen(true);
+	};
+
 	const closeComments = () => {
 		setIsCommentsOpen(false);
+		setSelectedIco(null);
+	};
+
+	const closeAnnouncements = () => {
+		setIsAnnouncementsOpen(false);
 		setSelectedIco(null);
 	};
 
@@ -77,10 +89,15 @@ export function ViewContainers() {
 			comments: (
 				<div className='flex flex-row justify-center items-center m-auto '>
 					{item.comments}
-					<button className='btn-class max-w-[20%] ' onClick={() => handleButtonClick(item)}>
-						<img src={commentsButton} />
+					<button className='btn-class max-w-[20%]' onClick={() => handleCommentsButtonClick(item)}>
+						<img src={commentsButton} alt='Comments' />
 					</button>
 				</div>
+			),
+			announcements: (
+				<button className='btn-class bg-blue-500 text-white p-2' onClick={() => handleAnnouncementsButtonClick(item)}>
+					Manage Announcements
+				</button>
 			),
 			office: item.export_country,
 			destination: item.destination_port,
@@ -88,27 +105,16 @@ export function ViewContainers() {
 			...item,
 		}));
 	};
+
 	const filterData = (data) => {
 		return Object.keys(data).reduce((filteredData, exp_id) => {
 			const filteredItems = data[exp_id].filter((item) => {
-				// Fechas: convertir fechas relevantes y filtrar por rango
 				const itemDate = new Date(item.date_landing || item.export_date);
 
 				const withinDateRange =
 					(!filters.initialDate || itemDate >= new Date(filters.initialDate)) &&
 					(!filters.finalDate || itemDate <= new Date(filters.finalDate));
 
-				// Filtro por país de exportación
-				const matchesExportCountry =
-					!filters.exportCountry || filters.exportCountry.length === 0 || filters.exportCountry.includes(item.origin);
-
-				// Filtro por puerto de destino
-				const matchesDestinationPort =
-					!filters.destinationPort ||
-					filters.destinationPort.length === 0 ||
-					(item.destinationContainer && filters.destinationPort.includes(item.destinationContainer));
-
-				// Filtros adicionales (office, packaging, contract, destination)
 				const matchesOffice = !filters.office || filters.office.length === 0 || filters.office.includes(item.office);
 				const matchesPackaging =
 					!filters.packaging || filters.packaging.length === 0 || filters.packaging.includes(item.packaging);
@@ -117,19 +123,9 @@ export function ViewContainers() {
 				const matchesDestination =
 					!filters.destination || filters.destination.length === 0 || filters.destination.includes(item.destination);
 
-				// Retornar si cumple todas las condiciones
-				return (
-					withinDateRange &&
-					matchesExportCountry &&
-					matchesDestinationPort &&
-					matchesOffice &&
-					matchesPackaging &&
-					matchesContract &&
-					matchesDestination
-				);
+				return withinDateRange && matchesOffice && matchesPackaging && matchesContract && matchesDestination;
 			});
 
-			// Agregar resultados filtrados al objeto final
 			if (filteredItems.length > 0) {
 				filteredData[exp_id] = filteredItems;
 			}
@@ -183,27 +179,17 @@ export function ViewContainers() {
 		const { name, value } = e.target;
 
 		setFilters((prevFilters) => {
-			// Si el filtro es de rango de fechas, manejarlo directamente
 			if (name === 'initialDate' || name === 'finalDate') {
 				return {
 					...prevFilters,
-					[name]: value, // Actualiza la fecha como valor único
+					[name]: value,
 				};
 			}
 
-			// Para otros filtros, manejar valores como arrays
 			const currentValues = prevFilters[name] || [];
-			let updatedValues;
-
-			if (Array.isArray(value)) {
-				// Si `value` es un array, úsalo directamente
-				updatedValues = value;
-			} else {
-				// Si no, agregar o quitar el valor actual del array
-				updatedValues = currentValues.includes(value)
-					? currentValues.filter((v) => v !== value) // Remover si ya existe
-					: [...currentValues, value]; // Agregar si no existe
-			}
+			const updatedValues = currentValues.includes(value)
+				? currentValues.filter((v) => v !== value)
+				: [...currentValues, value];
 
 			return {
 				...prevFilters,
@@ -218,25 +204,21 @@ export function ViewContainers() {
 				<Banner />
 				<h1 className='text-5xl font-bold my-8 uppercase text-yellow font-bayard'>{t('viewContainers')}</h1>
 
-				{/* Renderizado de los filtros */}
 				<div className='filtersContainer flex flex-row justify-between gap-6'>
-					{/* Filtro para las fechas */}
 					<InputGeneric
 						type='date'
 						filter='initialDate'
-						onChange={(e) => handleFilterChange('initialDate', e.target.value)}
+						onChange={(e) => handleFilterChange(e)}
 						required={false}
 						defaultValue={filters.initialDate}
 					/>
 					<InputGeneric
 						type='date'
 						filter='finalDate'
-						onChange={(e) => handleFilterChange('finalDate', e.target.value)}
+						onChange={(e) => handleFilterChange(e)}
 						required={false}
 						defaultValue={filters.finalDate}
 					/>
-
-					{/* Filtros de selección múltiple */}
 					<InputGeneric
 						type='select'
 						filter='office'
@@ -273,17 +255,24 @@ export function ViewContainers() {
 						options={destinationOptions}
 						multiple={true}
 					/>
+					<button
+						className='bg-pink font-bayard text-xl uppercase border-2 border-pink p-5 w-full text-white focus:outline-none focus:border-2 focus:border-pink text-start'
+						type='button'
+						value='Manage Announcements'
+						onClick={() => setIsAnnouncementsOpen(true)}
+					>
+						Edit Announcements
+					</button>
 				</div>
 
-				{/* Renderización de los datos filtrados */}
 				{filteredData &&
 					Object.keys(filteredData).map((exp_id) => (
 						<div key={exp_id} className='my-4 gap-6'>
-							<div className='titleContainer flex flex-row justify-between  gap-10 items-center'>
+							<div className='titleContainer flex flex-row justify-between gap-10 items-center'>
 								<div className='flex flex-row justify-between items-center gap-6'>
 									<h2 className='text-3xl font-bold text-white font-bayard uppercase'>{exp_id}</h2>
 									<Link to={`/edit-container/${exp_id}`}>
-										<img className='max-w-[50%] ' src={editContainer} alt='Edit Container' />
+										<img className='max-w-[50%]' src={editContainer} alt='Edit Container' />
 									</Link>
 								</div>
 								<div className='containerData flex flex-row gap-4'>
@@ -304,7 +293,9 @@ export function ViewContainers() {
 							</div>
 						</div>
 					))}
+
 				{isCommentsOpen && <Comments ico={selectedIco} onClose={closeComments} />}
+				{isAnnouncementsOpen && <Announcements ico={selectedIco} onClose={closeAnnouncements} />}
 			</section>
 		</div>
 	);

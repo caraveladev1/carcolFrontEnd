@@ -83,6 +83,7 @@ export const filtersEditContainer = [
 	'capacityContainer',
 	'estimatedArrival',
 	'port',
+	'icosDestination',
 	'exportDate',
 	'originPort',
 	'exportId',

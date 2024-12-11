@@ -72,7 +72,11 @@ export const BookingAndDates = memo(function BookingAndDates({
 		console.log('Datos relacionados:', relatedData);
 
 		const invalidEntries = relatedData.filter((item) => {
-			if (!item.contract_atlas || item.contract_atlas.customer_cupping_state === 'Pending') {
+			if (
+				!item.contract_atlas ||
+				item.contract_atlas.customer_cupping_state === 'Pending' ||
+				item.contract_atlas.customer_cupping_state === 'Rejected'
+			) {
 				return true;
 			}
 
