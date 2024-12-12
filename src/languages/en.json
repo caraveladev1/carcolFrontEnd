@@ -57,5 +57,8 @@
 	"initialDate": "Fecha Inicial",
 	"finalDate": "Fecha Final",
 	"destination": "Destination",
-	"originPort": "Origin Port"
+	"originPort": "Origin Port",
+	"icos_destination": "ICOs destination",
+	"filters": "Filters",
+	"containerData": "Container data"
 }

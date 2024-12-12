@@ -7,6 +7,7 @@ import { TableGeneric } from '../components/TableGeneric';
 import { FiltersEditContainer } from '../components/FiltersEditContainer';
 import { useParams } from 'react-router-dom';
 import { API_BASE_URL, headersTableEditContainer } from '../utils/consts';
+import { InputGeneric } from '../components/InputGeneric'; // Asegúrate de importar InputGeneric
 
 export function EditContainer() {
 	const navigate = useNavigate();
@@ -18,6 +19,7 @@ export function EditContainer() {
 	const [tableData, setTableData] = useState([]);
 	const [selectedIcos, setSelectedIcos] = useState([]);
 	const [filtersData, setFiltersData] = useState([]);
+	const [selectedDestinationPorts, setSelectedDestinationPorts] = useState([]); // Estado para los puertos de destino seleccionados
 
 	// Llamada en el useEffect
 	useEffect(() => {
@@ -72,6 +74,18 @@ export function EditContainer() {
 		});
 	};
 
+	// Función para manejar cambios en el filtro de destinationPort
+	const handleDestinationPortChange = (e) => {
+		setSelectedDestinationPorts(e.target.value);
+	};
+
+	// Función para filtrar los datos de la tabla por destinationPort
+	const filterTableData = () => {
+		return tableData.filter(
+			(row) => selectedDestinationPorts.length === 0 || selectedDestinationPorts.includes(row.destinationPort),
+		);
+	};
+
 	// Manejo de selección de elementos
 	const handleCheckboxChange = useCallback(
 		(ico) => {
@@ -82,7 +96,7 @@ export function EditContainer() {
 		},
 		[setSelectedIcos],
 	);
-	//	console.log(selectedIcos);
+
 	// Renderizado del componente
 	if (loading) {
 		return <Loader />;
@@ -93,12 +107,24 @@ export function EditContainer() {
 			<section className='max-w-[90%] m-auto'>
 				<Banner />
 				<h1 className='text-5xl font-bold uppercase text-pink font-bayard mb-6'>{t('editContainer')}</h1>
+				{/* Filtro de Destination Port */}
+				<h2 className='text-5xl font-bold uppercase text-pink font-bayard mb-6'>{t('filters')}</h2>
+				<InputGeneric
+					type='select'
+					filter='destinationPort'
+					options={[...new Set(tableData.map((row) => row.destinationPort))]} // Obtener valores únicos de destinationPort
+					onChange={handleDestinationPortChange}
+					multiple={true}
+					placeholder='Select destination ports'
+					className='mb-6'
+				/>
+				<h2 className='text-5xl font-bold uppercase text-pink font-bayard mb-6'>{t('containerData')}</h2>
 				<FiltersEditContainer filterValues={filtersData} selectedIcos={selectedIcos} oldExportId={id} />
-
 				{/* Tabla de contratos */}
+
 				<TableGeneric
 					headersTable={headersTableEditContainer}
-					dataTable={tableData.map((row) => ({
+					dataTable={filterTableData().map((row) => ({
 						...row,
 						select: (
 							<input
