@@ -32,13 +32,13 @@ export function FiltersEditContainer({ filterValues, selectedIcos, oldExportId }
 	const defaultValuesFormatted = {
 		booking: defaultValues[0]?.booking,
 		dateLandingPort: defaultValues[0]?.date_landing,
-		capacityContainer: [defaultValues[0]?.container_capacity], // Comprobación para null
+		capacityContainer: [defaultValues[0]?.container_capacity],
 		estimatedArrival: defaultValues[0]?.estimated_arrival,
-		port: [defaultValues[0]?.destination_port], // Comprobación para null
-		originPort: [defaultValues[0]?.origin_port], // Comprobación para null
+		port: [defaultValues[0]?.destination_port],
+		originPort: [defaultValues[0]?.origin_port],
 		exportDate: defaultValues[0]?.export_date,
-		incoterm: [defaultValues[0]?.incoterm], // Comprobación para null
-		exportId: [defaultValues[0]?.exp_id], // Comprobación para null
+		incoterm: [defaultValues[0]?.incoterm],
+		exportId: [defaultValues[0]?.exp_id],
 	};
 
 	const optionsByFilter = {
