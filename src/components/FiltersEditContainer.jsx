@@ -6,16 +6,14 @@ import { InputGeneric } from './InputGeneric';
 import { SubmitButton } from './SubmitButton';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-
-export function FiltersEditContainer({ filterValues, selectedIcos, oldExportId, handleFilterChange }) {
+export function FiltersEditContainer({ filterValues, selectedIcos, oldExportId }) {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const selectedIcosData = selectedIcos;
 	const oldExportIdData = oldExportId;
-
 	// Extraer valores por defecto y opciones
 	const { containers: defaultValues, contract_atlas: optionValues } = filterValues;
-
+	//	console.log(defaultValues);
 	// Opciones dinámicas para los select
 	const containerOptions = Object.entries(containerCapacity).map(([key, value]) => ({
 		label: key,
@@ -27,7 +25,7 @@ export function FiltersEditContainer({ filterValues, selectedIcos, oldExportId, 
 			? 'text'
 			: ['dateLandingPort', 'estimatedArrival', 'exportDate'].includes(filter)
 				? 'date'
-				: ['capacityContainer', 'port', 'incoterm', 'exportId', 'originPort', 'icosDestination'].includes(filter)
+				: ['capacityContainer', 'port', 'incoterm', 'exportId', 'originPort'].includes(filter)
 					? 'select'
 					: 'text';
 
@@ -41,39 +39,28 @@ export function FiltersEditContainer({ filterValues, selectedIcos, oldExportId, 
 		exportDate: defaultValues[0]?.export_date,
 		incoterm: [defaultValues[0]?.incoterm], // Comprobación para null
 		exportId: [defaultValues[0]?.exp_id], // Comprobación para null
-		icosDestination: [],
 	};
 
 	const optionsByFilter = {
-		capacityContainer: [...containerLabels],
+		capacityContainer: [/* defaultValues[0]?.container_capacity, */ ...containerLabels],
 		port: [optionValues?.destination_port, ...new Set(optionValues.map((option) => option.destination_port || 'N/A'))],
-		icosDestination: [
-			optionValues?.destination_port,
-			...new Set(optionValues.map((option) => option.destination_port || 'N/A')),
-		],
 		originPort: [optionValues?.origin_port, ...new Set(optionValues.map((option) => option.origin_port || 'N/A'))],
 		incoterm: [optionValues?.incoterm, ...new Set(optionValues.map((option) => option.incoterm || 'N/A'))],
-		exportId: [optionValues?.exp_id, ...new Set(optionValues.map((option) => option.export || 'N/A'))],
+		exportId: [
+			...new Set(
+				// Usamos Set para eliminar duplicados
+				defaultValues
+					?.map((item) => item?.contract_atlas?.export)
+					.filter(Boolean), // Extraemos export y filtramos los valores nulos/undefined
+			),
+		],
 	};
 
 	// Filtros que admiten selección múltiple
-	const multipleSelectFilters = ['capacityContainer', 'port', 'incoterm', 'exportId', 'originPort', 'icosDestination'];
+	const multipleSelectFilters = ['capacityContainer', 'port', 'incoterm', 'originPort'];
 
 	// Estado inicial
 	const [flterValuesUpdated, setFlterValuesUpdated] = useState(defaultValuesFormatted);
-
-	// Actualizar los valores del filtro y llamar a la función handleFilterChange
-	const handleFilterValueChange = (filter, value) => {
-		const updatedValues = {
-			...flterValuesUpdated,
-			[filter]: value,
-		};
-		setFlterValuesUpdated(updatedValues);
-
-		// Llamar a handleFilterChange para actualizar el valor del filtro en el componente padre
-		handleFilterChange(filter, value);
-	};
-
 	const handleSubmit = (e) => {
 		e.preventDefault();
 
@@ -86,8 +73,11 @@ export function FiltersEditContainer({ filterValues, selectedIcos, oldExportId, 
 			),
 		};
 
+		console.log('Payload completo:', payload);
+
 		// Verificar si defaultValues[0].is_pending === '1'
 		if (defaultValues[0]?.is_pending === '1') {
+			// Crear un nuevo payload con solo los campos requeridos
 			const limitedPayload = {
 				old_id: oldExportIdData,
 				filters: {
@@ -96,6 +86,9 @@ export function FiltersEditContainer({ filterValues, selectedIcos, oldExportId, 
 				},
 			};
 
+			//	console.log('Payload reducido:', limitedPayload);
+
+			// Enviar los datos limitados al servidor
 			fetch(`${API_BASE_URL}api/exports/updateContainerAfterLoaded`, {
 				method: 'PUT',
 				headers: {
@@ -111,7 +104,7 @@ export function FiltersEditContainer({ filterValues, selectedIcos, oldExportId, 
 						window.alert(
 							'The container is loaded, you only update "Estimated Arrival" and "Export date". Please fill in the required fields',
 						);
-						throw new Error();
+						throw new error();
 					}
 					return response.json();
 				})
@@ -124,6 +117,7 @@ export function FiltersEditContainer({ filterValues, selectedIcos, oldExportId, 
 				.catch((error) => {
 					console.error('Error:', error);
 				});
+
 			return;
 		}
 
@@ -186,6 +180,7 @@ export function FiltersEditContainer({ filterValues, selectedIcos, oldExportId, 
 					}),
 				})
 					.then((response) => response.json())
+
 					.catch((error) => {
 						console.error('Error:', error);
 					});
@@ -199,7 +194,6 @@ export function FiltersEditContainer({ filterValues, selectedIcos, oldExportId, 
 			window.alert('Container is not loaded');
 		}
 	}
-
 	return (
 		<form onSubmit={handleSubmit}>
 			<div className='grid grid-cols-4 gap-4'>
@@ -216,8 +210,12 @@ export function FiltersEditContainer({ filterValues, selectedIcos, oldExportId, 
 								defaultValue={defaultValue} // Pasar valor por defecto
 								options={optionsByFilter[filter]} // Pasar opciones
 								onChange={(e) => {
-									const value = isMultiple ? e.target.value : e.target.value;
-									handleFilterValueChange(filter, value); // Actualizar filtro y pasar a EditContainer
+									// Actualizar estado al cambiar
+									const updatedValues = {
+										...flterValuesUpdated,
+										[filter]: isMultiple ? e.target.value : e.target.value,
+									};
+									setFlterValuesUpdated(updatedValues);
 								}}
 								placeholder={`Enter ${filter}`}
 								multiple={isMultiple}
