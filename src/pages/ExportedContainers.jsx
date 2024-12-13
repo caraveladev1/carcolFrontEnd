@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { ViewDetails } from '../components/ViewDetails'; // Asegúrate de importar correctamente
 import { Banner } from '../components/Banner';
 import { useTranslation } from 'react-i18next';
 import { TableGeneric } from '../components/TableGeneric';
-import { headersTablePending, API_BASE_URL } from '../utils/consts';
+import { headersTableExported, API_BASE_URL } from '../utils/consts';
 import { Loader } from '../components/Loader';
 import { InputGeneric } from '../components/InputGeneric';
 
@@ -10,6 +11,8 @@ export function ExportedContainers() {
 	const { t } = useTranslation();
 	const [organizedData, setOrganizedData] = useState(null);
 	const [loading, setLoading] = useState(true);
+	const [showDetails, setShowDetails] = useState(false); // Estado para controlar la visibilidad del popup
+	const [selectedExpId, setSelectedExpId] = useState(null); // Estado para almacenar el exp_id seleccionado
 
 	// Estados para los filtros
 	const [filters, setFilters] = useState({
@@ -52,7 +55,7 @@ export function ExportedContainers() {
 			packaging: item.packaging_capacity,
 			mark: item.brand_name,
 			shipmentMonth: item.contract_atlas.shipment_date,
-			destinationPort: item.contract_atlas.destination_port,
+			destinationPort: item.destination_port,
 			destinationContainer: item.destination_port,
 			weight: item.contract_atlas.estimated_kg,
 			quality: item.contract_atlas.quality,
@@ -129,11 +132,11 @@ export function ExportedContainers() {
 			return result;
 		}, {});
 	};
-	//console.log(filters);
+
 	if (loading) {
 		return <Loader />;
 	}
-	//console.log(organizedData);
+
 	return (
 		<div className='bg-dark-background bg-cover bg-fixed min-h-screen'>
 			<section className='homeContainer max-w-[90%] m-auto pb-5'>
@@ -180,15 +183,27 @@ export function ExportedContainers() {
 					<div key={exp_id} className='my-4'>
 						<div className='titleContainer flex flex-row justify-between items-center'>
 							<h2 className='text-3xl font-bold text-white mb-4 font-bayard uppercase'>{exp_id}</h2>
+							<button
+								className='text-3xl font-bold text-white mb-4 font-bayard uppercase'
+								onClick={() => {
+									setSelectedExpId(exp_id); // Establecer el exp_id seleccionado
+									setShowDetails(true); // Mostrar el componente ViewDetails
+								}}
+							>
+								{t('viewDetails')}
+							</button>
 						</div>
 
 						<TableGeneric
-							headersTable={headersTablePending}
+							headersTable={headersTableExported}
 							dataTable={filteredData()[exp_id]}
 							renderRowContent={(row) => row}
 						/>
 					</div>
 				))}
+
+				{/* Mostrar ViewDetails si showDetails es true */}
+				{showDetails && <ViewDetails onClose={() => setShowDetails(false)} exp_id={selectedExpId} />}
 			</section>
 		</div>
 	);

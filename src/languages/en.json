@@ -60,5 +60,6 @@
 	"originPort": "Origin Port",
 	"icos_destination": "ICOs destination",
 	"filters": "Filters",
-	"containerData": "Container data"
+	"containerData": "Container data",
+	"viewDetails": "View details"
 }

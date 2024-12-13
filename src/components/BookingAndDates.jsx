@@ -80,7 +80,7 @@ export const BookingAndDates = memo(function BookingAndDates({
 				return true;
 			}
 
-			if (item.contract_atlas.price_type !== 'fixed' && item.contract_atlas.fixed_price_status !== 'fixed') {
+			if (item.contract_atlas.price_type !== 'Fixed' && item.contract_atlas.fixed_price_status !== 'Fixed') {
 				return true;
 			}
 

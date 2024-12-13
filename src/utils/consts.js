@@ -21,6 +21,23 @@ export const headersTablePending = [
 	'price_type',
 	'weight',
 ];
+export const headersTableExported = [
+	'contract',
+	'shipmentMonth',
+	'originPort',
+	'ico',
+	'secondary_ico_id',
+	'mark',
+	'quality',
+	'packaging',
+	'customer',
+	'units',
+	'destinationPort',
+	'sample',
+	'incoterm',
+	'price_type',
+	'weight',
+];
 export const headersTableView = [
 	'contract',
 	'shipmentMonth',
