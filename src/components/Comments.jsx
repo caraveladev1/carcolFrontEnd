@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { API_BASE_URL } from '../utils/consts';
 import { InputGeneric } from './InputGeneric';
 import { SubmitButton } from './SubmitButton';
+import { useTranslation } from 'react-i18next';
 
 export function Comments({ ico, onClose }) {
+	const { t } = useTranslation();
 	const [comments, setComments] = useState([]);
 	const [newComment, setNewComment] = useState('');
 	const [commentId, setCommentId] = useState(null);
@@ -28,17 +30,20 @@ export function Comments({ ico, onClose }) {
 	const handleCommentSubmit = (e) => {
 		e.preventDefault();
 
+		// Crea el nuevo comentario
 		const newCommentObject = { comentario: newComment };
-		const updatedComments = [...comments, newCommentObject];
 
+		// Limpia el input inmediatamente
 		setNewComment('');
 
+		// Crea el nuevo cuerpo para enviar
 		const postData = {
 			id: commentId,
 			ico: ico,
-			comment: updatedComments,
+			comment: [...comments, newCommentObject],
 		};
 
+		// Envía el nuevo comentario al servidor
 		fetch(`${API_BASE_URL}api/exports/comment/add`, {
 			method: 'POST',
 			headers: {
@@ -48,11 +53,14 @@ export function Comments({ ico, onClose }) {
 		})
 			.then((response) => response.json())
 			.then((data) => {
-				// Actualiza el estado con la respuesta de la API si es necesario
+				// Actualiza el estado 'comments' con el nuevo comentario
 				setComments((prevComments) => [...prevComments, newCommentObject]);
 				alert('Comment added successfully');
 			})
-			.catch((error) => console.error('Error al agregar el comentario:', error));
+			.catch((error) => {
+				console.error('Error al agregar el comentario:', error);
+				alert('Error al agregar el comentario');
+			});
 	};
 
 	return (
@@ -76,14 +84,16 @@ export function Comments({ ico, onClose }) {
 				</ul>
 				<form onSubmit={handleCommentSubmit}>
 					<div className='flex flex-row justify-end mt-4 gap-6'>
-						<InputGeneric
-							placeholder='Type your comment here'
+						<input
 							type='text'
-							required='required'
 							value={newComment} // El valor siempre está sincronizado con el estado
-							onChange={(e) => setNewComment(e.target.value)} // Cuando cambia el input, actualiza el estado
+							onChange={(e) => setNewComment(e.target.value)}
+							placeholder={t('typeComment')}
+							className={`bg-transparent font-bayard text-xl uppercase border-2 border-pink p-5 w-full text-pink focus:outline-none focus:border-2 focus:border-pink m-auto h-full`}
 						/>
-						<SubmitButton buttonText='submit' className='bg-cafe' />
+						<button type='submit' className={`bg-cafe font-bayard text-2xl text-white p-4 h-full `}>
+							{t('submit')}
+						</button>
 					</div>
 				</form>
 			</div>
