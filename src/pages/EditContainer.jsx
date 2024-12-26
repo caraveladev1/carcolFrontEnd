@@ -19,6 +19,8 @@ export const EditContainer = () => {
 		selectedIcos: [],
 		filtersData: [],
 		selectedDestinationPorts: [],
+		startDate: '',
+		endDate: '',
 	});
 
 	const fetchContainerData = useCallback(async () => {
@@ -75,12 +77,27 @@ export const EditContainer = () => {
 		const value = Array.from(e.target.selectedOptions, (option) => option.value);
 		setState((prevState) => ({ ...prevState, selectedDestinationPorts: value }));
 	};
+	const handleStartDateChange = (e) => {
+		setState((prevState) => ({ ...prevState, startDate: e.target.value }));
+	};
 
+	const handleEndDateChange = (e) => {
+		setState((prevState) => ({ ...prevState, endDate: e.target.value }));
+	};
 	const filteredTableData = () => {
-		const { tableData, selectedDestinationPorts } = state;
-		return tableData.filter(
-			(row) => selectedDestinationPorts.length === 0 || selectedDestinationPorts.includes(row.destinationPort),
-		);
+		const { tableData, selectedDestinationPorts, startDate, endDate } = state;
+		return tableData.filter((row) => {
+			const shipmentDate = new Date(row.shipmentMonth);
+			const start = startDate ? new Date(startDate) : null;
+			const end = endDate ? new Date(endDate) : null;
+
+			// Filtrar por puerto y rango de fechas
+			return (
+				(selectedDestinationPorts.length === 0 || selectedDestinationPorts.includes(row.destinationPort)) &&
+				(!start || shipmentDate >= start) &&
+				(!end || shipmentDate <= end)
+			);
+		});
 	};
 
 	const handleCheckboxChange = useCallback((ico) => {
@@ -107,15 +124,32 @@ export const EditContainer = () => {
 				<Banner />
 				<h1 className='text-5xl font-bold uppercase text-pink font-bayard mb-6'>{t('editContainer')}</h1>
 				<h2 className='text-5xl font-bold uppercase text-pink font-bayard mb-6'>{t('filters')}</h2>
-				<InputGeneric
-					type='select'
-					filter='destinationPort'
-					options={[...new Set(state.tableData.map((row) => row.destinationPort))]}
-					onChange={handleDestinationPortChange}
-					multiple={true}
-					placeholder='Select destination ports'
-					className='mb-6'
-				/>
+				<div className='filtersContainers flex flex-row justify-between gap-6'>
+					<InputGeneric
+						type='select'
+						filter='destinationPort'
+						options={[...new Set(state.tableData.map((row) => row.destinationPort))]}
+						onChange={handleDestinationPortChange}
+						multiple={true}
+						placeholder='Select destination ports'
+						className='mb-6'
+					/>
+
+					<InputGeneric
+						type='date'
+						filter='startDate'
+						onChange={handleStartDateChange}
+						placeholder='Select start date'
+						className='mb-6'
+					/>
+					<InputGeneric
+						type='date'
+						filter='endDate'
+						onChange={handleEndDateChange}
+						placeholder='Select end date'
+						className='mb-6'
+					/>
+				</div>
 				<h2 className='text-5xl font-bold uppercase text-pink font-bayard mb-6'>{t('containerData')}</h2>
 				<FiltersEditContainer filterValues={state.filtersData} selectedIcos={state.selectedIcos} oldExportId={id} />
 				<TableGeneric

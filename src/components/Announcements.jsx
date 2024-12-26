@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { InputGeneric } from './InputGeneric';
 import { API_BASE_URL } from '../utils/consts';
+import { useTranslation } from 'react-i18next';
 
 export function Announcements({ onClose }) {
 	const [data, setData] = useState([]);
@@ -10,6 +11,10 @@ export function Announcements({ onClose }) {
 	// Filtros
 	const [dateRange, setDateRange] = useState({ start: '', end: '' });
 	const [selectedPackaging, setSelectedPackaging] = useState([]);
+	const [selectedOriginPorts, setSelectedOriginPorts] = useState([]);
+	const [selectedIcos, setSelectedIcos] = useState([]);
+	const [selectedLotTypes, setSelectedLotTypes] = useState([]);
+	const { t } = useTranslation();
 
 	// Manejar cambios en los campos de entrada
 	const handleInputChange = (icoId, field, value) => {
@@ -38,6 +43,8 @@ export function Announcements({ onClose }) {
 						orders: item.orders || '',
 						review: item.review || '',
 						sales_code: item.sales_code || '',
+						origin_port: item.origin_port || '',
+						lot_type: item.lot_type || '',
 					};
 				});
 				setFormData(initialFormData);
@@ -46,7 +53,6 @@ export function Announcements({ onClose }) {
 				console.error('Error:', error);
 			});
 	}, []);
-
 	// Manejar el envío de datos al servidor
 	const addAnnouncements = () => {
 		fetch(`${API_BASE_URL}api/exports/addAnnouncements`, {
@@ -71,11 +77,6 @@ export function Announcements({ onClose }) {
 		setDateRange((prev) => ({ ...prev, [field]: value }));
 	};
 
-	// Manejar el cambio en el filtro de packaging_capacity
-	const handlePackagingChange = (value) => {
-		setSelectedPackaging(value);
-	};
-
 	// Filtrar los datos
 	useEffect(() => {
 		let filtered = [...data];
@@ -96,8 +97,22 @@ export function Announcements({ onClose }) {
 			filtered = filtered.filter((item) => selectedPackaging.includes(item.packaging_capacity));
 		}
 
+		// Filtro por origin_port
+		if (selectedOriginPorts.length > 0) {
+			filtered = filtered.filter((item) => selectedOriginPorts.includes(item.origin_port));
+		}
+
+		// Filtro por ICOs
+		if (selectedIcos.length > 0) {
+			filtered = filtered.filter((item) => selectedIcos.includes(item.ico));
+		}
+		// Filtro por lot_type
+		if (selectedLotTypes.length > 0) {
+			filtered = filtered.filter((item) => selectedLotTypes.includes(item.lot_type));
+		}
+
 		setFilteredData(filtered);
-	}, [dateRange, selectedPackaging, data]);
+	}, [dateRange, selectedPackaging, selectedOriginPorts, selectedIcos, selectedLotTypes, data]);
 
 	return (
 		<div className='announcementContainer fixed inset-0 bg-black/50 flex justify-center items-center'>
@@ -107,7 +122,7 @@ export function Announcements({ onClose }) {
 				</button>
 
 				{/* Filtros */}
-				<div className='filters grid grid-cols-3 gap-4 mb-4'>
+				<div className='filters grid grid-cols-6 gap-4 mb-4'>
 					<div className='col-span-1'>
 						<input
 							type='date'
@@ -131,9 +146,41 @@ export function Announcements({ onClose }) {
 							filter='packaging_capacity'
 							options={[...new Set(data.map((item) => item.packaging_capacity))]} // Opciones únicas
 							defaultValue={selectedPackaging}
-							onChange={(e) => setSelectedPackaging(e.target.value)} // Actualiza el estado al seleccionar
+							onChange={(e) => setSelectedPackaging(e.target.value)}
 							placeholder='Select Packaging'
-							className=''
+						/>
+					</div>
+					<div className='col-span-1'>
+						<InputGeneric
+							type='select'
+							multiple={true}
+							filter='origin_port'
+							options={[...new Set(data.map((item) => item.origin_port))]} // Opciones únicas
+							defaultValue={selectedOriginPorts}
+							onChange={(e) => setSelectedOriginPorts(e.target.value)}
+							placeholder='Select Origin Port'
+						/>
+					</div>
+					<div className='col-span-1'>
+						<InputGeneric
+							type='select'
+							multiple={true}
+							filter='ico'
+							options={[...new Set(data.map((item) => item.ico))]} // Opciones únicas
+							defaultValue={selectedIcos}
+							onChange={(e) => setSelectedIcos(e.target.value)}
+							placeholder='Select ICOs'
+						/>
+					</div>
+					<div className='col-span-1'>
+						<InputGeneric
+							type='select'
+							multiple={true}
+							filter='lot_type'
+							options={[...new Set(data.map((item) => item.lot_type))]} // Opciones únicas
+							defaultValue={selectedLotTypes}
+							onChange={(e) => setSelectedLotTypes(e.target.value)}
+							placeholder='Select Lot Type'
 						/>
 					</div>
 				</div>
@@ -142,10 +189,12 @@ export function Announcements({ onClose }) {
 				<div className='container space-y-4'>
 					{filteredData.length > 0 ? (
 						filteredData.map((item) => (
-							<div key={item.ico} className='grid grid-cols-7 gap-4'>
+							<div key={item.ico} className='grid grid-cols-8 gap-4'>
 								<p className='col-span-1 font-bayard text-2xl text-center m-auto text-pink'>{item.ico}</p>
 								<p className='col-span-1 text-center'>{item.date_landing}</p>
 								<p className='col-span-1 text-center'>{item.packaging_capacity}</p>
+								<p className='col-span-1 text-center'>{item.lot_type}</p>
+								<p className='col-span-1 text-center'>{item.origin_port}</p>
 								<div className='col-span-1'>
 									<InputGeneric
 										placeholder='Announcement'
@@ -165,13 +214,6 @@ export function Announcements({ onClose }) {
 										placeholder='Review'
 										defaultValue={formData[item.ico]?.review}
 										onChange={(e) => handleInputChange(item.ico, 'review', e.target.value)}
-									/>
-								</div>
-								<div className='col-span-1'>
-									<InputGeneric
-										placeholder='Sales Code'
-										defaultValue={formData[item.ico].sales_code}
-										onChange={(e) => handleInputChange(item.ico, 'sales_code', e.target.value)}
 									/>
 								</div>
 							</div>

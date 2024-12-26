@@ -73,9 +73,9 @@ export function ViewContainers() {
 			contract: item.contract_atlas.contract,
 			customer: item.contract_atlas.customer,
 			price_type:
-				item.price_type === 'differential' && item.fixed_price_status === null
+				item.contract_atlas.price_type === 'differential' && item.contract_atlas.fixed_price_status === null
 					? 'Differential: Pending '
-					: item.price_type === 'differential' && item.fixed_price_status !== null
+					: item.contract_atlas.price_type === 'differential' && item.contract_atlas.fixed_price_status !== null
 						? 'Differential: Fixed '
 						: 'Fixed',
 			sample: item.contract_atlas.customer_cupping_state || 'Pending',
@@ -115,13 +115,10 @@ export function ViewContainers() {
 					(!filters.initialDate || itemDate >= new Date(filters.initialDate)) &&
 					(!filters.finalDate || itemDate <= new Date(filters.finalDate));
 
-				const matchesOffice = !filters.office || filters.office.length === 0 || filters.office.includes(item.office);
-				const matchesPackaging =
-					!filters.packaging || filters.packaging.length === 0 || filters.packaging.includes(item.packaging);
-				const matchesContract =
-					!filters.contract || filters.contract.length === 0 || filters.contract.includes(item.contract);
-				const matchesDestination =
-					!filters.destination || filters.destination.length === 0 || filters.destination.includes(item.destination);
+				const matchesOffice = filters.office.length === 0 || filters.office.includes(item.office);
+				const matchesPackaging = filters.packaging.length === 0 || filters.packaging.includes(item.packaging);
+				const matchesContract = filters.contract.length === 0 || filters.contract.includes(item.contract);
+				const matchesDestination = filters.destination.length === 0 || filters.destination.includes(item.destination);
 
 				return withinDateRange && matchesOffice && matchesPackaging && matchesContract && matchesDestination;
 			});
@@ -169,36 +166,27 @@ export function ViewContainers() {
 			});
 	}, []);
 
+	const handleFilterChange = (e) => {
+		const { name, value, multiple, selectedOptions } = e.target;
+
+		// Si es un select múltiple, obtenemos los valores seleccionados
+		const updatedValue = multiple ? [...selectedOptions].map((option) => option.value) : value; // Si no es múltiple, solo usamos el valor del select
+
+		setFilters((prevFilters) => {
+			const updatedFilters = {
+				...prevFilters,
+				[name]: name === 'initialDate' || name === 'finalDate' ? value : updatedValue,
+			};
+			console.log('Updated Filters:', updatedFilters);
+			return updatedFilters;
+		});
+	};
+
 	if (loading) {
 		return <Loader />;
 	}
 
-	// filteredData[exp_id][0]?.weight	const totalWeight =
 	const filteredData = filterData(organizedData);
-	//console.log(filteredData);
-
-	const handleFilterChange = (e) => {
-		const { name, value } = e.target;
-
-		setFilters((prevFilters) => {
-			if (name === 'initialDate' || name === 'finalDate') {
-				return {
-					...prevFilters,
-					[name]: value,
-				};
-			}
-
-			const currentValues = prevFilters[name] || [];
-			const updatedValues = currentValues.includes(value)
-				? currentValues.filter((v) => v !== value)
-				: [...currentValues, value];
-
-			return {
-				...prevFilters,
-				[name]: updatedValues,
-			};
-		});
-	};
 
 	return (
 		<div className='bg-dark-background bg-cover bg-fixed min-h-screen'>
@@ -210,14 +198,14 @@ export function ViewContainers() {
 					<InputGeneric
 						type='date'
 						filter='initialDate'
-						onChange={(e) => handleFilterChange(e)}
+						onChange={handleFilterChange}
 						required={false}
 						defaultValue={filters.initialDate}
 					/>
 					<InputGeneric
 						type='date'
 						filter='finalDate'
-						onChange={(e) => handleFilterChange(e)}
+						onChange={handleFilterChange}
 						required={false}
 						defaultValue={filters.finalDate}
 					/>
@@ -269,9 +257,7 @@ export function ViewContainers() {
 
 				{filteredData &&
 					Object.keys(filteredData).map((exp_id) => {
-						// Calcular el peso total de forma sencilla
 						const totalWeight = filteredData[exp_id].reduce((sum, item) => {
-							// Convertir a número o tomar 0 si no es válido
 							const weight = parseFloat(item.weight) || 0;
 							return sum + weight;
 						}, 0);
