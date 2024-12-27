@@ -73,14 +73,13 @@ export const BookingAndDates = memo(function BookingAndDates({
 
 		const invalidEntries = relatedData.filter((item) => {
 			if (
-				!item.contract_atlas ||
-				item.contract_atlas.customer_cupping_state === 'Pending' ||
-				item.contract_atlas.customer_cupping_state === 'Rejected'
+				item.contract_atlas.customerCuppingState === 'Pending' ||
+				item.contract_atlas.customerCuppingState === 'Rejected'
 			) {
 				return true;
 			}
 
-			if (item.contract_atlas.price_type !== 'Fixed' && item.contract_atlas.fixed_price_status !== 'Fixed') {
+			if (item.contract_atlas.price_type !== 'fixed' && item.contract_atlas.fixed_price_status !== 'Fixed') {
 				return true;
 			}
 
