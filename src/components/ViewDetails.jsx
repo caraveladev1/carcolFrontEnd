@@ -16,10 +16,10 @@ export function ViewDetails({ onClose, exp_id }) {
 				// Accede al array correspondiente al `exp_id`
 				if (responseData && responseData[exp_id]) {
 					const filteredData = responseData[exp_id][0]; // Primer elemento del array
-					console.log('Filtered Data for exp_id:', filteredData);
+					console.log('Filtered Data for:', filteredData);
 					setData(filteredData || null);
 				} else {
-					console.error('No data found for exp_id:', exp_id);
+					console.error('No data found for:', exp_id);
 					setData(null); // Manejo cuando no hay datos
 				}
 			})
@@ -51,7 +51,7 @@ export function ViewDetails({ onClose, exp_id }) {
 					<p className='font-bayard text-2xl px-4'>Close</p>
 				</button>
 				<div>
-					<h2 className='text-xl font-bold mb-4'>Detalles para exp_id: {exp_id}</h2>
+					<h2 className='text-xl font-bold mb-4'>Details to: {exp_id}</h2>
 				</div>
 				<div className='details-container'>
 					{data ? (

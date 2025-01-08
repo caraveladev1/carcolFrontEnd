@@ -109,7 +109,7 @@ export function ViewContainers() {
 	const filterData = (data) => {
 		return Object.keys(data).reduce((filteredData, exp_id) => {
 			const filteredItems = data[exp_id].filter((item) => {
-				const itemDate = new Date(item.date_landing || item.export_date);
+				const itemDate = new Date(item.export_date);
 
 				const withinDateRange =
 					(!filters.initialDate || itemDate >= new Date(filters.initialDate)) &&
@@ -177,7 +177,7 @@ export function ViewContainers() {
 				...prevFilters,
 				[name]: name === 'initialDate' || name === 'finalDate' ? value : updatedValue,
 			};
-			console.log('Updated Filters:', updatedFilters);
+			//console.log('Updated Filters:', updatedFilters);
 			return updatedFilters;
 		});
 	};
@@ -279,7 +279,7 @@ export function ViewContainers() {
 											{`Booking: ${filteredData[exp_id][0]?.booking || 'No available'}`}
 										</p>
 										<p className='text-xl font-bold text-celeste font-bayard uppercase'>
-											{`Landing on Port: ${filteredData[exp_id][0]?.date_landing || 'No available'}`}
+											{`Loading to Port: ${filteredData[exp_id][0]?.date_landing || 'No available'}`}
 										</p>
 									</div>
 								</div>

@@ -189,7 +189,7 @@ export function Announcements({ onClose }) {
 				<div className='container space-y-4'>
 					{filteredData.length > 0 ? (
 						filteredData.map((item) => (
-							<div key={item.ico} className='grid grid-cols-8 gap-4'>
+							<div key={item.ico} className='grid grid-cols-9 gap-4'>
 								<p className='col-span-1 font-bayard text-2xl text-center m-auto text-pink'>{item.ico}</p>
 								<p className='col-span-1 text-center'>{item.date_landing}</p>
 								<p className='col-span-1 text-center'>{item.packaging_capacity}</p>
@@ -214,6 +214,13 @@ export function Announcements({ onClose }) {
 										placeholder='Review'
 										defaultValue={formData[item.ico]?.review}
 										onChange={(e) => handleInputChange(item.ico, 'review', e.target.value)}
+									/>
+								</div>
+								<div className='col-span-1'>
+									<InputGeneric
+										placeholder='Sales Code'
+										defaultValue={formData[item.ico]?.sales_code}
+										onChange={(e) => handleInputChange(item.ico, 'sales_code', e.target.value)}
 									/>
 								</div>
 							</div>

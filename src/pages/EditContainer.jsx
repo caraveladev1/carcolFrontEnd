@@ -21,6 +21,7 @@ export const EditContainer = () => {
 		selectedDestinationPorts: [],
 		startDate: '',
 		endDate: '',
+		selectedIncoterm: [],
 	});
 
 	const fetchContainerData = useCallback(async () => {
@@ -69,6 +70,7 @@ export const EditContainer = () => {
 				weight: atlasData.estimated_kg || '-',
 				select: atlasData.ico,
 				originPort: atlasData.origin_port,
+				incoterm: atlasData.incoterm,
 			};
 		});
 	};
@@ -76,7 +78,10 @@ export const EditContainer = () => {
 		const { value } = e.target; // value ya es un array según tu implementación
 		setState((prevState) => ({ ...prevState, selectedDestinationPorts: value }));
 	};
-
+	const handleIncotermChange = (e) => {
+		const { value } = e.target;
+		setState((prevState) => ({ ...prevState, selectedIncoterm: value }));
+	};
 	const handleStartDateChange = (e) => {
 		setState((prevState) => ({ ...prevState, startDate: e.target.value }));
 	};
@@ -85,21 +90,20 @@ export const EditContainer = () => {
 		setState((prevState) => ({ ...prevState, endDate: e.target.value }));
 	};
 	const filteredTableData = () => {
-		const { tableData, selectedDestinationPorts, startDate, endDate } = state;
+		const { tableData, selectedDestinationPorts, startDate, endDate, selectedIncoterm } = state;
 		return tableData.filter((row) => {
 			const shipmentDate = new Date(row.shipmentMonth);
 			const start = startDate ? new Date(startDate) : null;
 			const end = endDate ? new Date(endDate) : null;
 
-			// Filtrar por puerto y rango de fechas
 			return (
 				(selectedDestinationPorts.length === 0 || selectedDestinationPorts.includes(row.destinationPort)) &&
 				(!start || shipmentDate >= start) &&
-				(!end || shipmentDate <= end)
+				(!end || shipmentDate <= end) &&
+				(selectedIncoterm.length === 0 || selectedIncoterm.includes(row.incoterm))
 			);
 		});
 	};
-
 	const handleCheckboxChange = useCallback((ico) => {
 		setState((prevState) => {
 			const isSelected = prevState.selectedIcos.some((selected) => selected.ico === ico);
@@ -134,7 +138,15 @@ export const EditContainer = () => {
 						placeholder='Select destination ports'
 						className='mb-6'
 					/>
-
+					<InputGeneric
+						type='select'
+						filter='incoterm'
+						options={[...new Set(state.tableData.map((row) => row.incoterm))]}
+						onChange={handleIncotermChange}
+						multiple={true}
+						placeholder='Select incoterms'
+						className='mb-6'
+					/>
 					<InputGeneric
 						type='date'
 						filter='startDate'
