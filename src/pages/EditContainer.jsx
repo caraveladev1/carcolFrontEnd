@@ -72,11 +72,11 @@ export const EditContainer = () => {
 			};
 		});
 	};
-
 	const handleDestinationPortChange = (e) => {
-		const value = Array.from(e.target.selectedOptions, (option) => option.value);
+		const { value } = e.target; // value ya es un array según tu implementación
 		setState((prevState) => ({ ...prevState, selectedDestinationPorts: value }));
 	};
+
 	const handleStartDateChange = (e) => {
 		setState((prevState) => ({ ...prevState, startDate: e.target.value }));
 	};
