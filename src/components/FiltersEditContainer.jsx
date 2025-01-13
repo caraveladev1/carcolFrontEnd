@@ -73,7 +73,7 @@ export function FiltersEditContainer({ filterValues, selectedIcos, oldExportId }
 			),
 		};
 
-		console.log('Payload completo:', payload);
+		//console.log('Payload completo:', payload);
 
 		// Verificar si defaultValues[0].is_pending === '1'
 		if (defaultValues[0]?.is_pending === '1') {
