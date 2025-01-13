@@ -190,47 +190,62 @@ export function Announcements({ onClose }) {
 				{/* Lista de datos filtrados */}
 				<div className='container space-y-4'>
 					{filteredData.length > 0 ? (
-						filteredData.map((item) => (
-							<div key={item.ico} className='grid grid-cols-11 gap-4'>
-								<p className='col-span-1 font-bayard text-2xl text-center m-auto text-pink'>{item.ico}</p>
-								<p className='col-span-1 text-center font-bayard text-2xl m-auto text-pink'>{item.date_landing}</p>
-								<p className='col-span-1 text-center font-bayard text-2xl m-auto text-pink'>
-									{item.packaging_capacity}
-								</p>
-								<p className='col-span-1 text-center font-bayard text-2xl m-auto text-pink'>{item.lot_type}</p>
-								<p className='col-span-1 text-center font-bayard text-2xl m-auto text-pink'>{item.origin_port}</p>
-								<p className='col-span-1 text-center font-bayard text-2xl m-auto text-pink'>{item.estimated_kg}</p>
-								<p className='col-span-1 text-center font-bayard text-2xl m-auto text-pink'>{item.units}</p>
-								<div className='col-span-1'>
-									<InputGeneric
-										placeholder='Announcement'
-										defaultValue={formData[item.ico]?.announcement}
-										onChange={(e) => handleInputChange(item.ico, 'announcement', e.target.value)}
-									/>
-								</div>
-								<div className='col-span-1'>
-									<InputGeneric
-										placeholder='Allocation'
-										defaultValue={formData[item.ico]?.allocation}
-										onChange={(e) => handleInputChange(item.ico, 'allocation', e.target.value)}
-									/>
-								</div>
-								<div className='col-span-1'>
-									<InputGeneric
-										placeholder='Sales Code'
-										defaultValue={formData[item.ico]?.sales_code}
-										onChange={(e) => handleInputChange(item.ico, 'sales_code', e.target.value)}
-									/>
-								</div>
-								<div className='col-span-1'>
-									<InputGeneric
-										placeholder='Revision number'
-										defaultValue={formData[item.ico]?.revision_number}
-										onChange={(e) => handleInputChange(item.ico, 'revision_number', e.target.value)}
-									/>
-								</div>
+						<>
+							<div className='grid grid-cols-11 gap-4 font-bold text-pink text-center'>
+								<p className='col-span-1 text-2xl font-bayard'>ICO</p>
+								<p className='col-span-1 text-2xl font-bayard'>Date Landing</p>
+								<p className='col-span-1 text-2xl font-bayard'>Packaging Capacity</p>
+								<p className='col-span-1 text-2xl font-bayard'>Lot Type</p>
+								<p className='col-span-1 text-2xl font-bayard'>Origin Port</p>
+								<p className='col-span-1 text-2xl font-bayard'>Estimated KG</p>
+								<p className='col-span-1 text-2xl font-bayard'>Units</p>
+								<p className='col-span-1 text-2xl font-bayard'>Announcement</p>
+								<p className='col-span-1 text-2xl font-bayard'>Allocation</p>
+								<p className='col-span-1 text-2xl font-bayard'>Sales Code</p>
+								<p className='col-span-1 text-2xl font-bayard'>Revision Number</p>
 							</div>
-						))
+							{filteredData.map((item) => (
+								<div key={item.ico} className='grid grid-cols-11 gap-4'>
+									<p className='col-span-1 font-bayard text-2xl text-center m-auto text-pink'>{item.ico}</p>
+									<p className='col-span-1 text-center font-bayard text-2xl m-auto text-pink'>{item.date_landing}</p>
+									<p className='col-span-1 text-center font-bayard text-2xl m-auto text-pink'>
+										{item.packaging_capacity}
+									</p>
+									<p className='col-span-1 text-center font-bayard text-2xl m-auto text-pink'>{item.lot_type}</p>
+									<p className='col-span-1 text-center font-bayard text-2xl m-auto text-pink'>{item.origin_port}</p>
+									<p className='col-span-1 text-center font-bayard text-2xl m-auto text-pink'>{item.estimated_kg}</p>
+									<p className='col-span-1 text-center font-bayard text-2xl m-auto text-pink'>{item.units}</p>
+									<div className='col-span-1'>
+										<InputGeneric
+											placeholder='Announcement'
+											defaultValue={formData[item.ico]?.announcement}
+											onChange={(e) => handleInputChange(item.ico, 'announcement', e.target.value)}
+										/>
+									</div>
+									<div className='col-span-1'>
+										<InputGeneric
+											placeholder='Allocation'
+											defaultValue={formData[item.ico]?.allocation}
+											onChange={(e) => handleInputChange(item.ico, 'allocation', e.target.value)}
+										/>
+									</div>
+									<div className='col-span-1'>
+										<InputGeneric
+											placeholder='Sales Code'
+											defaultValue={formData[item.ico]?.sales_code}
+											onChange={(e) => handleInputChange(item.ico, 'sales_code', e.target.value)}
+										/>
+									</div>
+									<div className='col-span-1'>
+										<InputGeneric
+											placeholder='Revision number'
+											defaultValue={formData[item.ico]?.revision_number}
+											onChange={(e) => handleInputChange(item.ico, 'revision_number', e.target.value)}
+										/>
+									</div>
+								</div>
+							))}
+						</>
 					) : (
 						<p>No items to display.</p>
 					)}

@@ -36,7 +36,7 @@ export const headersTableExported = [
 	'sample',
 	'incoterm',
 	'price_type',
-	'weight (kg) (kg)',
+	'weight (kg)',
 ];
 export const headersTableView = [
 	'contract',
