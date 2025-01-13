@@ -38,7 +38,7 @@ export function ViewDetails({ onClose, exp_id }) {
 				export_date: data.export_date || 'N/A',
 				estimated_arrival: data.estimated_arrival || 'N/A',
 				announcement: data.announcement || 'N/A',
-				review: data.review || 'N/A',
+				revision_number: data.revision_number || 'N/A',
 				sales_code: data.sales_code || 'N/A',
 			});
 		}
