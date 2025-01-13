@@ -73,7 +73,8 @@ export const BookingAndDates = memo(function BookingAndDates({
 
 		const invalidEntries = relatedData.filter((item) => {
 			if (
-				item.contract_atlas.customerCuppingState === 'Pending' ||
+				item.contract_atlas.customerCuppingState === 'Not Sent' ||
+				item.contract_atlas.customerCuppingState === 'Sent' ||
 				item.contract_atlas.customerCuppingState === 'Rejected'
 			) {
 				return true;

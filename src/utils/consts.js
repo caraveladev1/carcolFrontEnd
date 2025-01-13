@@ -19,7 +19,7 @@ export const headersTablePending = [
 	'sample',
 	'incoterm',
 	'price_type',
-	'weight (kg)',
+	'weight',
 ];
 export const headersTableExported = [
 	'contract',
@@ -36,7 +36,7 @@ export const headersTableExported = [
 	'sample',
 	'incoterm',
 	'price_type',
-	'weight (kg)',
+	'weight',
 ];
 export const headersTableView = [
 	'contract',
@@ -53,7 +53,7 @@ export const headersTableView = [
 	'sample',
 	'incoterm',
 	'price_type',
-	'weight (kg)',
+	'weight',
 	'comments',
 ];
 
@@ -81,7 +81,7 @@ export const headersTableCreateContainer = [
 	'shipmentMonth',
 	'destinationPort',
 	'price_type',
-	'weight (kg)',
+	'weight',
 	'select',
 ];
 
@@ -118,6 +118,6 @@ export const headersTableEditContainer = [
 	'sample',
 	'destinationPort',
 	'price_type',
-	'weight (kg)',
+	'weight',
 	'select',
 ];
