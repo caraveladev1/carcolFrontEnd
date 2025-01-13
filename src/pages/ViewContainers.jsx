@@ -169,8 +169,7 @@ export function ViewContainers() {
 	const handleFilterChange = (e) => {
 		const { name, value, multiple, selectedOptions } = e.target;
 
-		// Si es un select múltiple, obtenemos los valores seleccionados
-		const updatedValue = multiple ? [...selectedOptions].map((option) => option.value) : value; // Si no es múltiple, solo usamos el valor del select
+		const updatedValue = multiple ? [...selectedOptions].map((option) => option.value) : value;
 
 		setFilters((prevFilters) => {
 			const updatedFilters = {

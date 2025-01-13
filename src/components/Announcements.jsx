@@ -41,10 +41,12 @@ export function Announcements({ onClose }) {
 					initialFormData[item.ico] = {
 						announcement: item.announcement || '',
 						orders: item.orders || '',
-						review: item.review || '',
+						revision_number: item.revision_number || '',
+						allocation: item.allocation,
 						sales_code: item.sales_code || '',
 						origin_port: item.origin_port || '',
 						lot_type: item.lot_type || '',
+						units: item.units,
 					};
 				});
 				setFormData(initialFormData);
@@ -116,7 +118,7 @@ export function Announcements({ onClose }) {
 
 	return (
 		<div className='announcementContainer fixed inset-0 bg-black/50 flex justify-center items-center'>
-			<div className='popup w-[80%] overflow-auto max-h-[70%] bg-beige pt-12 px-4 relative'>
+			<div className='popup w-[80%] overflow-auto max-h-[70%] bg-verde	 pt-12 px-4 relative'>
 				<button className='absolute top-0 right-0 bg-red-500 text-white p-1' onClick={onClose}>
 					<p className='font-bayard text-2xl px-4'>Close</p>
 				</button>
@@ -189,12 +191,16 @@ export function Announcements({ onClose }) {
 				<div className='container space-y-4'>
 					{filteredData.length > 0 ? (
 						filteredData.map((item) => (
-							<div key={item.ico} className='grid grid-cols-9 gap-4'>
+							<div key={item.ico} className='grid grid-cols-11 gap-4'>
 								<p className='col-span-1 font-bayard text-2xl text-center m-auto text-pink'>{item.ico}</p>
-								<p className='col-span-1 text-center'>{item.date_landing}</p>
-								<p className='col-span-1 text-center'>{item.packaging_capacity}</p>
-								<p className='col-span-1 text-center'>{item.lot_type}</p>
-								<p className='col-span-1 text-center'>{item.origin_port}</p>
+								<p className='col-span-1 text-center font-bayard text-2xl m-auto text-pink'>{item.date_landing}</p>
+								<p className='col-span-1 text-center font-bayard text-2xl m-auto text-pink'>
+									{item.packaging_capacity}
+								</p>
+								<p className='col-span-1 text-center font-bayard text-2xl m-auto text-pink'>{item.lot_type}</p>
+								<p className='col-span-1 text-center font-bayard text-2xl m-auto text-pink'>{item.origin_port}</p>
+								<p className='col-span-1 text-center font-bayard text-2xl m-auto text-pink'>{item.estimated_kg}</p>
+								<p className='col-span-1 text-center font-bayard text-2xl m-auto text-pink'>{item.units}</p>
 								<div className='col-span-1'>
 									<InputGeneric
 										placeholder='Announcement'
@@ -204,16 +210,9 @@ export function Announcements({ onClose }) {
 								</div>
 								<div className='col-span-1'>
 									<InputGeneric
-										placeholder='Order'
-										defaultValue={formData[item.ico]?.orders}
-										onChange={(e) => handleInputChange(item.ico, 'orders', e.target.value)}
-									/>
-								</div>
-								<div className='col-span-1'>
-									<InputGeneric
-										placeholder='Review'
-										defaultValue={formData[item.ico]?.review}
-										onChange={(e) => handleInputChange(item.ico, 'review', e.target.value)}
+										placeholder='Allocation'
+										defaultValue={formData[item.ico]?.allocation}
+										onChange={(e) => handleInputChange(item.ico, 'allocation', e.target.value)}
 									/>
 								</div>
 								<div className='col-span-1'>
@@ -221,6 +220,13 @@ export function Announcements({ onClose }) {
 										placeholder='Sales Code'
 										defaultValue={formData[item.ico]?.sales_code}
 										onChange={(e) => handleInputChange(item.ico, 'sales_code', e.target.value)}
+									/>
+								</div>
+								<div className='col-span-1'>
+									<InputGeneric
+										placeholder='Revision number'
+										defaultValue={formData[item.ico]?.revision_number}
+										onChange={(e) => handleInputChange(item.ico, 'revision_number', e.target.value)}
 									/>
 								</div>
 							</div>
@@ -231,7 +237,7 @@ export function Announcements({ onClose }) {
 				</div>
 
 				<div className='flex justify-end'>
-					<button className='bg-verde text-white p-1 my-4' onClick={addAnnouncements}>
+					<button className='bg-pink text-white p-1 my-4' onClick={addAnnouncements}>
 						<p className='font-bayard text-2xl px-4'>Submit</p>
 					</button>
 				</div>
