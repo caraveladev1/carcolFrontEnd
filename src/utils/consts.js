@@ -19,9 +19,9 @@ export const headersTablePending = [
 	'sample',
 	'incoterm',
 	'price_type',
-	/* 'production_order',
+	'production_order',
 	'milling_order',
-	'milling_state', */
+	'milling_state',
 	'weight',
 ];
 export const headersTableExported = [
@@ -39,9 +39,9 @@ export const headersTableExported = [
 	'sample',
 	'incoterm',
 	'price_type',
-	/* 'production_order',
+	'production_order',
 	'milling_order',
-	'milling_state', */
+	'milling_state',
 	'weight',
 ];
 export const headersTableView = [
@@ -59,9 +59,9 @@ export const headersTableView = [
 	'sample',
 	'incoterm',
 	'price_type',
-	/* 	'production_order',
+	'production_order',
 	'milling_order',
-	'milling_state', */
+	'milling_state',
 	'weight',
 	'comments',
 ];
@@ -90,9 +90,9 @@ export const headersTableCreateContainer = [
 	'shipmentMonth',
 	'destinationPort',
 	'price_type',
-	/* 'production_order',
+	'production_order',
 	'milling_order',
-	'milling_state', */
+	'milling_state',
 	'weight',
 	'select',
 ];
@@ -104,7 +104,15 @@ export const containerCapacity = {
 	40: 26308.34,
 };
 
-export const viewContainerFilters = ['office', 'initialDate', 'finalDate', 'packaging', 'contract', 'destination'];
+export const viewContainerFilters = [
+	'office',
+	'initialDate',
+	'finalDate',
+	'packaging',
+	'contract',
+	'destination',
+	'ico',
+];
 
 export const filtersEditContainer = [
 	'booking',
@@ -130,9 +138,9 @@ export const headersTableEditContainer = [
 	'sample',
 	'destinationPort',
 	'price_type',
-	/* 'production_order',
+	'production_order',
 	'milling_order',
-	'milling_state', */
+	'milling_state',
 	'weight',
 	'select',
 ];
