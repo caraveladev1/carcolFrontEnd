@@ -123,7 +123,7 @@ export function FiltersEditContainer({ filterValues, selectedIcos, oldExportId }
 
 		// Sumar pesos de los ICOs
 		const sumIcosWeight = payload.selectedIcos.reduce((accumulator, element) => {
-			const weight = parseInt(element.weight, 10);
+			const weight = parseInt(element.estimated_kg, 10);
 			return accumulator + (isNaN(weight) ? 0 : weight);
 		}, 0);
 
