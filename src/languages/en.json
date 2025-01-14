@@ -61,5 +61,8 @@
 	"icos_destination": "ICOs destination",
 	"filters": "Filters",
 	"containerData": "Container data",
-	"viewDetails": "View details"
+	"viewDetails": "View details",
+	"production_order": "Production order",
+	"milling_order": "Milling order",
+	"milling_state": "Milling state"
 }

@@ -85,6 +85,9 @@ export function ViewContainers() {
 			shipmentMonth: item.contract_atlas.shipment_date,
 			weight: item.contract_atlas.estimated_kg,
 			quality: item.contract_atlas.quality,
+			production_order: item.contract_atlas.production_order ? item.contract_atlas.production_order : '-',
+			milling_order: item.contract_atlas.milling_order ? item.contract_atlas.milling_order : '-',
+			milling_state: item.contract_atlas.milling_state ? item.contract_atlas.milling_state : '-',
 			export_date: item.export_date,
 			comments: (
 				<div className='flex flex-row justify-center items-center m-auto '>
@@ -102,6 +105,7 @@ export function ViewContainers() {
 			office: item.export_country,
 			destination: item.destination_port,
 			originPort: item.origin_port,
+
 			...item,
 		}));
 	};

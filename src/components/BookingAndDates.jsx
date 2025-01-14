@@ -69,7 +69,7 @@ export const BookingAndDates = memo(function BookingAndDates({
 			return;
 		}
 
-		//console.log('Datos relacionados:', relatedData);
+		console.log('Datos relacionados:', relatedData);
 
 		const invalidEntries = relatedData.filter((item) => {
 			if (
@@ -80,7 +80,7 @@ export const BookingAndDates = memo(function BookingAndDates({
 				return true;
 			}
 
-			if (item.contract_atlas.price_type !== 'fixed' && item.contract_atlas.fixed_price_status !== 'Fixed') {
+			if (item.contract_atlas.price_type !== 'fixed' && item.contract_atlas.fixed_price_status !== 'fixed') {
 				return true;
 			}
 
