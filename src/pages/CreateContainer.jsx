@@ -68,6 +68,9 @@ export function CreateContainer() {
 					destinationPort: item.destination_port,
 					exportCountry: item.origin_iso,
 					incoterm: item.incoterm,
+					production_order: item.production_order ? item.production_order : '-',
+					milling_order: item.milling_order ? item.milling_order : '-',
+					milling_state: item.milling_state ? item.milling_state : '-',
 					weight: item.estimated_kg,
 					originPort: item.origin_port,
 				}));

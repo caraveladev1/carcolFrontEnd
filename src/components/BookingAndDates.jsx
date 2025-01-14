@@ -69,7 +69,7 @@ export const BookingAndDates = memo(function BookingAndDates({
 			return;
 		}
 
-		//console.log('Datos relacionados:', relatedData);
+		console.log('Datos relacionados:', relatedData);
 
 		const invalidEntries = relatedData.filter((item) => {
 			if (

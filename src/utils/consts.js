@@ -1,5 +1,5 @@
-export const API_BASE_URL = 'https://bckcarcol-e4h2fag7bke3gvd6.eastus2-01.azurewebsites.net/';
-//export const API_BASE_URL = 'http://localhost:8080/';
+//export const API_BASE_URL = 'https://bckcarcol-e4h2fag7bke3gvd6.eastus2-01.azurewebsites.net/';
+export const API_BASE_URL = 'http://localhost:8080/';
 // Constantes de filtros
 export const placeholderFilter = ['office', 'exportMonth', 'packaging', 'contract', 'destinationPort'];
 
@@ -19,6 +19,9 @@ export const headersTablePending = [
 	'sample',
 	'incoterm',
 	'price_type',
+	/* 'production_order',
+	'milling_order',
+	'milling_state', */
 	'weight',
 ];
 export const headersTableExported = [
@@ -36,6 +39,9 @@ export const headersTableExported = [
 	'sample',
 	'incoterm',
 	'price_type',
+	/* 'production_order',
+	'milling_order',
+	'milling_state', */
 	'weight',
 ];
 export const headersTableView = [
@@ -53,6 +59,9 @@ export const headersTableView = [
 	'sample',
 	'incoterm',
 	'price_type',
+	/* 	'production_order',
+	'milling_order',
+	'milling_state', */
 	'weight',
 	'comments',
 ];
@@ -81,6 +90,9 @@ export const headersTableCreateContainer = [
 	'shipmentMonth',
 	'destinationPort',
 	'price_type',
+	/* 'production_order',
+	'milling_order',
+	'milling_state', */
 	'weight',
 	'select',
 ];
@@ -118,6 +130,9 @@ export const headersTableEditContainer = [
 	'sample',
 	'destinationPort',
 	'price_type',
+	/* 'production_order',
+	'milling_order',
+	'milling_state', */
 	'weight',
 	'select',
 ];
