@@ -45,7 +45,8 @@ export function Login() {
 			localStorage.setItem('username', data.username);
 
 			// Redirige a la ruta protegida
-			navigate('/');
+			const role = localStorage.getItem('role');
+			role === 1 ? navigate('/') : navigate('/view-containers');
 		} catch (error) {
 			setErrorMessage('Server error');
 		}
