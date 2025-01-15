@@ -23,6 +23,7 @@ export function ViewContainers() {
 		destination: [],
 		initialDate: '',
 		finalDate: '',
+		ico: '',
 	});
 
 	const [officeOptions, setofficeOptions] = useState([]);
@@ -70,6 +71,7 @@ export function ViewContainers() {
 
 	const mapData = (data) => {
 		return data.map((item) => ({
+			...item,
 			contract: item.contract_atlas.contract,
 			customer: item.contract_atlas.customer,
 			price_type:
@@ -85,12 +87,12 @@ export function ViewContainers() {
 			shipmentMonth: item.contract_atlas.shipment_date,
 			weight: item.contract_atlas.estimated_kg,
 			quality: item.contract_atlas.quality,
-			production_order: item.contract_atlas.production_order ? item.contract_atlas.production_order : '-',
-			milling_order: item.contract_atlas.milling_order ? item.contract_atlas.milling_order : '-',
-			milling_state: item.contract_atlas.milling_state ? item.contract_atlas.milling_state : '-',
+			production_order: item.contract_atlas.production_order || '-',
+			milling_order: item.contract_atlas.milling_order || '-',
+			milling_state: item.contract_atlas.milling_state || '-',
 			export_date: item.export_date,
 			comments: (
-				<div className='flex flex-row justify-center items-center m-auto '>
+				<div className='flex flex-row justify-center items-center m-auto'>
 					{item.comments}
 					<button className='btn-class max-w-[20%]' onClick={() => handleCommentsButtonClick(item)}>
 						<img src={commentsButton} alt='Comments' />
@@ -105,8 +107,6 @@ export function ViewContainers() {
 			office: item.export_country,
 			destination: item.destination_port,
 			originPort: item.origin_port,
-
-			...item,
 		}));
 	};
 
@@ -123,8 +123,11 @@ export function ViewContainers() {
 				const matchesPackaging = filters.packaging.length === 0 || filters.packaging.includes(item.packaging);
 				const matchesContract = filters.contract.length === 0 || filters.contract.includes(item.contract);
 				const matchesDestination = filters.destination.length === 0 || filters.destination.includes(item.destination);
+				const matchesIco = !filters.ico || item.ico?.toLowerCase().includes(filters.ico.toLowerCase());
 
-				return withinDateRange && matchesOffice && matchesPackaging && matchesContract && matchesDestination;
+				return (
+					withinDateRange && matchesOffice && matchesPackaging && matchesContract && matchesDestination && matchesIco
+				);
 			});
 
 			if (filteredItems.length > 0) {
@@ -248,6 +251,14 @@ export function ViewContainers() {
 						options={destinationOptions}
 						multiple={true}
 					/>
+					<InputGeneric
+						type='select'
+						filter='ico'
+						placeholder={t('ico_id')}
+						onChange={handleFilterChange}
+						required={false}
+						defaultValue={filters.ico}
+					/>
 					<button
 						className='bg-pink font-bayard text-xl uppercase border-2 border-pink p-5 w-full text-white focus:outline-none focus:border-2 focus:border-pink text-start'
 						type='button'
@@ -275,15 +286,9 @@ export function ViewContainers() {
 										</Link>
 									</div>
 									<div className='containerData flex flex-row gap-4'>
-										<p className='text-xl font-bold text-pink font-bayard uppercase'>
-											{`Total Weight: ${totalWeight || 'No available'}`}
-										</p>
-										<p className='text-xl font-bold text-pink font-bayard uppercase'>
-											{`Booking: ${filteredData[exp_id][0]?.booking || 'No available'}`}
-										</p>
-										<p className='text-xl font-bold text-celeste font-bayard uppercase'>
-											{`Loading to Port: ${filteredData[exp_id][0]?.date_landing || 'No available'}`}
-										</p>
+										<p className='text-xl font-bold text-pink font-bayard uppercase'>{`Total Weight: ${totalWeight || 'No available'}`}</p>
+										<p className='text-xl font-bold text-pink font-bayard uppercase'>{`Booking: ${filteredData[exp_id][0]?.booking || 'No available'}`}</p>
+										<p className='text-xl font-bold text-celeste font-bayard uppercase'>{`Loading to Port: ${filteredData[exp_id][0]?.date_landing || 'No available'}`}</p>
 									</div>
 								</div>
 								<div className='my-4'>
