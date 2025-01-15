@@ -41,6 +41,8 @@ export function Login() {
 
 			// Guarda el token en el almacenamiento local
 			localStorage.setItem('token', data.token);
+			localStorage.setItem('role', data.role);
+			localStorage.setItem('username', data.username);
 
 			// Redirige a la ruta protegida
 			navigate('/');

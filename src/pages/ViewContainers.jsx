@@ -33,7 +33,7 @@ export function ViewContainers() {
 	const [isCommentsOpen, setIsCommentsOpen] = useState(false);
 	const [selectedIco, setSelectedIco] = useState(null);
 	const [isAnnouncementsOpen, setIsAnnouncementsOpen] = useState(false);
-
+	const role = localStorage.getItem('role');
 	const groupByExpId = (data) => {
 		const result = {};
 		Object.keys(data).forEach((key) => {
@@ -281,9 +281,11 @@ export function ViewContainers() {
 								<div className='titleContainer flex flex-row justify-between gap-10 items-center'>
 									<div className='flex flex-row justify-between items-center gap-6'>
 										<h2 className='text-3xl font-bold text-white font-bayard uppercase'>{exp_id}</h2>
-										<Link to={`/edit-container/${exp_id}`}>
-											<img className='max-w-[50%]' src={editContainer} alt='Edit Container' />
-										</Link>
+										{role === '1' && ( // Renderiza el enlace solo si el rol es '1'
+											<Link to={`/edit-container/${exp_id}`}>
+												<img className='max-w-[50%]' src={editContainer} alt='Edit Container' />
+											</Link>
+										)}
 									</div>
 									<div className='containerData flex flex-row gap-4'>
 										<p className='text-xl font-bold text-pink font-bayard uppercase'>{`Total Weight: ${totalWeight || 'No available'}`}</p>

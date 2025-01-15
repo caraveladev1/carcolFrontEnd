@@ -6,15 +6,16 @@ import { Loader } from './Loader';
 export function ProtectedRoute({ children }) {
 	const [isValid, setIsValid] = useState(null);
 	const token = localStorage.getItem('token');
+	const role = localStorage.getItem('role');
+	const username = localStorage.getItem('username');
 
 	useEffect(() => {
-		// Si no hay token, no se intenta validar y se marca como inválido.
-		if (!token) {
+		if (!token || !role || !username) {
 			setIsValid(false);
 			return;
 		}
 
-		const validateToken = async () => {
+		const validateTokenAndRole = async () => {
 			try {
 				const response = await fetch(`${API_BASE_URL}api/auth/validate-token`, {
 					method: 'POST',
@@ -22,36 +23,30 @@ export function ProtectedRoute({ children }) {
 						Authorization: `Bearer ${token}`,
 						'Content-Type': 'application/json',
 					},
+					body: JSON.stringify({ role, username }),
 				});
 
 				if (response.ok) {
 					setIsValid(true);
 				} else {
 					setIsValid(false);
-					//localStorage.removeItem('token'); // Elimina el token si es inválido
 				}
 			} catch (error) {
-				console.error('Error validating token:', error);
+				console.error('Error validating token and role:', error);
 				setIsValid(false);
 			}
 		};
 
-		// Valida el token solo si está presente.
-		if (token) {
-			validateToken();
-		}
-	}, [token]);
+		validateTokenAndRole();
+	}, [token, role, username]);
 
-	// Mientras se valida el token, muestra un estado de carga.
 	if (isValid === null) {
 		return <Loader />;
 	}
 
-	// Si el token es inválido o no está presente, redirige al login.
 	if (!isValid) {
 		return <Navigate to='/login' />;
 	}
 
-	// Si el token es válido, muestra la ruta protegida.
 	return children;
 }

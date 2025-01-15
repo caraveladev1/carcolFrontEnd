@@ -9,7 +9,8 @@ export function Comments({ ico, onClose }) {
 	const [comments, setComments] = useState([]);
 	const [newComment, setNewComment] = useState('');
 	const [commentId, setCommentId] = useState(null);
-
+	const user = localStorage.getItem('username');
+	const date = new Date().toLocaleString();
 	useEffect(() => {
 		fetch(`${API_BASE_URL}api/exports/comment/${ico}`)
 			.then((response) => response.json())
@@ -31,7 +32,11 @@ export function Comments({ ico, onClose }) {
 		e.preventDefault();
 
 		// Crea el nuevo comentario
-		const newCommentObject = { comentario: newComment };
+		const newCommentObject = {
+			comentario: newComment,
+			user: user,
+			date: date,
+		};
 
 		// Limpia el input inmediatamente
 		setNewComment('');
@@ -78,7 +83,10 @@ export function Comments({ ico, onClose }) {
 				<ul className='mt-6'>
 					{comments.map((comment, index) => (
 						<li className='text-xl font-itf text-cafe border-cafe border-t-2 p-4 break-words' key={index}>
-							{comment.comentario}
+							<p>{comment.comentario}</p>
+							<small className='block text-sm text-gray font-itf'>
+								{comment.user} – {comment.date}
+							</small>
 						</li>
 					))}
 				</ul>
