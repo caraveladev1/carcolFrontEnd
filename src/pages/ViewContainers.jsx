@@ -288,7 +288,7 @@ export function ViewContainers() {
 										)}
 									</div>
 									<div className='containerData flex flex-row gap-4'>
-										<p className='text-xl font-bold text-pink font-bayard uppercase'>{`Total Weight: ${totalWeight || 'No available'}`}</p>
+										<p className='text-xl font-bold text-pink font-bayard uppercase'>{`Total Weight (kg): ${totalWeight || 'No available'}`}</p>
 										<p className='text-xl font-bold text-pink font-bayard uppercase'>{`Booking: ${filteredData[exp_id][0]?.booking || 'No available'}`}</p>
 										<p className='text-xl font-bold text-celeste font-bayard uppercase'>{`Loading to Port: ${filteredData[exp_id][0]?.date_landing || 'No available'}`}</p>
 									</div>

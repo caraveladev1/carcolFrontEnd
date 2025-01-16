@@ -97,7 +97,7 @@ export function Comments({ ico, onClose }) {
 							value={newComment} // El valor siempre está sincronizado con el estado
 							onChange={(e) => setNewComment(e.target.value)}
 							placeholder={t('typeComment')}
-							className={`bg-transparent font-bayard text-xl uppercase border-2 border-pink p-5 w-full text-pink focus:outline-none focus:border-2 focus:border-pink m-auto h-full`}
+							className={`bg-transparent font-bayard text-xl uppercase border-2 border-cafe p-5 w-full text-cafe focus:outline-none focus:border-2 focus:border-cafe m-auto h-full`}
 						/>
 						<button type='submit' className={`bg-cafe font-bayard text-2xl text-white p-4 h-full `}>
 							{t('submit')}
