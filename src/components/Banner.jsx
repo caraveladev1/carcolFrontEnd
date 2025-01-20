@@ -2,11 +2,15 @@ import React from 'react';
 import logoCaravela from '../assets/img/logoCaravela.png';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-
+import { useNavigate } from 'react-router-dom';
 export function Banner() {
 	const { t } = useTranslation();
+	const navigate = useNavigate();
 	const role = localStorage.getItem('role'); // Obtiene el rol del localStorage
-
+	function logout() {
+		localStorage.clear();
+		navigate('/login');
+	}
 	return (
 		<section className='bannerSection w-full m-auto '>
 			<div className='flex flex-row items-center justify-between py-2 gap-6 font-bayard'>
@@ -32,6 +36,9 @@ export function Banner() {
 					<Link to='/exported-containers'>
 						<button className='cursor-pointer text-3xl text-beige uppercase'>{t('exportedContainers')}</button>
 					</Link>
+					<button className='bg-beige px-4 text-3xl uppercase text-cafe cursor-pointer font-bayard' onClick={logout}>
+						{t('logout')}
+					</button>
 				</div>
 			</div>
 		</section>
