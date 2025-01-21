@@ -14,8 +14,22 @@ export function Announcements({ onClose }) {
 	const [selectedOriginPorts, setSelectedOriginPorts] = useState([]);
 	const [selectedIcos, setSelectedIcos] = useState([]);
 	const [selectedLotTypes, setSelectedLotTypes] = useState([]);
+	const [totalEstimatedKg, setTotalEstimatedKg] = useState(0);
+	const [filteredEstimatedKg, setFilteredEstimatedKg] = useState(0);
+	const [filteredUnits, setFilteredUnits] = useState(0);
+	const [totalUnits, setTotalUnits] = useState(0);
 	const { t } = useTranslation();
 
+	const calculateTotals = () => {
+		const totalKg = data.reduce((sum, item) => sum + (parseFloat(item.estimated_kg) || 0), 0);
+		const filteredKg = filteredData.reduce((sum, item) => sum + (parseFloat(item.estimated_kg) || 0), 0);
+		const totalUnitsSum = data.reduce((sum, item) => sum + (parseInt(item.units) || 0), 0);
+		const filteredUnitsSum = filteredData.reduce((sum, item) => sum + (parseInt(item.units) || 0), 0);
+		setTotalEstimatedKg(totalKg);
+		setFilteredEstimatedKg(filteredKg);
+		setTotalUnits(totalUnitsSum);
+		setFilteredUnits(filteredUnitsSum);
+	};
 	// Manejar cambios en los campos de entrada
 	const handleInputChange = (icoId, field, value) => {
 		setFormData((prevData) => ({
@@ -55,6 +69,9 @@ export function Announcements({ onClose }) {
 				console.error('Error:', error);
 			});
 	}, []);
+	useEffect(() => {
+		calculateTotals();
+	}, [filteredData, data]);
 	// Manejar el envío de datos al servidor
 	const addAnnouncements = () => {
 		fetch(`${API_BASE_URL}api/exports/addAnnouncements`, {
@@ -186,7 +203,12 @@ export function Announcements({ onClose }) {
 						/>
 					</div>
 				</div>
-
+				{/* <div className='totals text-xl font-bold text-pink mb-4'>
+					<p>Total Estimated KG: {totalEstimatedKg}</p>
+					<p>Filtered Estimated KG: {filteredEstimatedKg}</p>
+					<p>Total Units: {totalUnits}</p>
+					<p>Filtered Units: {filteredUnits}</p>
+				</div> */}
 				{/* Lista de datos filtrados */}
 				<div className='container space-y-4'>
 					{filteredData.length > 0 ? (
@@ -215,6 +237,7 @@ export function Announcements({ onClose }) {
 									<p className='col-span-1 text-center font-bayard text-2xl m-auto text-pink'>{item.origin_port}</p>
 									<p className='col-span-1 text-center font-bayard text-2xl m-auto text-pink'>{item.estimated_kg}</p>
 									<p className='col-span-1 text-center font-bayard text-2xl m-auto text-pink'>{item.units}</p>
+									{/* Campos editables */}
 									<div className='col-span-1'>
 										<InputGeneric
 											placeholder='Announcement'
@@ -245,6 +268,14 @@ export function Announcements({ onClose }) {
 									</div>
 								</div>
 							))}
+
+							{/* Fila con totales */}
+							<div className='grid grid-cols-11 gap-4 font-bold text-pink text-center mt-4'>
+								<p className='col-span-5 m-auto text-2xl font-bayard'>Totals</p>
+								<p className='col-span-1 text-2xl m-auto uppercase font-bayard'>{filteredEstimatedKg}</p>
+								<p className='col-span-1 text-2xl m-auto uppercase font-bayard'>{filteredUnits}</p>
+								<p className='col-span-4'></p>
+							</div>
 						</>
 					) : (
 						<p>No items to display.</p>
