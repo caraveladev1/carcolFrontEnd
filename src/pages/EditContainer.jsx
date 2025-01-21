@@ -32,7 +32,7 @@ export const EditContainer = () => {
 			const data = await response.json();
 			const selectedIcosFromContainers = data.containers.map((container) => container.contract_atlas);
 			const combinedData = [...data.containers, ...data.contract_atlas];
-			console.log(combinedData);
+			//console.log(combinedData);
 			setState((prevState) => ({
 				...prevState,
 				filtersData: data,
