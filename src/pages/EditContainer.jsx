@@ -32,7 +32,7 @@ export const EditContainer = () => {
 			const data = await response.json();
 			const selectedIcosFromContainers = data.containers.map((container) => container.contract_atlas);
 			const combinedData = [...data.containers, ...data.contract_atlas];
-
+			console.log(combinedData);
 			setState((prevState) => ({
 				...prevState,
 				filtersData: data,
@@ -71,6 +71,9 @@ export const EditContainer = () => {
 				select: atlasData.ico,
 				originPort: atlasData.origin_port,
 				incoterm: atlasData.incoterm,
+				production_order: atlasData.production_order ? atlasData.production_order : '-',
+				milling_order: atlasData.milling_order ? atlasData.milling_order : '-',
+				milling_state: atlasData.milling_state ? atlasData.milling_state : '-',
 			};
 		});
 	};
