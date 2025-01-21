@@ -203,12 +203,12 @@ export function Announcements({ onClose }) {
 						/>
 					</div>
 				</div>
-				<div className='totals text-xl font-bold text-pink mb-4'>
+				{/* <div className='totals text-xl font-bold text-pink mb-4'>
 					<p>Total Estimated KG: {totalEstimatedKg}</p>
 					<p>Filtered Estimated KG: {filteredEstimatedKg}</p>
 					<p>Total Units: {totalUnits}</p>
 					<p>Filtered Units: {filteredUnits}</p>
-				</div>
+				</div> */}
 				{/* Lista de datos filtrados */}
 				<div className='container space-y-4'>
 					{filteredData.length > 0 ? (
