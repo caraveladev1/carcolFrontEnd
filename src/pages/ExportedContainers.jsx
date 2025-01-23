@@ -52,7 +52,7 @@ export function ExportedContainers() {
 						? 'Differential: Fixed '
 						: 'Fixed',
 			sample: item.contract_atlas.customer_cupping_state ? item.contract_atlas.customer_cupping_state : 'Pending',
-			packaging: item.packaging_capacity,
+			packaging: item.contract_atlas.packaging_type,
 			mark: item.brand_name,
 			shipmentMonth: item.contract_atlas.shipment_date,
 			destinationPort: item.destination_port,

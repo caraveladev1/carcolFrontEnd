@@ -81,7 +81,7 @@ export function ViewContainers() {
 						? 'Differential: Fixed '
 						: 'Fixed',
 			sample: item.contract_atlas.customer_cupping_state || 'Pending',
-			packaging: item.packaging_capacity,
+			packaging: item.contract_atlas.packaging_type,
 			mark: item.brand_name,
 			destinationPort: item.contract_atlas.destination_port,
 			shipmentMonth: item.contract_atlas.shipment_date,
