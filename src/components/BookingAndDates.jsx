@@ -75,7 +75,8 @@ export const BookingAndDates = memo(function BookingAndDates({
 			if (
 				item.contract_atlas.customerCuppingState === 'Not Sent' ||
 				item.contract_atlas.customerCuppingState === 'Sent' ||
-				item.contract_atlas.customerCuppingState === 'Rejected'
+				item.contract_atlas.customerCuppingState === 'Rejected' ||
+				item.contract_atlas.milling_state !== 'closed'
 			) {
 				return true;
 			}
