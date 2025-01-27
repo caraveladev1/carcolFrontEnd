@@ -143,10 +143,11 @@ export function Home() {
 
 	const handleFilterChange = (e) => {
 		const { name, value } = e.target;
+
 		setFilters((prevFilters) => {
 			const updatedFilters = {
 				...prevFilters,
-				[name]: name === 'initialDate' || name === 'finalDate' ? value : updatedValue,
+				[name]: name === 'initialDate' || name === 'finalDate' ? value : value,
 			};
 			//console.log('Updated Filters:', updatedFilters);
 			return updatedFilters;
