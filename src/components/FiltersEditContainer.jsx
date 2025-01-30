@@ -66,7 +66,7 @@ export function FiltersEditContainer({ filterValues, selectedIcos, oldExportId }
 
 		const payload = {
 			old_id: oldExportIdData,
-			states: defaultValues,
+			states: defaultValues[0],
 			selectedIcos: selectedIcosData,
 			filters: Object.fromEntries(
 				Object.entries(flterValuesUpdated).map(([key, value]) => [key, Array.isArray(value) ? value[0] : value]),
