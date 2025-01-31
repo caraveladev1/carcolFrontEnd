@@ -75,7 +75,8 @@ export const BookingAndDates = memo(function BookingAndDates({
 			if (
 				item.contract_atlas.customerCuppingState === 'Not Sent' ||
 				item.contract_atlas.customerCuppingState === 'Sent' ||
-				item.contract_atlas.customerCuppingState === 'Rejected'
+				item.contract_atlas.customerCuppingState === 'Rejected' ||
+				item.contract_atlas.milling_state !== 'closed'
 			) {
 				return true;
 			}
@@ -89,7 +90,7 @@ export const BookingAndDates = memo(function BookingAndDates({
 
 		if (invalidEntries.length > 0) {
 			window.alert(
-				'The sample and/or fixation are not valid for loading the container. Please check the data before proceeding.',
+				'The sample, fixation or milling state are not valid for loading the container. Please check the data before proceeding.',
 			);
 			console.warn('Datos no válidos:', invalidEntries);
 			return;

@@ -53,7 +53,7 @@ export function Home() {
 						? 'Differential: Fixed '
 						: 'Fixed',
 			sample: item.contract_atlas.customer_cupping_state ? item.contract_atlas.customer_cupping_state : 'Pending',
-			packaging: item.packaging_capacity,
+			packaging: item.contract_atlas.packaging_type,
 			mark: item.brand_name,
 			shipmentMonth: item.contract_atlas.shipment_date,
 			destinationPort: item.contract_atlas.destination_port,
@@ -143,21 +143,26 @@ export function Home() {
 
 	const handleFilterChange = (e) => {
 		const { name, value } = e.target;
-		setFilters((prevFilters) => ({
-			...prevFilters,
-			[name]: Array.isArray(value) ? value : [value], // Asegurarse de manejar arrays
-		}));
-	};
 
+		setFilters((prevFilters) => {
+			const updatedFilters = {
+				...prevFilters,
+				[name]: name === 'initialDate' || name === 'finalDate' ? value : value,
+			};
+			//console.log('Updated Filters:', updatedFilters);
+			return updatedFilters;
+		});
+	};
 	// Filtrar los datos según los filtros seleccionados
 	const filteredData = () => {
 		if (!organizedData) return {};
 
 		return Object.keys(organizedData).reduce((result, exp_id) => {
 			const filteredItems = organizedData[exp_id].filter((item) => {
+				const itemDate = new Date(item.date_landing);
 				const withinDateRange =
-					(!filters.initialDate || new Date(item.date_landing) >= new Date(filters.initialDate)) &&
-					(!filters.finalDate || new Date(item.date_landing) <= new Date(filters.finalDate));
+					(!filters.initialDate || itemDate >= new Date(filters.initialDate)) &&
+					(!filters.finalDate || itemDate <= new Date(filters.finalDate));
 
 				const matchesExportCountry = filters.exportCountry.length === 0 || filters.exportCountry.includes(item.origin);
 
