@@ -86,6 +86,7 @@ export function ViewContainers() {
 			destinationPort: item.contract_atlas.destination_port,
 			shipmentMonth: item.contract_atlas.shipment_date,
 			weight: item.contract_atlas.estimated_kg,
+			date_landing: item.date_landing,
 			quality: item.contract_atlas.quality,
 			production_order: item.contract_atlas.production_order || '-',
 			milling_order: item.contract_atlas.milling_order || '-',
@@ -113,7 +114,7 @@ export function ViewContainers() {
 	const filterData = (data) => {
 		return Object.keys(data).reduce((filteredData, exp_id) => {
 			const filteredItems = data[exp_id].filter((item) => {
-				const itemDate = new Date(item.export_date);
+				const itemDate = new Date(item.date_landing);
 
 				const withinDateRange =
 					(!filters.initialDate || itemDate >= new Date(filters.initialDate)) &&
