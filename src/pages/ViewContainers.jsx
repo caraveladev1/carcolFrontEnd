@@ -100,7 +100,7 @@ export function ViewContainers() {
 					</button>
 				</div>
 			),
-			announcements: (
+			announcements: role !== 2 && (
 				<button className='btn-class bg-blue-500 text-white p-2' onClick={() => handleAnnouncementsButtonClick(item)}>
 					Manage Announcements
 				</button>
@@ -260,14 +260,16 @@ export function ViewContainers() {
 						required={false}
 						defaultValue={filters.ico}
 					/>
-					<button
-						className='bg-pink font-bayard text-xl uppercase border-2 border-pink p-5 w-full text-white focus:outline-none focus:border-2 focus:border-pink text-start'
-						type='button'
-						value='Manage Announcements'
-						onClick={() => setIsAnnouncementsOpen(true)}
-					>
-						Edit Announcements
-					</button>
+					{role !== 2 && (
+						<button
+							className='bg-pink font-bayard text-xl uppercase border-2 border-pink p-5 w-full text-white focus:outline-none focus:border-2 focus:border-pink text-start'
+							type='button'
+							value='Manage Announcements'
+							onClick={() => setIsAnnouncementsOpen(true)}
+						>
+							Edit Announcements
+						</button>
+					)}
 				</div>
 
 				{filteredData &&
