@@ -53,7 +53,7 @@ export function ExportedContainers() {
 						: 'Fixed',
 			sample: item.contract_atlas.customer_cupping_state ? item.contract_atlas.customer_cupping_state : 'Pending',
 			packaging: item.contract_atlas.packaging_type,
-			mark: item.brand_name,
+			mark: item.contract_atlas.mark,
 			shipmentMonth: item.contract_atlas.shipment_date,
 			destinationPort: item.destination_port,
 			destinationContainer: item.destination_port,
