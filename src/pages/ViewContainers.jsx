@@ -144,23 +144,50 @@ export function ViewContainers() {
 			.then((response) => response.json())
 			.then((data) => {
 				const groupedData = groupByExpId(data);
-				const mappedData = {};
+				let mappedData = {};
+
+				// Mapear los datos y obtener la fecha mínima para cada grupo
 				Object.keys(groupedData).forEach((exp_id) => {
 					mappedData[exp_id] = mapData(groupedData[exp_id]);
+
+					// Obtener la fecha mínima de date_landing en el grupo
+					const minDateLanding =
+						mappedData[exp_id]
+							.filter((item) => item.date_landing)
+							.map((item) => new Date(item.date_landing).getTime())
+							.sort((a, b) => a - b)[0] || null;
+
+					// Agregar la fecha mínima como propiedad para ordenar los grupos
+					mappedData[exp_id].minDateLanding = minDateLanding;
 				});
 
+				// Ordenar los grupos por la fecha mínima
+				mappedData = Object.fromEntries(
+					Object.entries(mappedData).sort(([, a], [, b]) => {
+						if (a.minDateLanding === null && b.minDateLanding === null) return 0;
+						if (a.minDateLanding === null) return 1;
+						if (b.minDateLanding === null) return -1;
+						return a.minDateLanding - b.minDateLanding;
+					}),
+				);
+
+				// Crear sets para las opciones únicas
 				const office = new Set();
 				const destination = new Set();
 				const packaging = new Set();
 				const contract = new Set();
-				Object.keys(mappedData).forEach((key) => {
-					mappedData[key].forEach((item) => {
-						office.add(item.export_country);
-						destination.add(item.destination_port);
-						packaging.add(item.packaging_capacity);
-						contract.add(item.contract_atlas.contract);
+
+				// Llenar los sets con datos únicos
+				Object.values(mappedData).forEach((group) => {
+					group.forEach((item) => {
+						if (item.office) office.add(item.office);
+						if (item.destination) destination.add(item.destination);
+						if (item.packaging) packaging.add(item.packaging);
+						if (item.contract) contract.add(item.contract);
 					});
 				});
+
+				// Actualizar estados
 				setofficeOptions(Array.from(office));
 				setDestinationOptions(Array.from(destination));
 				setPackagingOptions(Array.from(packaging));
@@ -174,6 +201,7 @@ export function ViewContainers() {
 			});
 	}, []);
 
+	console.log(organizedData);
 	const handleFilterChange = (e) => {
 		const { name, value, multiple, selectedOptions } = e.target;
 
