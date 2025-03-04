@@ -201,7 +201,7 @@ export function ViewContainers() {
 			});
 	}, []);
 
-	console.log(organizedData);
+	//console.log(organizedData);
 	const handleFilterChange = (e) => {
 		const { name, value, multiple, selectedOptions } = e.target;
 
