@@ -44,6 +44,7 @@ export function Home() {
 
 	const mapData = (data) => {
 		return data.map((item) => ({
+			...item,
 			contract: item.contract_atlas.contract,
 			customer: item.contract_atlas.customer,
 			price_type:
@@ -66,7 +67,6 @@ export function Home() {
 			origin: item.export_country,
 			originPort: item.origin_port,
 			units: item.contract_atlas.units,
-			...item,
 		}));
 	};
 
@@ -96,6 +96,7 @@ export function Home() {
 				setPortOptions(Array.from(ports));
 
 				setOrganizedData(mappedData);
+
 				console.log(mappedData);
 				setLoading(false);
 			})
