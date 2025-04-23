@@ -64,6 +64,7 @@ export function ExportedContainers() {
 			quality: item.contract_atlas.quality,
 			origin: item.export_country,
 			originPort: item.origin_port,
+			units: item.contract_atlas.units,
 			...item,
 		}));
 	};
