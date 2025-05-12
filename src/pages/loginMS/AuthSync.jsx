@@ -15,7 +15,7 @@ export function AuthSync() {
 			.then(async (res) => {
 				setLoading(false);
 				if (res.ok) {
-					navigate('/fixed/dashboard');
+					navigate('/view-containers');
 				} else {
 					navigate('/login');
 				}
