@@ -1,4 +1,4 @@
-export const API_BASE_URL = 'https://backendcarcol-ethpe4fqcgashcb2.eastus2-01.azurewebsites.net/';
+export const API_BASE_URL = 'https://bckcarcol.caravela.coffee/';
 //export const API_BASE_URL = 'http://localhost:8080/';
 // Constantes de filtros
 export const placeholderFilter = ['office', 'exportMonth', 'packaging', 'contract', 'destinationPort'];

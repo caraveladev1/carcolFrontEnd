@@ -97,7 +97,7 @@ export function Home() {
 
 				setOrganizedData(mappedData);
 
-				console.log(mappedData);
+				//console.log(mappedData);
 				setLoading(false);
 			})
 			.catch((error) => {

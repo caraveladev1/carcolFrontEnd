@@ -3,14 +3,19 @@ import logoCaravela from '../assets/img/logoCaravela.png';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../utils/consts';
 export function Banner() {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const role = localStorage.getItem('role'); // Obtiene el rol del localStorage
-	function logout() {
-		localStorage.clear();
-		navigate('/login');
-	}
+	const logout = () => {
+		fetch(`${API_BASE_URL}api/microsoft/logout`, {
+			method: 'POST',
+			credentials: 'include',
+		}).then(() => {
+			navigate('/login');
+		});
+	};
 	return (
 		<section className='bannerSection w-full m-auto '>
 			<div className='flex flex-row items-center justify-between py-2 gap-6 font-bayard'>
