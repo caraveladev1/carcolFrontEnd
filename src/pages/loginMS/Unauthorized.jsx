@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../../utils/consts';
 export function Unauthorized() {
 	const navigate = useNavigate();
 	const logout = () => {
