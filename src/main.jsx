@@ -26,6 +26,8 @@ createRoot(document.getElementById('root')).render(
 					<Route path='/view-containers' element={<ViewContainers />} />
 					<Route path='/exported-containers' element={<ExportedContainers />} />
 					<Route path='/unauthorized' element={<Unauthorized />} />
+					{/* Ruta comodín */}
+					<Route path='*' element={<Navigate to='/login' replace />} />
 				</Route>
 
 				{/* Rutas exclusivas de Admin */}
@@ -33,9 +35,6 @@ createRoot(document.getElementById('root')).render(
 					<Route path='/create' element={<CreateContainer />} />
 					<Route path='/edit-container/:id' element={<EditContainer />} />
 				</Route>
-
-				{/* Ruta comodín */}
-				<Route path='*' element={<Navigate to='/view-containers' replace />} />
 			</Routes>
 		</HashRouter>
 	</StrictMode>,
