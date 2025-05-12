@@ -35,7 +35,7 @@ createRoot(document.getElementById('root')).render(
 				</Route>
 
 				{/* Ruta comodín */}
-				<Route path='*' element={<Navigate to='/' replace />} />
+				<Route path='*' element={<Navigate to='/view-container' replace />} />
 			</Routes>
 		</HashRouter>
 	</StrictMode>,
