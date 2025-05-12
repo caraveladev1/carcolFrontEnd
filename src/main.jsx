@@ -4,7 +4,7 @@ import { createRoot } from 'react-dom/client';
 import './index.css';
 import '../I18n';
 
-import { Home } from './pages/Home';
+import { PendingTask } from './pages/PendingTask';
 import { CreateContainer } from './pages/CreateContainer';
 import { ViewContainers } from './pages/ViewContainers';
 import { EditContainer } from './pages/EditContainer';
@@ -22,7 +22,7 @@ createRoot(document.getElementById('root')).render(
 				{/* Rutas protegidas */}
 				{/* Rutas protegidas para Admin y Viewer */}
 				<Route element={<ProtectedRouteMS allowedRoles={['Admin', 'Viewer']} />}>
-					<Route path='/' element={<Home />} />
+					<Route path='/pending-task' element={<PendingTask />} />
 					<Route path='/view-containers' element={<ViewContainers />} />
 					<Route path='/exported-containers' element={<ExportedContainers />} />
 					<Route path='/unauthorized' element={<Unauthorized />} />

@@ -7,7 +7,7 @@ import { Loader } from '../components/Loader';
 import { BookingAndDates } from '../components/BookingAndDates';
 import { InputGeneric } from '../components/InputGeneric';
 
-export function Home() {
+export function PendingTask() {
 	const { t } = useTranslation();
 	const [organizedData, setOrganizedData] = useState(null);
 	const [expId, setExpId] = useState(null);
