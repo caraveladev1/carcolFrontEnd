@@ -15,7 +15,7 @@ export function LoginMS() {
 		})
 			.then((res) => {
 				if (res.ok) {
-					navigate('/fixed/dashboard', { replace: true });
+					navigate('/view-containers', { replace: true });
 				}
 			})
 			.finally(() => {
