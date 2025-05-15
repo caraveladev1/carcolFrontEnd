@@ -26,7 +26,7 @@ export function Banner() {
 					{/* Mostrar todos los botones si el rol es "1" */}
 					{role === '1' && (
 						<>
-							<Link to='/PendingTask'>
+							<Link to='/pending-task'>
 								<button className='cursor-pointer text-3xl text-celeste uppercase'>{t('pendingTasks')}</button>
 							</Link>
 							<Link to='/create'>
