@@ -10,9 +10,10 @@ import { InputGeneric } from '../components/InputGeneric';
 import commentsButton from '../assets/img/commentsButton.webp';
 import { Comments } from '../components/Comments';
 import { Announcements } from '../components/Announcements';
-
+import { useRole } from '../Hooks/RoleContext.js';
 export function ViewContainers() {
 	const { t } = useTranslation();
+	const role = useRole();
 	const [organizedData, setOrganizedData] = useState(null);
 	const [loading, setLoading] = useState(true);
 	const [filters, setFilters] = useState({
@@ -33,7 +34,6 @@ export function ViewContainers() {
 	const [isCommentsOpen, setIsCommentsOpen] = useState(false);
 	const [selectedIco, setSelectedIco] = useState(null);
 	const [isAnnouncementsOpen, setIsAnnouncementsOpen] = useState(false);
-	const role = localStorage.getItem('role');
 	const groupByExpId = (data) => {
 		const result = {};
 		Object.keys(data).forEach((key) => {
@@ -102,11 +102,12 @@ export function ViewContainers() {
 					</button>
 				</div>
 			),
-			announcements: role === '1' && (
-				<button className='btn-class bg-blue-500 text-white p-2' onClick={() => handleAnnouncementsButtonClick(item)}>
-					Manage Announcements
-				</button>
-			),
+			announcements:
+				role === 'Admin' ? (
+					<button className='btn-class bg-blue-500 text-white p-2' onClick={() => handleAnnouncementsButtonClick(item)}>
+						Manage Announcements
+					</button>
+				) : null,
 			office: item.export_country,
 			destination: item.destination_port,
 			originPort: item.origin_port,
@@ -290,7 +291,7 @@ export function ViewContainers() {
 						required={false}
 						defaultValue={filters.ico}
 					/>
-					{role === '1' && (
+					{role === 'Admin' && (
 						<button
 							className='bg-pink font-bayard text-xl uppercase border-2 border-pink p-5 w-full text-white focus:outline-none focus:border-2 focus:border-pink text-start'
 							type='button'
@@ -314,7 +315,7 @@ export function ViewContainers() {
 								<div className='titleContainer flex flex-row justify-between gap-10 items-center'>
 									<div className='flex flex-row justify-between items-center gap-6'>
 										<h2 className='text-3xl font-bold text-white font-bayard uppercase'>{exp_id}</h2>
-										{role === '1' && ( // Renderiza el enlace solo si el rol es '1'
+										{role === 'Admin' && ( // Renderiza el enlace solo si el rol es '1'
 											<Link to={`/edit-container/${exp_id}`}>
 												<img className='max-w-[50%]' src={editContainer} alt='Edit Container' />
 											</Link>

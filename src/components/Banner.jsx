@@ -4,10 +4,12 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from '../utils/consts';
+import { useRole } from '../Hooks/RoleContext.js';
+
 export function Banner() {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
-	const role = localStorage.getItem('role'); // Obtiene el rol del localStorage
+	const role = useRole(); // Obtiene el rol del localStorage
 	const logout = () => {
 		fetch(`${API_BASE_URL}api/microsoft/logout`, {
 			method: 'POST',
@@ -24,7 +26,7 @@ export function Banner() {
 				</div>
 				<div className='flex gap-6'>
 					{/* Mostrar todos los botones si el rol es "1" */}
-					{role === '1' && (
+					{role === 'Admin' ? (
 						<>
 							<Link to='/pending-task'>
 								<button className='cursor-pointer text-3xl text-celeste uppercase'>{t('pendingTasks')}</button>
@@ -33,7 +35,7 @@ export function Banner() {
 								<button className='cursor-pointer text-3xl text-pink uppercase'>{t('createContainers')}</button>
 							</Link>
 						</>
-					)}
+					) : null}
 					{/* Mostrar siempre estos botones, tanto para "1" como para "2" */}
 					<Link to='/view-containers'>
 						<button className='cursor-pointer text-3xl text-yellow uppercase'>{t('viewContainers')}</button>

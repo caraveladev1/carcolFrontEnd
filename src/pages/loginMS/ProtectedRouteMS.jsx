@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
+import { RoleContext } from '../../Hooks/RoleContext.js';
 import { API_BASE_URL } from '../../utils/consts';
 
 export function ProtectedRouteMS({ allowedRoles }) {
@@ -34,5 +35,9 @@ export function ProtectedRouteMS({ allowedRoles }) {
 
 	if (authorized === null) return null;
 
-	return <Outlet />;
+	return (
+		<RoleContext.Provider value={role}>
+			<Outlet />
+		</RoleContext.Provider>
+	);
 }
