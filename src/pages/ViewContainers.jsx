@@ -93,6 +93,7 @@ export function ViewContainers() {
 			milling_state: item.contract_atlas.milling_state || '-',
 			export_date: item.export_date,
 			units: item.contract_atlas.units,
+			secondary_ico_id: item.contract_atlas.secondary_ico,
 			comments: (
 				<div className='flex flex-row justify-center items-center m-auto'>
 					{item.comments}

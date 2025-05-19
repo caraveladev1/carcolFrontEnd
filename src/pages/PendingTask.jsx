@@ -67,6 +67,7 @@ export function PendingTask() {
 			origin: item.export_country,
 			originPort: item.origin_port,
 			units: item.contract_atlas.units,
+			secondary_ico_id: item.contract_atlas.secondary_ico,
 		}));
 	};
 
