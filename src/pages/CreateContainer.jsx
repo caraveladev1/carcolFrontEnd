@@ -150,7 +150,7 @@ export function CreateContainer() {
 			filters,
 			selectedIcos: selectedData,
 		};
-
+		console.log(payload);
 		const sumIcosWeight = selectedData.reduce((accumulator, element) => accumulator + parseInt(element.weight, 10), 0);
 
 		const selectedContainer = parseInt(payload.filters.capacityContainer, 10);

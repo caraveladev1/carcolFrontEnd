@@ -9,10 +9,22 @@ export function Comments({ ico, onClose }) {
 	const [comments, setComments] = useState([]);
 	const [newComment, setNewComment] = useState('');
 	const [commentId, setCommentId] = useState(null);
-	const user = localStorage.getItem('username');
+	const [user, setUser] = useState('');
 	const date = new Date().toLocaleString();
 	useEffect(() => {
-		fetch(`${API_BASE_URL}api/exports/comment/${ico}`)
+		fetch(`${API_BASE_URL}api/exports/getUsernameFromToken`, {
+			credentials: 'include',
+		})
+			.then((res) => res.json())
+			.then((data) => {
+				console.log('Usuario:', data.username);
+				setUser(data.username);
+			})
+			.catch((err) => console.error('Error obteniendo el usuario:', err));
+	}, []);
+
+	useEffect(() => {
+		fetch(`${API_BASE_URL}api/exports/getCommentsByIco/${ico}`)
 			.then((response) => response.json())
 			.then((json) => {
 				const parsedComments = json.map((item) => {

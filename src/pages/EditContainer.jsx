@@ -23,14 +23,21 @@ export const EditContainer = () => {
 		endDate: '',
 		selectedIncoterm: [],
 	});
+	//console.log(encodeURIComponent(id));
 
 	const fetchContainerData = useCallback(async () => {
 		try {
-			const response = await fetch(`${API_BASE_URL}api/exports/getEditContainerData/${id}`);
+			//console.log(encodeURIComponent(id));
+			const response = await fetch(
+				`${API_BASE_URL}api/exports/getEditContainerData?containerId=${encodeURIComponent(id)}`,
+			);
 			if (!response.ok) throw new Error('Failed to fetch container data');
 
 			const data = await response.json();
-			const selectedIcosFromContainers = data.containers.map((container) => container.contract_atlas);
+			const selectedIcosFromContainers = data.containers.map((container) => {
+				return container.contract_atlas ?? { ico: container.ico };
+			});
+
 			const combinedData = [...data.containers, ...data.contract_atlas];
 			//console.log(combinedData);
 			setState((prevState) => ({

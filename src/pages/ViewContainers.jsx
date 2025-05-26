@@ -94,6 +94,7 @@ export function ViewContainers() {
 			export_date: item.export_date,
 			units: item.contract_atlas.units,
 			secondary_ico_id: item.contract_atlas.secondary_ico,
+			container_id: item.container_id,
 			comments: (
 				<div className='flex flex-row justify-center items-center m-auto'>
 					{item.comments}
@@ -316,7 +317,7 @@ export function ViewContainers() {
 									<div className='flex flex-row justify-between items-center gap-6'>
 										<h2 className='text-3xl font-bold text-white font-bayard uppercase'>{exp_id}</h2>
 										{role === 'Admin' && ( // Renderiza el enlace solo si el rol es '1'
-											<Link to={`/edit-container/${exp_id}`}>
+											<Link to={`/edit-container/${filteredData[exp_id][0].container_id}`}>
 												<img className='max-w-[50%]' src={editContainer} alt='Edit Container' />
 											</Link>
 										)}

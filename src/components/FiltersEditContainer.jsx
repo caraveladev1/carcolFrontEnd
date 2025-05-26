@@ -73,22 +73,19 @@ export function FiltersEditContainer({ filterValues, selectedIcos, oldExportId }
 			),
 		};
 
-		console.log('Payload completo:', payload);
-
+		console.log('defaultValues[0]', defaultValues[0]);
 		// Verificar si defaultValues[0].is_pending === '1'
 		if (defaultValues[0]?.is_pending === '1') {
-			// Crear un nuevo payload con solo los campos requeridos
 			const limitedPayload = {
-				old_id: oldExportIdData,
+				old_id: parseInt(oldExportIdData),
 				filters: {
 					exportDate: flterValuesUpdated.exportDate,
 					estimatedArrival: flterValuesUpdated.estimatedArrival,
 				},
 			};
 
-			//	console.log('Payload reducido:', limitedPayload);
+			console.log('Payload reducido:', limitedPayload); // ✅ Aquí lo ves en consola
 
-			// Enviar los datos limitados al servidor
 			fetch(`${API_BASE_URL}api/exports/updateContainerAfterLoaded`, {
 				method: 'PUT',
 				headers: {
@@ -104,7 +101,7 @@ export function FiltersEditContainer({ filterValues, selectedIcos, oldExportId }
 						window.alert(
 							'The container is loaded, you only update "Estimated Arrival" and "Export date". Please fill in the required fields',
 						);
-						throw new error();
+						throw new Error('Missing required date fields');
 					}
 					return response.json();
 				})
