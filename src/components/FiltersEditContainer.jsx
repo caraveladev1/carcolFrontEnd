@@ -73,7 +73,7 @@ export function FiltersEditContainer({ filterValues, selectedIcos, oldExportId }
 			),
 		};
 
-		console.log('defaultValues[0]', defaultValues[0]);
+		//console.log('defaultValues[0]', defaultValues[0]);
 		// Verificar si defaultValues[0].is_pending === '1'
 		if (defaultValues[0]?.is_pending === '1') {
 			const limitedPayload = {
@@ -84,7 +84,7 @@ export function FiltersEditContainer({ filterValues, selectedIcos, oldExportId }
 				},
 			};
 
-			console.log('Payload reducido:', limitedPayload); // ✅ Aquí lo ves en consola
+			//console.log('Payload reducido:', limitedPayload); // ✅ Aquí lo ves en consola
 
 			fetch(`${API_BASE_URL}api/exports/updateContainerAfterLoaded`, {
 				method: 'PUT',
