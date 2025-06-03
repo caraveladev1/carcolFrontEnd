@@ -113,7 +113,7 @@ export function Announcements({ onClose }) {
 
 		// Filtro por packaging_capacity
 		if (selectedPackaging.length > 0) {
-			filtered = filtered.filter((item) => selectedPackaging.includes(item.packaging_type));
+			filtered = filtered.filter((item) => selectedPackaging.includes(item.contract_atlas.packaging_type));
 		}
 
 		// Filtro por origin_port
@@ -127,7 +127,7 @@ export function Announcements({ onClose }) {
 		}
 		// Filtro por lot_type
 		if (selectedLotTypes.length > 0) {
-			filtered = filtered.filter((item) => selectedLotTypes.includes(item.lot_type));
+			filtered = filtered.filter((item) => selectedLotTypes.includes(item.contract_atlas.lot_type));
 		}
 
 		setFilteredData(filtered);
@@ -163,7 +163,7 @@ export function Announcements({ onClose }) {
 							type='select'
 							multiple={true}
 							filter='packaging_capacity'
-							options={[...new Set(data.map((item) => item.packaging_type))]} // Opciones únicas
+							options={[...new Set(data.map((item) => item.contract_atlas.packaging_type))]} // Opciones únicas
 							defaultValue={selectedPackaging}
 							onChange={(e) => setSelectedPackaging(e.target.value)}
 							placeholder='Select Packaging'
@@ -196,7 +196,7 @@ export function Announcements({ onClose }) {
 							type='select'
 							multiple={true}
 							filter='lot_type'
-							options={[...new Set(data.map((item) => item.lot_type))]} // Opciones únicas
+							options={[...new Set(data.map((item) => item.contract_atlas.lot_type))]} // Opciones únicas
 							defaultValue={selectedLotTypes}
 							onChange={(e) => setSelectedLotTypes(e.target.value)}
 							placeholder='Select Lot Type'
@@ -230,11 +230,19 @@ export function Announcements({ onClose }) {
 								<div key={item.ico} className='grid grid-cols-11 gap-4'>
 									<p className='col-span-1 font-bayard text-2xl text-center m-auto text-pink'>{item.ico}</p>
 									<p className='col-span-1 text-center font-bayard text-2xl m-auto text-pink'>{item.date_landing}</p>
-									<p className='col-span-1 text-center font-bayard text-2xl m-auto text-pink'>{item.packaging_type}</p>
-									<p className='col-span-1 text-center font-bayard text-2xl m-auto text-pink'>{item.lot_type}</p>
+									<p className='col-span-1 text-center font-bayard text-2xl m-auto text-pink'>
+										{item.contract_atlas.packaging_type}
+									</p>
+									<p className='col-span-1 text-center font-bayard text-2xl m-auto text-pink'>
+										{item.contract_atlas.lot_type}
+									</p>
 									<p className='col-span-1 text-center font-bayard text-2xl m-auto text-pink'>{item.origin_port}</p>
-									<p className='col-span-1 text-center font-bayard text-2xl m-auto text-pink'>{item.estimated_kg}</p>
-									<p className='col-span-1 text-center font-bayard text-2xl m-auto text-pink'>{item.units}</p>
+									<p className='col-span-1 text-center font-bayard text-2xl m-auto text-pink'>
+										{item.contract_atlas.estimated_kg}
+									</p>
+									<p className='col-span-1 text-center font-bayard text-2xl m-auto text-pink'>
+										{item.contract_atlas.units}
+									</p>
 									{/* Campos editables */}
 									<div className='col-span-1'>
 										<InputGeneric
