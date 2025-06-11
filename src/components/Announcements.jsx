@@ -21,10 +21,10 @@ export function Announcements({ onClose }) {
 	const { t } = useTranslation();
 
 	const calculateTotals = () => {
-		const totalKg = data.reduce((sum, item) => sum + (parseFloat(item.estimated_kg) || 0), 0);
-		const filteredKg = filteredData.reduce((sum, item) => sum + (parseFloat(item.estimated_kg) || 0), 0);
-		const totalUnitsSum = data.reduce((sum, item) => sum + (parseInt(item.units) || 0), 0);
-		const filteredUnitsSum = filteredData.reduce((sum, item) => sum + (parseInt(item.units) || 0), 0);
+		const totalKg = data.reduce((sum, item) => sum + (parseFloat(item.contract_atlas.estimated_kg) || 0), 0);
+		const filteredKg = filteredData.reduce((sum, item) => sum + (parseFloat(item.contract_atlas.estimated_kg) || 0), 0);
+		const totalUnitsSum = data.reduce((sum, item) => sum + (parseInt(item.contract_atlas.units) || 0), 0);
+		const filteredUnitsSum = filteredData.reduce((sum, item) => sum + (parseInt(item.contract_atlas.units) || 0), 0);
 		setTotalEstimatedKg(totalKg);
 		setFilteredEstimatedKg(filteredKg);
 		setTotalUnits(totalUnitsSum);
