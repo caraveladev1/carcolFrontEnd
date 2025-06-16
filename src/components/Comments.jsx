@@ -104,14 +104,13 @@ export function Comments({ ico, onClose }) {
 				</ul>
 				<form onSubmit={handleCommentSubmit}>
 					<div className='flex flex-row justify-end mt-4 gap-6'>
-						<input
-							type='text'
-							value={newComment} // El valor siempre está sincronizado con el estado
+						<textarea
+							value={newComment}
 							onChange={(e) => setNewComment(e.target.value)}
 							placeholder={t('typeComment')}
-							className={`bg-transparent font-bayard text-xl uppercase border-2 border-cafe p-5 w-full text-cafe focus:outline-none focus:border-2 focus:border-cafe m-auto h-full`}
+							className=' h-30 bg-transparent text-xl border-2 border-cafe font-itf p-5 w-full text-cafe focus:outline-none focus:border-cafe resize-none overflow-y-auto'
 						/>
-						<button type='submit' className={`bg-cafe font-bayard text-2xl text-white p-4 h-full `}>
+						<button type='submit' className={`bg-cafe font-bayard text-2xl text-white p-4 h-30 `}>
 							{t('submit')}
 						</button>
 					</div>
