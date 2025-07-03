@@ -2,14 +2,29 @@ import React, { useEffect, useState } from 'react';
 import { API_BASE_URL } from '../utils/consts';
 import { InputGeneric } from './InputGeneric';
 import { SubmitButton } from './SubmitButton';
+import { useTranslation } from 'react-i18next';
 
 export function Comments({ ico, onClose }) {
+	const { t } = useTranslation();
 	const [comments, setComments] = useState([]);
 	const [newComment, setNewComment] = useState('');
 	const [commentId, setCommentId] = useState(null);
+	const [user, setUser] = useState('');
+	const date = new Date().toLocaleString();
+	useEffect(() => {
+		fetch(`${API_BASE_URL}api/exports/getUsernameFromToken`, {
+			credentials: 'include',
+		})
+			.then((res) => res.json())
+			.then((data) => {
+				console.log('Usuario:', data.username);
+				setUser(data.username);
+			})
+			.catch((err) => console.error('Error obteniendo el usuario:', err));
+	}, []);
 
 	useEffect(() => {
-		fetch(`${API_BASE_URL}api/exports/comment/${ico}`)
+		fetch(`${API_BASE_URL}api/exports/getCommentsByIco/${ico}`)
 			.then((response) => response.json())
 			.then((json) => {
 				const parsedComments = json.map((item) => {
@@ -28,17 +43,24 @@ export function Comments({ ico, onClose }) {
 	const handleCommentSubmit = (e) => {
 		e.preventDefault();
 
-		const newCommentObject = { comentario: newComment };
-		const updatedComments = [...comments, newCommentObject];
+		// Crea el nuevo comentario
+		const newCommentObject = {
+			comentario: newComment,
+			user: user,
+			date: date,
+		};
 
+		// Limpia el input inmediatamente
 		setNewComment('');
 
+		// Crea el nuevo cuerpo para enviar
 		const postData = {
 			id: commentId,
 			ico: ico,
-			comment: updatedComments,
+			comment: [...comments, newCommentObject],
 		};
 
+		// Envía el nuevo comentario al servidor
 		fetch(`${API_BASE_URL}api/exports/comment/add`, {
 			method: 'POST',
 			headers: {
@@ -48,11 +70,14 @@ export function Comments({ ico, onClose }) {
 		})
 			.then((response) => response.json())
 			.then((data) => {
-				// Actualiza el estado con la respuesta de la API si es necesario
+				// Actualiza el estado 'comments' con el nuevo comentario
 				setComments((prevComments) => [...prevComments, newCommentObject]);
 				alert('Comment added successfully');
 			})
-			.catch((error) => console.error('Error al agregar el comentario:', error));
+			.catch((error) => {
+				console.error('Error al agregar el comentario:', error);
+				alert('Error al agregar el comentario');
+			});
 	};
 
 	return (
@@ -70,20 +95,24 @@ export function Comments({ ico, onClose }) {
 				<ul className='mt-6'>
 					{comments.map((comment, index) => (
 						<li className='text-xl font-itf text-cafe border-cafe border-t-2 p-4 break-words' key={index}>
-							{comment.comentario}
+							<p>{comment.comentario}</p>
+							<small className='block text-sm text-gray font-itf'>
+								{comment.user} – {comment.date}
+							</small>
 						</li>
 					))}
 				</ul>
 				<form onSubmit={handleCommentSubmit}>
 					<div className='flex flex-row justify-end mt-4 gap-6'>
-						<InputGeneric
-							placeholder='Type your comment here'
-							type='text'
-							required='required'
-							value={newComment} // El valor siempre está sincronizado con el estado
-							onChange={(e) => setNewComment(e.target.value)} // Cuando cambia el input, actualiza el estado
+						<textarea
+							value={newComment}
+							onChange={(e) => setNewComment(e.target.value)}
+							placeholder={t('typeComment')}
+							className=' h-30 bg-transparent text-xl border-2 border-cafe font-itf p-5 w-full text-cafe focus:outline-none focus:border-cafe resize-none overflow-y-auto'
 						/>
-						<SubmitButton buttonText='submit' className='bg-cafe' />
+						<button type='submit' className={`bg-cafe font-bayard text-2xl text-white p-4 h-30 `}>
+							{t('submit')}
+						</button>
 					</div>
 				</form>
 			</div>

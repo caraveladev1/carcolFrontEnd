@@ -23,6 +23,7 @@ export function CreateContainer() {
 		exportCountry: [],
 		capacityContainer: [],
 		incoterm: [],
+		originPort: [],
 	});
 
 	const [filters, setFilters] = useState({
@@ -32,6 +33,7 @@ export function CreateContainer() {
 		incoterm: '',
 		shipmentMonthStart: '',
 		shipmentMonthFinal: '',
+		originPort: '',
 	});
 
 	useEffect(() => {
@@ -41,31 +43,36 @@ export function CreateContainer() {
 			.then((data) => {
 				const shipmentPorts = [...new Set(data.map((item) => item.shipment_port))];
 				const destinationPorts = [...new Set(data.map((item) => item.destination_port))];
-				const exportCountry = [...new Set(data.map((item) => item.origin))];
+				const exportCountry = [...new Set(data.map((item) => item.origin_iso))];
+				const originPort = [...new Set(data.map((item) => item.origin_port))];
 				const capacityContainer = [20, 40];
 				const incoterm = [...new Set(data.map((item) => item.incoterm))];
 
 				const updatedIcoList = data.map((item) => ({
-					ico_id: item.ico_id,
-					secondary_ico_id: item.ico_secondary_id,
-					contract: item.main_identifier,
+					ico_id: item.ico,
+					secondary_ico_id: item.secondary_ico,
+					contract: item.contract,
 					mark: item.mark,
 					customer: item.customer,
 					quality: item.quality,
-					packaging_capacity: `${item.packaging_type} ${item.packaging_capacity}`,
+					packaging_capacity: item.packaging_type,
 					units: item.units,
-					sample: item.status_approval_sample === null ? 'Pending' : item.status_approval_sample,
+					sample: item.customer_cupping_state === null ? 'Pending' : item.customer_cupping_state,
 					shipmentMonth: item.shipment_date,
-					pricingConditions:
-						item.pricing_conditions === 'differential' && item.fixation_flag === null
+					price_type:
+						item.price_type === 'differential' && item.fixed_price_status === null
 							? 'Differential: Pending '
-							: item.pricing_conditions === 'differential' && item.fixation_flag !== null
+							: item.price_type === 'differential' && item.fixed_price_status !== null
 								? 'Differential: Fixed '
 								: 'Fixed',
-					destinationPorts: item.destination_port,
-					exportCountry: item.origin,
+					destinationPort: item.destination_port,
+					exportCountry: item.origin_iso,
 					incoterm: item.incoterm,
+					production_order: item.production_order ? item.production_order : '-',
+					milling_order: item.milling_order ? item.milling_order : '-',
+					milling_state: item.milling_state ? item.milling_state : '-',
 					weight: item.estimated_kg,
+					originPort: item.origin_port,
 				}));
 
 				setIcoList(updatedIcoList);
@@ -77,6 +84,7 @@ export function CreateContainer() {
 					exportCountry,
 					capacityContainer,
 					incoterm,
+					originPort,
 				});
 				setLoading(false);
 			})
@@ -97,7 +105,7 @@ export function CreateContainer() {
 			return newSelectedIcos;
 		});
 	};
-
+	///console.log(selectOptions);
 	const handleFilterChange = (e) => {
 		const { name, value } = e.target;
 		setFilters((prevFilters) => ({ ...prevFilters, [name]: value }));
@@ -109,7 +117,7 @@ export function CreateContainer() {
 			const shipmentMonthStart = new Date(filters.shipmentMonthStart);
 			const shipmentMonthFinal = new Date(filters.shipmentMonthFinal);
 			return (
-				(filters.port === '' || item.destinationPorts === filters.port) &&
+				(filters.port === '' || item.destinationPort === filters.port) &&
 				(filters.exportCountry === '' || item.exportCountry === filters.exportCountry) &&
 				(filters.incoterm === '' || item.incoterm === filters.incoterm) &&
 				(filters.shipmentMonthStart === '' || shipmentMonth >= shipmentMonthStart) &&
@@ -117,14 +125,10 @@ export function CreateContainer() {
 			);
 		});
 		// Combinar y ordenar: ítems seleccionados primero, luego los ítems filtrados
-		const combinedList = [
-			...icoList.filter(
-				(item) =>
-					selectedIcos.has(item.ico_id) && !filteredList.some((filteredItem) => filteredItem.ico_id === item.ico_id),
-			),
-			...filteredList,
-		];
-		setFilteredIcoList(combinedList);
+		setFilteredIcoList([
+			...icoList.filter((item) => selectedIcos.has(item.ico_id)),
+			...filteredList.filter((item) => !selectedIcos.has(item.ico_id)),
+		]);
 	}, [filters, icoList, selectedIcos]);
 
 	const preparedDataTable = filteredIcoList.map((item) => ({
@@ -146,7 +150,7 @@ export function CreateContainer() {
 			filters,
 			selectedIcos: selectedData,
 		};
-
+		console.log(payload);
 		const sumIcosWeight = selectedData.reduce((accumulator, element) => accumulator + parseInt(element.weight, 10), 0);
 
 		const selectedContainer = parseInt(payload.filters.capacityContainer, 10);
@@ -156,7 +160,7 @@ export function CreateContainer() {
 			selectedContainerValue = containerCapacity[selectedContainer];
 		}
 
-		//console.log(payload);
+		console.log(payload);
 
 		if (sumIcosWeight < selectedContainerValue) {
 			fetch(`${API_BASE_URL}api/exports/createContainer`, {
@@ -174,7 +178,7 @@ export function CreateContainer() {
 				})
 				.then(() => {
 					window.alert('Container created successfully');
-					navigate('/');
+					navigate('/view-containers');
 				})
 				.catch((error) => {
 					console.error('Error:', error);
@@ -203,7 +207,8 @@ export function CreateContainer() {
 										filter === 'port' ||
 										filter === 'capacityContainer' ||
 										filter === 'exportCountry' ||
-										filter === 'incoterm'
+										filter === 'incoterm' ||
+										filter === 'originPort'
 											? 'select'
 											: filter === 'shipmentMonthStart' || filter === 'shipmentMonthFinal'
 												? 'date'
@@ -221,14 +226,17 @@ export function CreateContainer() {
 													? selectOptions.capacityContainer
 													: filter === 'incoterm'
 														? selectOptions.incoterm
-														: []
+														: filter === 'originPort'
+															? selectOptions.originPort
+															: []
 									}
 									onChange={handleFilterChange}
 									required={
 										filter === 'port' ||
 										filter === 'capacityContainer' ||
 										filter === 'exportCountry' ||
-										filter === 'incoterm'
+										filter === 'incoterm' ||
+										filter === 'originPort'
 									}
 								/>
 							</div>

@@ -7,7 +7,7 @@ import { Loader } from '../components/Loader';
 import { BookingAndDates } from '../components/BookingAndDates';
 import { InputGeneric } from '../components/InputGeneric';
 
-export function Home() {
+export function PendingTask() {
 	const { t } = useTranslation();
 	const [organizedData, setOrganizedData] = useState(null);
 	const [expId, setExpId] = useState(null);
@@ -19,8 +19,8 @@ export function Home() {
 	const [filters, setFilters] = useState({
 		initialDate: '',
 		finalDate: '',
-		exportCountry: '',
-		destinationPort: '',
+		exportCountry: [],
+		destinationPort: [],
 	});
 
 	// Opciones únicas para los filtros de tipo select
@@ -44,18 +44,30 @@ export function Home() {
 
 	const mapData = (data) => {
 		return data.map((item) => ({
-			contract: item.api_contract.main_identifier,
-			customer: item.api_contract.customer,
-			pricingConditions:
-				item.api_contract.pricing_conditions === 'differential' && item.api_contract.fixation_flag === null
+			...item,
+			contract: item.contract_atlas.contract,
+			customer: item.contract_atlas.customer,
+			price_type:
+				item.contract_atlas.price_type === 'differential' && item.contract_atlas.fixed_price_status === null
 					? 'Differential: Pending '
-					: item.api_contract.pricing_conditions === 'differential' && item.api_contract.fixation_flag !== null
+					: item.contract_atlas.price_type === 'differential' && item.contract_atlas.fixed_price_status !== null
 						? 'Differential: Fixed '
 						: 'Fixed',
-			sample: item.api_contract.status_approval_sample ? item.api_contract.status_approval_sample : 'Pending',
-			packaging: item.packaging_capacity,
-			mark: item.brand_name,
-			...item,
+			sample: item.contract_atlas.customer_cupping_state ? item.contract_atlas.customer_cupping_state : 'Pending',
+			packaging: item.contract_atlas.packaging_type,
+			mark: item.contract_atlas.mark,
+			shipmentMonth: item.contract_atlas.shipment_date,
+			destinationPort: item.contract_atlas.destination_port,
+			destinationContainer: item.destination_port,
+			weight: item.contract_atlas.estimated_kg,
+			production_order: item.contract_atlas.production_order ? item.contract_atlas.production_order : '-',
+			milling_order: item.contract_atlas.milling_order ? item.contract_atlas.milling_order : '-',
+			milling_state: item.contract_atlas.milling_state ? item.contract_atlas.milling_state : '-',
+			quality: item.contract_atlas.quality,
+			origin: item.export_country,
+			originPort: item.origin_port,
+			units: item.contract_atlas.units,
+			secondary_ico_id: item.contract_atlas.secondary_ico,
 		}));
 	};
 
@@ -77,7 +89,7 @@ export function Home() {
 				Object.keys(mappedData).forEach((key) => {
 					mappedData[key].forEach((item) => {
 						countries.add(item.export_country);
-						ports.add(item.api_contract.destination_port);
+						ports.add(item.destination_port);
 					});
 				});
 
@@ -85,6 +97,8 @@ export function Home() {
 				setPortOptions(Array.from(ports));
 
 				setOrganizedData(mappedData);
+
+				//console.log(mappedData);
 				setLoading(false);
 			})
 			.catch((error) => {
@@ -132,24 +146,32 @@ export function Home() {
 
 	const handleFilterChange = (e) => {
 		const { name, value } = e.target;
-		setFilters((prevFilters) => ({ ...prevFilters, [name]: value }));
-		console.log('Filters actualizados:', { ...filters, [name]: value });
-	};
 
+		setFilters((prevFilters) => {
+			const updatedFilters = {
+				...prevFilters,
+				[name]: name === 'initialDate' || name === 'finalDate' ? value : value,
+			};
+			//console.log('Updated Filters:', updatedFilters);
+			return updatedFilters;
+		});
+	};
 	// Filtrar los datos según los filtros seleccionados
 	const filteredData = () => {
 		if (!organizedData) return {};
 
 		return Object.keys(organizedData).reduce((result, exp_id) => {
 			const filteredItems = organizedData[exp_id].filter((item) => {
+				const itemDate = new Date(item.date_landing);
 				const withinDateRange =
-					(!filters.initialDate || new Date(item.api_contract.shipment_date) >= new Date(filters.initialDate)) &&
-					(!filters.finalDate || new Date(item.api_contract.shipment_date) <= new Date(filters.finalDate));
-				const matchesExportCountry = !filters.exportCountry || item.export_country.includes(filters.exportCountry);
+					(!filters.initialDate || itemDate >= new Date(filters.initialDate)) &&
+					(!filters.finalDate || itemDate <= new Date(filters.finalDate));
+
+				const matchesExportCountry = filters.exportCountry.length === 0 || filters.exportCountry.includes(item.origin);
+
 				const matchesDestinationPort =
-					!filters.destinationPort ||
-					(item.api_contract.destination_port &&
-						item.api_contract.destination_port.toLowerCase().includes(filters.destinationPort.toLowerCase()));
+					filters.destinationPort.length === 0 ||
+					(item.destinationContainer && filters.destinationPort.includes(item.destinationContainer));
 
 				return withinDateRange && matchesExportCountry && matchesDestinationPort;
 			});
@@ -165,7 +187,7 @@ export function Home() {
 	if (loading) {
 		return <Loader />;
 	}
-	//console.log(organizedData);
+	//(organizedData);
 	return (
 		<div className='bg-dark-background bg-cover bg-fixed min-h-screen'>
 			<section className='homeContainer max-w-[90%] m-auto pb-5'>
@@ -195,14 +217,16 @@ export function Home() {
 						required={false}
 						defaultValue={filters.exportCountry}
 						options={countryOptions}
+						multiple={true}
 					/>
 					<InputGeneric
 						type='select'
 						filter='destinationPort'
 						onChange={handleFilterChange}
 						required={false}
-						defaultValue={filters.destinationPort}
+						defaultValue={filters.destinationContainer}
 						options={portOptions}
+						multiple={true}
 					/>
 				</div>
 
@@ -225,6 +249,7 @@ export function Home() {
 								selectOptions={expId}
 								required={'required'}
 								initialFormData={initialFormData[exp_id]}
+								relatedData={organizedData[exp_id]}
 							/>
 						)}
 						<TableGeneric

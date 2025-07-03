@@ -1,401 +1,193 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { LabelGeneric } from '../components/LabelGeneric';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { filtersEditContainer, headersTableEditContainer, containerCapacity, API_BASE_URL } from '../utils/consts';
 import { Banner } from '../components/Banner';
-import { InputGeneric } from '../components/InputGeneric';
 import { Loader } from '../components/Loader';
-import { SubmitButton } from '../components/SubmitButton';
 import { TableGeneric } from '../components/TableGeneric';
-import { useParams } from 'react-router-dom';
-import { Announcements } from '../components/Announcements';
+import { FiltersEditContainer } from '../components/FiltersEditContainer';
+import { API_BASE_URL, headersTableEditContainer } from '../utils/consts';
+import { InputGeneric } from '../components/InputGeneric';
 
-export function EditContainer() {
+export const EditContainer = () => {
 	const navigate = useNavigate();
 	const { id } = useParams();
 	const { t } = useTranslation();
-	const [loading, setLoading] = useState(true);
-	const [icoList, setIcoList] = useState([]);
-	const [exportsData, setExportsData] = useState([]);
-	const [selectedIcos, setSelectedIcos] = useState(new Set());
-	const [exportCountry, setExportCountry] = useState([]);
-	const [filterValues, setFilterValues] = useState({});
-	const [filters, setFilters] = useState({
-		booking: [],
-		dateLandingPort: [],
-		estimatedDelivery: [],
-		estimatedArrival: [],
-		announcement: [],
-		order: [],
-		review: [],
-		salesCode: [],
-		exportDate: [],
-		capacityContainer: [],
-		exportCountry: [],
-		port: [],
-		incoterm: [],
-		ico: [],
-		exportId: [],
+
+	const [state, setState] = useState({
+		loading: true,
+		tableData: [],
+		selectedIcos: [],
+		filtersData: [],
+		selectedDestinationPorts: [],
+		startDate: '',
+		endDate: '',
+		selectedIncoterm: [],
 	});
-	const [isAnnouncementsOpen, setIsAnnouncementsOpen] = useState(false);
+	//console.log(encodeURIComponent(id));
 
-	useEffect(() => {
-		if (icoList.length > 0 && filters) {
-			const defaultValues = {};
-			filtersEditContainer.forEach((filter) => {
-				defaultValues[filter] = filters[filter] && filters[filter].length ? filters[filter][0] : '';
+	const fetchContainerData = useCallback(async () => {
+		try {
+			//console.log(encodeURIComponent(id));
+			const response = await fetch(
+				`${API_BASE_URL}api/exports/getEditContainerData?containerId=${encodeURIComponent(id)}`,
+			);
+			if (!response.ok) throw new Error('Failed to fetch container data');
+
+			const data = await response.json();
+			const selectedIcosFromContainers = data.containers.map((container) => {
+				return container.contract_atlas ?? { ico: container.ico };
 			});
-			setFilterValues(defaultValues);
+
+			const combinedData = [...data.containers, ...data.contract_atlas];
+			//console.log(combinedData);
+			setState((prevState) => ({
+				...prevState,
+				filtersData: data,
+				tableData: formatTableData(combinedData, selectedIcosFromContainers),
+				selectedIcos: selectedIcosFromContainers,
+				loading: false,
+			}));
+		} catch (error) {
+			console.error('Error fetching container data:', error);
+			setState((prevState) => ({ ...prevState, loading: false }));
 		}
-	}, [icoList, filters]);
-
-	useEffect(() => {
-		if (icoList.length > 0 && filters) {
-			const defaultValues = {};
-			filtersEditContainer.forEach((filter) => {
-				defaultValues[filter] =
-					filter === 'capacityContainer'
-						? icoList[0]?.container_capacity || ''
-						: filter === 'port'
-							? icoList[0]?.destination_port || ''
-							: filter === 'incoterm'
-								? icoList[0]?.incoterm || ''
-								: filter === 'exportId'
-									? ''
-									: filters[filter] && filters[filter].length
-										? filters[filter][0]
-										: '';
-			});
-			setFilterValues(defaultValues);
-			//console.log(filterValues);
-		}
-	}, [icoList, filters]);
-
-	const mapApiResponseToHeaders = (apiResponse) => {
-		return apiResponse.map((item) => ({
-			ico_id: item.ico,
-			secondary_ico_id: item.secondary_ico_id,
-			mark: item.brand_name,
-			packaging_capacity: item.packaging_capacity,
-			units: item.units,
-			sample:
-				item.api_contract?.status_approval_sample === null ? 'Pending' : item.api_contract?.status_approval_sample,
-			shipmentMonth: item.export_date,
-			pricingConditions: item.api_contract?.pricing_conditions,
-			booking: item.booking,
-			date_landing: item.date_landing,
-			estimated_delivery: item.estimated_delivery,
-			estimated_arrival: item.estimated_arrival,
-			announcement: item.announcement,
-			review: item.review,
-			sales_code: item.sales_code,
-			container_capacity: item.container_capacity,
-			destination_port: item.destination_port,
-			incoterm: item.incoterm,
-			orders: item.orders,
-			weight: item.weight,
-			export_country: item.export_country,
-			select: false,
-			is_pending: item.is_pending,
-			comment_id: item.comment_id,
-			is_exported: item.is_exported,
-		}));
-	};
-
-	useEffect(() => {
-		const fetchData = async () => {
-			try {
-				const containersUrl = `${API_BASE_URL}api/exports/getAllContainers`;
-				const containersResponse = await fetch(containersUrl);
-				const containersData = await containersResponse.json();
-				const expFiltered = containersData[id];
-
-				if (expFiltered) {
-					const mappedData = mapApiResponseToHeaders(expFiltered);
-					setIcoList(mappedData);
-					const export_country = mappedData[0].export_country;
-					setExportCountry(export_country);
-
-					const exportsUrl = `${API_BASE_URL}api/exports/getAllExports`;
-					const exportsResponse = await fetch(exportsUrl);
-					const exportsData = await exportsResponse.json();
-					setIcoList((prevIcoList) => {
-						return prevIcoList.map((ico) => {
-							const exportData = exportsData.find((exportItem) => exportItem.ico_id === ico.ico_id);
-							//	console.log(exportData);
-							return {
-								...ico,
-								weight: exportData ? exportData.estimated_kg : ico.weight || 0,
-							};
-						});
-					});
-					//console.log(exportsData);
-					setExportsData(exportsData);
-					//console.log(mappedData);
-					const newFilters = {
-						booking: mappedData[0].booking ? [mappedData[0].booking] : [],
-						dateLandingPort: mappedData[0].date_landing ? [mappedData[0].date_landing] : [],
-						estimatedDelivery: mappedData[0].estimated_delivery ? [mappedData[0].estimated_delivery] : [],
-						estimatedArrival: mappedData[0].estimated_arrival ? [mappedData[0].estimated_arrival] : [],
-						announcement: mappedData[0].announcement ? [mappedData[0].announcement] : [],
-						order: mappedData[0].orders ? [mappedData[0].orders] : [],
-						review: mappedData[0].review ? [mappedData[0].review] : [],
-						salesCode: mappedData[0].sales_code ? [mappedData[0].sales_code] : [],
-						exportDate: mappedData[0].shipmentMonth ? [mappedData[0].shipmentMonth] : [],
-						capacityContainer: Object.keys(containerCapacity).map(Number),
-						exportId: [...new Set(exportsData.map((item) => item.export_number))],
-						exportCountry: [...new Set(exportsData.map((item) => item.origin))],
-						port: [...new Set(exportsData.map((item) => item.destination_port))],
-						incoterm: [...new Set(exportsData.map((item) => item.incoterm))],
-						ico: [...new Set(exportsData.map((item) => item.ico_id))],
-						weight: [...new Set(exportsData.map((item) => item.estimated_kg))],
-					};
-
-					setFilters(newFilters);
-				}
-			} catch (error) {
-				console.error('Error fetching data: ', error);
-			} finally {
-				setLoading(false);
-			}
-		};
-
-		fetchData();
 	}, [id]);
-	//console.log(icoList);
-	//console.log(filters);
-	//console.log(exportCountry);
-	const handleIcoChange = (e) => {
-		const selectedIcoId = e.target.value;
 
-		const selectedIcoData = exportsData.find((item) => item.ico_id === selectedIcoId);
+	useEffect(() => {
+		fetchContainerData();
+	}, [fetchContainerData]);
 
-		if (selectedIcoData) {
-			const transformedIcoData = {
-				ico_id: selectedIcoData.ico_id,
-				secondary_ico_id: selectedIcoData.ico_secondary_id,
-				mark: selectedIcoData.mark,
-				export_country: selectedIcoData.origin,
-				packaging_capacity: `${selectedIcoData.packaging_type} ${selectedIcoData.packaging_capacity}`,
-				units: selectedIcoData.units,
-				sample: selectedIcoData.status_approval_sample === null ? 'Pending' : selectedIcoData.status_approval_sample,
-				shipmentMonth: selectedIcoData.shipment_date,
-				pricingConditions: selectedIcoData.pricing_conditions,
-				weight: selectedIcoData.estimated_kg,
-				select: false,
+	const formatTableData = (data, selectedIcos) => {
+		return data.map((entry) => {
+			const atlasData = entry.contract_atlas || entry;
+			return {
+				shipmentMonth: atlasData.shipment_date,
+				ico_id: atlasData.ico,
+				secondary_ico_id: atlasData.secondary_ico || '-',
+				mark: atlasData.mark || '-',
+				quality: atlasData.quality || '-',
+				packaging_capacity: atlasData.packaging_type || '-',
+				units: atlasData.units || '-',
+				sample: atlasData.customer_cupping_state || '-',
+				destinationPort: atlasData.destination_port || '-',
+				price_type:
+					atlasData.price_type === 'differential'
+						? `${atlasData.price_type}: ${atlasData.fixed_price_status || 'Pending'}`
+						: atlasData.price_type || '-',
+				weight: atlasData.estimated_kg || '-',
+				select: atlasData.ico,
+				originPort: atlasData.origin_port,
+				incoterm: atlasData.incoterm,
+				production_order: atlasData.production_order ? atlasData.production_order : '-',
+				milling_order: atlasData.milling_order ? atlasData.milling_order : '-',
+				milling_state: atlasData.milling_state ? atlasData.milling_state : '-',
 			};
-
-			setIcoList((prevIcoList) => [...prevIcoList, transformedIcoData]);
-		}
-		//console.log(selectedIcoData);
-	};
-	const handleCheckboxChange = (ico_id) => {
-		setSelectedIcos((prevSelectedIcos) => {
-			const newSelectedIcos = new Set(prevSelectedIcos);
-			if (newSelectedIcos.has(ico_id)) {
-				newSelectedIcos.delete(ico_id);
-			} else {
-				newSelectedIcos.add(ico_id);
-			}
-			return newSelectedIcos;
 		});
 	};
-
-	const handleDeleteSelected = () => {
-		// Filtra la lista actual para remover los elementos seleccionados
-		const updatedIcoList = icoList.filter((ico) => !selectedIcos.has(ico.ico_id));
-		setIcoList(updatedIcoList);
-		setSelectedIcos(new Set());
+	const handleDestinationPortChange = (e) => {
+		const { value } = e.target; // value ya es un array según tu implementación
+		setState((prevState) => ({ ...prevState, selectedDestinationPorts: value }));
+	};
+	const handleIncotermChange = (e) => {
+		const { value } = e.target;
+		setState((prevState) => ({ ...prevState, selectedIncoterm: value }));
+	};
+	const handleStartDateChange = (e) => {
+		setState((prevState) => ({ ...prevState, startDate: e.target.value }));
 	};
 
-	const handleSubmit = (e) => {
-		e.preventDefault();
-
-		const payload = {
-			old_id: id,
-			export_country: exportCountry,
-			filters: filterValues,
-			selectedIcos: icoList,
-		};
-
-		//console.log(payload);
-		const sumIcosWeight = icoList.reduce((accumulator, element) => accumulator + parseInt(element.weight, 10), 0);
-		const selectedContainer = parseInt(payload.filters.capacityContainer, 10);
-		let selectedContainerValue;
-
-		if (containerCapacity.hasOwnProperty(selectedContainer)) {
-			selectedContainerValue = containerCapacity[selectedContainer];
-		}
-
-		// Verificar si el peso total de los ICOs no excede la capacidad del contenedor
-		if (sumIcosWeight < selectedContainerValue) {
-			fetch(`${API_BASE_URL}api/exports/updateContainer`, {
-				method: 'PUT',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify(payload),
-			})
-				.then((response) => {
-					if (!response.ok) {
-						throw new Error('Network response was not ok');
-					}
-					return response.json();
-				})
-				.then(() => {
-					window.alert('Container created successfully');
-					navigate('/view-containers');
-				})
-				.catch((error) => {
-					console.error('Error:', error);
-				});
-		} else {
-			window.alert('The total weight of the icos exceeds the capacity of the container.');
-			return;
-		}
+	const handleEndDateChange = (e) => {
+		setState((prevState) => ({ ...prevState, endDate: e.target.value }));
 	};
-	const openAnnouncements = () => {
-		setIsAnnouncementsOpen(true);
+	const filteredTableData = () => {
+		const { tableData, selectedDestinationPorts, startDate, endDate, selectedIncoterm } = state;
+		return tableData.filter((row) => {
+			const shipmentDate = new Date(row.shipmentMonth);
+			const start = startDate ? new Date(startDate) : null;
+			const end = endDate ? new Date(endDate) : null;
+
+			return (
+				(selectedDestinationPorts.length === 0 || selectedDestinationPorts.includes(row.destinationPort)) &&
+				(!start || shipmentDate >= start) &&
+				(!end || shipmentDate <= end) &&
+				(selectedIncoterm.length === 0 || selectedIncoterm.includes(row.incoterm))
+			);
+		});
 	};
+	const handleCheckboxChange = useCallback((ico) => {
+		setState((prevState) => {
+			const isSelected = prevState.selectedIcos.some((selected) => selected.ico === ico);
 
-	const closeAnnouncements = () => {
-		setIsAnnouncementsOpen(false);
-	};
-	if (loading) {
-		return <Loader />;
-	}
+			// Buscar la información asociada al ico en contract_atlas
+			const associatedData = prevState.filtersData.contract_atlas.find((atlas) => atlas.ico === ico);
 
-	function setExported() {
-		try {
-			const apiSetExported = `${API_BASE_URL}api/exports/setExported`;
+			// Si está seleccionado, quitamos el objeto del estado; si no, lo añadimos con la información completa
+			const updatedIcos = isSelected
+				? prevState.selectedIcos.filter((selected) => selected.ico !== ico)
+				: [...prevState.selectedIcos, associatedData];
 
-			fetch(apiSetExported, {
-				method: 'PUT',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({
-					id: id,
-					is_exported: '1',
-				}),
-			})
-				.then((response) => response.json())
+			return { ...prevState, selectedIcos: updatedIcos };
+		});
+	}, []);
 
-				.catch((error) => {
-					console.error('Error:', error);
-				});
-
-			window.alert('Container set as exported successfully');
-			navigate('/view-containers');
-		} catch (error) {
-			console.log(error);
-		}
-	}
+	if (state.loading) return <Loader />;
 
 	return (
 		<div className='bg-dark-background bg-cover bg-fixed min-h-screen'>
 			<section className='max-w-[90%] m-auto'>
 				<Banner />
 				<h1 className='text-5xl font-bold uppercase text-pink font-bayard mb-6'>{t('editContainer')}</h1>
-				<form onSubmit={handleSubmit}>
-					<div className='grid grid-cols-4 gap-4'>
-						{filtersEditContainer.map((filter) => (
-							<div key={filter} className='col-span-2 flex items-center gap-4'>
-								<LabelGeneric htmlFor={filter} filter={filter} className='col-span-1' />
-								<InputGeneric
-									type={
-										filter === 'port' ||
-										filter === 'capacityContainer' ||
-										filter === 'exportCountry' ||
-										filter === 'incoterm' ||
-										filter === 'ico' ||
-										filter === 'exportId'
-											? 'select'
-											: filter === 'booking' ||
-													filter === 'announcement' ||
-													filter === 'order' ||
-													filter === 'review' ||
-													filter === 'salesCode'
-												? 'text'
-												: filter === 'estimatedDelivery' ||
-														filter === 'estimatedArrival' ||
-														filter === 'exportDate' ||
-														filter === 'dateLandingPort'
-													? 'date'
-													: 'text'
-									}
-									filter={filter}
-									name={filter}
-									defaultValue={
-										filter === 'capacityContainer'
-											? icoList[0].container_capacity || ''
-											: filter === 'port'
-												? icoList[0].destination_port || ''
-												: filter === 'incoterm'
-													? icoList[0].incoterm || ''
-													: filter === 'ico'
-														? ''
-														: filter === 'exportId'
-															? ''
-															: filters[filter] && filters[filter].length
-																? filters[filter][0]
-																: ''
-									}
-									className='col-span-3 p-2'
-									options={
-										filter === 'capacityContainer' ? Object.keys(containerCapacity).map(String) : filters[filter] || []
-									}
-									onChange={(e) => {
-										setFilterValues((prev) => ({
-											...prev,
-											[filter]: e.target.value,
-										}));
-										//console.log(`${filter} changed to ${e.target.value}`); // Debug
-										if (filter === 'ico') handleIcoChange(e);
-									}}
-								/>
-							</div>
-						))}
-					</div>
-
-					<div className='my-5 flex items-center justify-center gap-5'>
-						<SubmitButton className='bg-pink w-[60%] ' buttonText='submit' />
-						<button
-							type='button'
-							className='bg-naranja font-bayard text-2xl text-white p-4 '
-							onClick={handleDeleteSelected}
-						>
-							{t('deleteSelected')}
-						</button>
-						<button
-							type='button'
-							className='bg-morado font-bayard text-2xl text-white p-4 '
-							onClick={openAnnouncements}
-						>
-							{t('addAnnouncements')}
-						</button>
-						<button type='button' className='bg-yellow font-bayard text-2xl text-white p-4 ' onClick={setExported}>
-							{t('setExported')}
-						</button>
-					</div>
-
-					<TableGeneric
-						headersTable={headersTableEditContainer}
-						dataTable={icoList.map((ico) => ({
-							...ico,
-							select: (
-								<input
-									type='checkbox'
-									checked={selectedIcos.has(ico.ico_id)}
-									onChange={() => handleCheckboxChange(ico.ico_id)}
-								/>
-							),
-						}))}
+				<h2 className='text-5xl font-bold uppercase text-pink font-bayard mb-6'>{t('filters')}</h2>
+				<div className='filtersContainers flex flex-row justify-between gap-6'>
+					<InputGeneric
+						type='select'
+						filter='destinationPort'
+						options={[...new Set(state.tableData.map((row) => row.destinationPort))]}
+						onChange={handleDestinationPortChange}
+						multiple={true}
+						placeholder='Select destination ports'
+						className='mb-6'
 					/>
-				</form>
-				{isAnnouncementsOpen && <Announcements onClose={closeAnnouncements} ico={icoList} />}
+					<InputGeneric
+						type='select'
+						filter='incoterm'
+						options={[...new Set(state.tableData.map((row) => row.incoterm))]}
+						onChange={handleIncotermChange}
+						multiple={true}
+						placeholder='Select incoterms'
+						className='mb-6'
+					/>
+					<InputGeneric
+						type='date'
+						filter='startDate'
+						onChange={handleStartDateChange}
+						placeholder='Select start date'
+						className='mb-6'
+					/>
+					<InputGeneric
+						type='date'
+						filter='endDate'
+						onChange={handleEndDateChange}
+						placeholder='Select end date'
+						className='mb-6'
+					/>
+				</div>
+				<h2 className='text-5xl font-bold uppercase text-pink font-bayard mb-6'>{t('containerData')}</h2>
+				<FiltersEditContainer filterValues={state.filtersData} selectedIcos={state.selectedIcos} oldExportId={id} />
+				<TableGeneric
+					headersTable={headersTableEditContainer}
+					dataTable={filteredTableData().map((row) => ({
+						...row,
+						select: (
+							<input
+								type='checkbox'
+								checked={state.selectedIcos.some((ico) => ico.ico === row.select)}
+								onChange={() => handleCheckboxChange(row.select)}
+							/>
+						),
+					}))}
+				/>
 			</section>
 		</div>
 	);
-}
+};

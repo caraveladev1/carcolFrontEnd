@@ -1,33 +1,69 @@
-export const API_BASE_URL = 'https://bckcarcol-e4h2fag7bke3gvd6.eastus2-01.azurewebsites.net/';
+//export const API_BASE_URL = 'https://bckcarcol.caravela.coffee/';
+export const API_BASE_URL = 'https://bckcarcoltest.caravela.coffee/';
 //export const API_BASE_URL = 'http://localhost:8080/';
 // Constantes de filtros
-export const placeholderFilter = ['office', 'exportMonth', 'packaging', 'contract', 'destination'];
+export const placeholderFilter = ['office', 'exportMonth', 'packaging', 'contract', 'destinationPort'];
 
 // Encabezados de tabla Home (pendings)
 export const headersTablePending = [
 	'contract',
+	'shipmentMonth',
+	'originPort',
 	'ico',
 	'secondary_ico_id',
 	'mark',
-	'customer',
+	'quality',
 	'packaging',
+	'customer',
 	'units',
+	'destinationPort',
 	'sample',
 	'incoterm',
-	'pricingConditions',
+	'price_type',
+	'production_order',
+	'milling_order',
+	'milling_state',
+	'weight',
+];
+export const headersTableExported = [
+	'contract',
+	'shipmentMonth',
+	'originPort',
+	'ico',
+	'secondary_ico_id',
+	'mark',
+	'quality',
+	'packaging',
+	'customer',
+	'units',
+	'destinationPort',
+	'sample',
+	'incoterm',
+	'price_type',
+	'production_order',
+	'milling_order',
+	'milling_state',
+	'weight',
 ];
 export const headersTableView = [
 	'contract',
 	'shipmentMonth',
+	'originPort',
 	'ico',
 	'secondary_ico_id',
 	'mark',
-	'customer',
+	'quality',
 	'packaging',
+	'customer',
 	'units',
+	'destinationPort',
 	'sample',
 	'incoterm',
-	'pricingConditions',
+	'price_type',
+	'production_order',
+	'milling_order',
+	'milling_state',
+	'weight',
 	'comments',
 ];
 
@@ -38,68 +74,74 @@ export const nameFilters = [
 	'shipmentMonthFinal',
 	'port',
 	'incoterm',
+	'originPort',
 ];
 
 export const headersTableCreateContainer = [
 	'ico_id',
 	'secondary_ico_id',
+	'originPort',
 	'contract',
 	'customer',
-	'quality',
 	'mark',
 	'packaging_capacity',
+	'quality',
 	'units',
 	'sample',
 	'shipmentMonth',
-	'pricingConditions',
+	'destinationPort',
+	'price_type',
+	'production_order',
+	'milling_order',
+	'milling_state',
 	'weight',
 	'select',
 ];
 
-export const labelsBoogkindAndDates = [
-	'booking',
-	'dateLandingPort',
-	'estimatedDelivery',
-	'estimatedArrival',
-	/* 'announcement',
-	'order',
-	'review',
-	'salesCode', */
-	'exportDate',
-];
+export const labelsBoogkindAndDates = ['booking', 'dateLandingPort', 'estimatedArrival', 'exportDate'];
 
 export const containerCapacity = {
 	20: 20000.41,
 	40: 26308.34,
 };
 
-export const viewContainerFilters = ['office', 'shipmentMonth', 'finalDate', 'packaging', 'contract', 'destination'];
+export const viewContainerFilters = [
+	'office',
+	'initialDate',
+	'finalDate',
+	'packaging',
+	'contract',
+	'destination',
+	'ico',
+];
 
 export const filtersEditContainer = [
 	'booking',
 	'dateLandingPort',
-	'estimatedDelivery',
-	'estimatedArrival',
-	/* 'announcement',
-	'order',
-	'review',
-	'salesCode', */
-	'exportDate',
 	'capacityContainer',
+	'estimatedArrival',
 	'port',
-	'incoterm',
-	'ico',
+	'exportDate',
+	'originPort',
 	'exportId',
+	'incoterm',
 ];
 
 export const headersTableEditContainer = [
+	'shipmentMonth',
+	'originPort',
 	'ico_id',
 	'secondary_ico_id',
 	'mark',
+	'quality',
 	'packaging_capacity',
 	'units',
 	'sample',
-	'shipmentMonth',
-	'pricingConditions',
+	'destinationPort',
+	'price_type',
+	'production_order',
+	'milling_order',
+	'milling_state',
+	'weight',
 	'select',
 ];

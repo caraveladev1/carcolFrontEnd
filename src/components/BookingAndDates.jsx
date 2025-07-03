@@ -8,6 +8,7 @@ export const BookingAndDates = memo(function BookingAndDates({
 	selectOptions,
 	required,
 	initialFormData,
+	relatedData,
 }) {
 	const { t } = useTranslation();
 
@@ -63,6 +64,38 @@ export const BookingAndDates = memo(function BookingAndDates({
 		}
 	};
 	async function setLoaded() {
+		if (!relatedData || relatedData.length === 0) {
+			window.alert('No hay datos relacionados para validar.');
+			return;
+		}
+
+		console.log('Datos relacionados:', relatedData);
+
+		const invalidEntries = relatedData.filter((item) => {
+			if (
+				item.contract_atlas.customerCuppingState === 'Not Sent' ||
+				item.contract_atlas.customerCuppingState === 'Sent' ||
+				item.contract_atlas.customerCuppingState === 'Rejected' ||
+				item.contract_atlas.milling_state !== 'closed'
+			) {
+				return true;
+			}
+
+			if (item.contract_atlas.price_type !== 'fixed' && item.contract_atlas.fixed_price_status !== 'fixed') {
+				return true;
+			}
+
+			return false;
+		});
+
+		if (invalidEntries.length > 0) {
+			window.alert(
+				'The sample, fixation or milling state are not valid for loading the container. Please check the data before proceeding.',
+			);
+			console.warn('Datos no válidos:', invalidEntries);
+			return;
+		}
+
 		try {
 			const response = await fetch(`${API_BASE_URL}api/exports/setLoaded`, {
 				method: 'PUT',
@@ -74,11 +107,16 @@ export const BookingAndDates = memo(function BookingAndDates({
 
 			if (!response.ok) {
 				window.alert('Error al enviar los datos');
+			} else {
+				window.alert('Container updated successfully');
+				window.location.reload();
 			}
 		} catch (error) {
 			console.error('Error al enviar los datos:', error);
+			window.alert('Ocurrió un error al enviar los datos.');
 		}
 	}
+
 	const getCurrentDate = () => {
 		const today = new Date();
 		const year = today.getFullYear();
@@ -147,7 +185,13 @@ export const BookingAndDates = memo(function BookingAndDates({
 				))}
 				<div className='flex flex-row gap-4 justify-between	w-full col-span-4'>
 					<SubmitButton className='w-full' color='verdeTexto' typeButton='submit' buttonText='submit' />
-					<SubmitButton className='w-full' color='naranja' onClick={setLoaded} buttonText='setLoaded' />
+					<SubmitButton
+						className='w-full'
+						color='naranja'
+						typeButton='button'
+						onClick={setLoaded}
+						buttonText='setLoaded'
+					/>
 				</div>
 			</form>
 		</div>
