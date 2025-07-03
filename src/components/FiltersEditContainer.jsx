@@ -11,15 +11,15 @@ import { useFiltersEditContainer } from '../Hooks/useFiltersEditContainer';
 export function FiltersEditContainer({ filterValues, selectedIcos, oldExportId }) {
 	const { t } = useTranslation();
 	const { control, optionsByFilter, onSubmit, setExported } = useFiltersEditContainer(
-		filterValues, 
-		selectedIcos, 
-		oldExportId
+		filterValues,
+		selectedIcos,
+		oldExportId,
 	);
 
 	const getInputComponent = (filter) => {
-		const isSelect = ['capacityContainer', 'port', 'incoterm', 'exportId', 'originPort'].includes(filter);
+		const isSelect = ['capacityContainer', 'port', 'incoterm', 'originPort'].includes(filter);
 		const isDate = ['dateLandingPort', 'estimatedArrival', 'exportDate'].includes(filter);
-		
+
 		if (isSelect) {
 			return (
 				<SelectInput
@@ -30,26 +30,22 @@ export function FiltersEditContainer({ filterValues, selectedIcos, oldExportId }
 				/>
 			);
 		} else if (isDate) {
-			return (
-				<DateInput
-					name={filter}
-					control={control}
-				/>
-			);
+			return <DateInput name={filter} control={control} />;
 		} else {
-			return (
-				<TextInput
-					name={filter}
-					control={control}
-					placeholder={`Enter ${filter}`}
-				/>
-			);
+			return <TextInput name={filter} control={control} placeholder={`Enter ${filter}`} />;
 		}
 	};
 
 	const orderedFilters = [
-		'booking', 'dateLandingPort', 'estimatedArrival', 'exportDate',
-		'capacityContainer', 'port', 'originPort', 'incoterm', 'exportId'
+		'booking',
+		'dateLandingPort',
+		'estimatedArrival',
+		'exportDate',
+		'capacityContainer',
+		'port',
+		'originPort',
+		'incoterm',
+		'exportId',
 	];
 
 	return (
