@@ -9,7 +9,7 @@ import { DateInput } from '../components/DateInput';
 import { SelectInput } from '../components/SelectInput';
 import { FilterContainer } from '../components/FilterContainer';
 import { Pagination } from '../components/Pagination';
-import { usePendingTasks } from '../hooks';
+import { usePendingTasks } from '../Hooks';
 
 export function PendingTask() {
 	const { t } = useTranslation();
