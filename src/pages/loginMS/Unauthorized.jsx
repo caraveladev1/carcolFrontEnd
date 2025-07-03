@@ -1,16 +1,8 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { API_BASE_URL } from '../../utils/consts';
+import { useAuth } from '../../hooks';
+
 export function Unauthorized() {
-	const navigate = useNavigate();
-	const logout = () => {
-		fetch(`${API_BASE_URL}api/microsoft/logout`, {
-			method: 'POST',
-			credentials: 'include',
-		}).then(() => {
-			navigate('/login');
-		});
-	};
+	const { logout } = useAuth();
 	return (
 		<div className='unauthorize bg-beige bg-cover min-h-screen flex flex-row'>
 			<div className='m-auto items-center border-2 border-cafe p-6'>

@@ -2,22 +2,13 @@ import React from 'react';
 import logoCaravela from '../assets/img/logoCaravela.png';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
-import { API_BASE_URL } from '../utils/consts';
 import { useRole } from '../Hooks/RoleContext.js';
+import { useAuth } from '../hooks';
 
 export function Banner() {
 	const { t } = useTranslation();
-	const navigate = useNavigate();
-	const role = useRole(); // Obtiene el rol del localStorage
-	const logout = () => {
-		fetch(`${API_BASE_URL}api/microsoft/logout`, {
-			method: 'POST',
-			credentials: 'include',
-		}).then(() => {
-			navigate('/login');
-		});
-	};
+	const role = useRole();
+	const { logout } = useAuth();
 	return (
 		<section className='bannerSection w-full m-auto '>
 			<div className='flex flex-row items-center justify-between py-2 gap-6 font-bayard'>
