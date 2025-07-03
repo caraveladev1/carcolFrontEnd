@@ -1,37 +1,10 @@
-import { useEffect, useState } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import React from 'react';
+import { Outlet } from 'react-router-dom';
 import { RoleContext } from '../../Hooks/RoleContext.js';
-import { API_BASE_URL } from '../../utils/consts';
+import { useProtectedRoute } from '../../hooks';
 
 export function ProtectedRouteMS({ allowedRoles }) {
-	const navigate = useNavigate();
-	const [authorized, setAuthorized] = useState(null);
-	const [role, setRole] = useState(null);
-
-	useEffect(() => {
-		fetch(`${API_BASE_URL}api/microsoft/protected`, {
-			method: 'GET',
-			credentials: 'include',
-		})
-			.then(async (res) => {
-				if (res.ok) {
-					const data = await res.json();
-					setAuthorized(true);
-					setRole(data.user.role);
-				} else {
-					setAuthorized(false);
-				}
-			})
-			.catch(() => setAuthorized(false));
-	}, []);
-
-	useEffect(() => {
-		if (authorized === false) {
-			navigate('/login');
-		} else if (authorized && role && !allowedRoles.includes(role)) {
-			navigate('/unauthorized');
-		}
-	}, [authorized, role, allowedRoles, navigate]);
+	const { authorized, role } = useProtectedRoute(allowedRoles);
 
 	if (authorized === null) return null;
 

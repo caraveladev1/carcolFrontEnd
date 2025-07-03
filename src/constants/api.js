@@ -1,0 +1,16 @@
+//export const API_BASE_URL = 'https://bckcarcoltest.caravela.coffee/';
+//export const API_BASE_URL = 'https://bckcarcol.caravela.coffee/';
+export const API_BASE_URL = 'http://localhost:8080/';
+
+export const API_ENDPOINTS = {
+	PENDING_CONTAINERS: 'api/exports/getPendingContainers',
+	ALL_EXPORTS: 'api/exports/getAllExports',
+	ALL_CONTAINERS: 'api/exports/getAllContainers',
+	EXPORTED_CONTAINERS: 'api/exports/getExportedContainers',
+	CREATE_CONTAINER: 'api/exports/createContainer',
+	EDIT_CONTAINER_DATA: 'api/exports/getEditContainerData',
+	MS_PROTECTED: 'api/microsoft/protected',
+	MS_LOGIN: 'api/microsoft/login',
+	MS_LOGOUT: 'api/microsoft/logout',
+	MS_REDIRECT: 'api/microsoft/redirect',
+};

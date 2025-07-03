@@ -1,134 +1,24 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Banner } from '../components/Banner';
 import { Loader } from '../components/Loader';
 import { TableGeneric } from '../components/TableGeneric';
 import { FiltersEditContainer } from '../components/FiltersEditContainer';
-import { API_BASE_URL, headersTableEditContainer } from '../utils/consts';
+import { TABLE_HEADERS } from '../constants';
 import { InputGeneric } from '../components/InputGeneric';
+import { useEditContainer } from '../hooks';
 
 export const EditContainer = () => {
-	const navigate = useNavigate();
-	const { id } = useParams();
 	const { t } = useTranslation();
-
-	const [state, setState] = useState({
-		loading: true,
-		tableData: [],
-		selectedIcos: [],
-		filtersData: [],
-		selectedDestinationPorts: [],
-		startDate: '',
-		endDate: '',
-		selectedIncoterm: [],
-	});
-	//console.log(encodeURIComponent(id));
-
-	const fetchContainerData = useCallback(async () => {
-		try {
-			//console.log(encodeURIComponent(id));
-			const response = await fetch(
-				`${API_BASE_URL}api/exports/getEditContainerData?containerId=${encodeURIComponent(id)}`,
-			);
-			if (!response.ok) throw new Error('Failed to fetch container data');
-
-			const data = await response.json();
-			const selectedIcosFromContainers = data.containers.map((container) => {
-				return container.contract_atlas ?? { ico: container.ico };
-			});
-
-			const combinedData = [...data.containers, ...data.contract_atlas];
-			//console.log(combinedData);
-			setState((prevState) => ({
-				...prevState,
-				filtersData: data,
-				tableData: formatTableData(combinedData, selectedIcosFromContainers),
-				selectedIcos: selectedIcosFromContainers,
-				loading: false,
-			}));
-		} catch (error) {
-			console.error('Error fetching container data:', error);
-			setState((prevState) => ({ ...prevState, loading: false }));
-		}
-	}, [id]);
-
-	useEffect(() => {
-		fetchContainerData();
-	}, [fetchContainerData]);
-
-	const formatTableData = (data, selectedIcos) => {
-		return data.map((entry) => {
-			const atlasData = entry.contract_atlas || entry;
-			return {
-				shipmentMonth: atlasData.shipment_date,
-				ico_id: atlasData.ico,
-				secondary_ico_id: atlasData.secondary_ico || '-',
-				mark: atlasData.mark || '-',
-				quality: atlasData.quality || '-',
-				packaging_capacity: atlasData.packaging_type || '-',
-				units: atlasData.units || '-',
-				sample: atlasData.customer_cupping_state || '-',
-				destinationPort: atlasData.destination_port || '-',
-				price_type:
-					atlasData.price_type === 'differential'
-						? `${atlasData.price_type}: ${atlasData.fixed_price_status || 'Pending'}`
-						: atlasData.price_type || '-',
-				weight: atlasData.estimated_kg || '-',
-				select: atlasData.ico,
-				originPort: atlasData.origin_port,
-				incoterm: atlasData.incoterm,
-				production_order: atlasData.production_order ? atlasData.production_order : '-',
-				milling_order: atlasData.milling_order ? atlasData.milling_order : '-',
-				milling_state: atlasData.milling_state ? atlasData.milling_state : '-',
-			};
-		});
-	};
-	const handleDestinationPortChange = (e) => {
-		const { value } = e.target; // value ya es un array según tu implementación
-		setState((prevState) => ({ ...prevState, selectedDestinationPorts: value }));
-	};
-	const handleIncotermChange = (e) => {
-		const { value } = e.target;
-		setState((prevState) => ({ ...prevState, selectedIncoterm: value }));
-	};
-	const handleStartDateChange = (e) => {
-		setState((prevState) => ({ ...prevState, startDate: e.target.value }));
-	};
-
-	const handleEndDateChange = (e) => {
-		setState((prevState) => ({ ...prevState, endDate: e.target.value }));
-	};
-	const filteredTableData = () => {
-		const { tableData, selectedDestinationPorts, startDate, endDate, selectedIncoterm } = state;
-		return tableData.filter((row) => {
-			const shipmentDate = new Date(row.shipmentMonth);
-			const start = startDate ? new Date(startDate) : null;
-			const end = endDate ? new Date(endDate) : null;
-
-			return (
-				(selectedDestinationPorts.length === 0 || selectedDestinationPorts.includes(row.destinationPort)) &&
-				(!start || shipmentDate >= start) &&
-				(!end || shipmentDate <= end) &&
-				(selectedIncoterm.length === 0 || selectedIncoterm.includes(row.incoterm))
-			);
-		});
-	};
-	const handleCheckboxChange = useCallback((ico) => {
-		setState((prevState) => {
-			const isSelected = prevState.selectedIcos.some((selected) => selected.ico === ico);
-
-			// Buscar la información asociada al ico en contract_atlas
-			const associatedData = prevState.filtersData.contract_atlas.find((atlas) => atlas.ico === ico);
-
-			// Si está seleccionado, quitamos el objeto del estado; si no, lo añadimos con la información completa
-			const updatedIcos = isSelected
-				? prevState.selectedIcos.filter((selected) => selected.ico !== ico)
-				: [...prevState.selectedIcos, associatedData];
-
-			return { ...prevState, selectedIcos: updatedIcos };
-		});
-	}, []);
+	const {
+		state,
+		handleDestinationPortChange,
+		handleIncotermChange,
+		handleStartDateChange,
+		handleEndDateChange,
+		filteredTableData,
+		handleCheckboxChange,
+	} = useEditContainer();
 
 	if (state.loading) return <Loader />;
 
@@ -175,7 +65,7 @@ export const EditContainer = () => {
 				<h2 className='text-5xl font-bold uppercase text-pink font-bayard mb-6'>{t('containerData')}</h2>
 				<FiltersEditContainer filterValues={state.filtersData} selectedIcos={state.selectedIcos} oldExportId={id} />
 				<TableGeneric
-					headersTable={headersTableEditContainer}
+					headersTable={TABLE_HEADERS.EDIT_CONTAINER}
 					dataTable={filteredTableData().map((row) => ({
 						...row,
 						select: (
