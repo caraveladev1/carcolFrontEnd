@@ -8,6 +8,7 @@ import { Loader } from '../components/Loader';
 import { DateInput } from '../components/DateInput';
 import { SelectInput } from '../components/SelectInput';
 import { FilterContainer } from '../components/FilterContainer';
+import { Pagination } from '../components/Pagination';
 import { useExportedContainers } from '../hooks';
 
 export function ExportedContainers() {
@@ -23,6 +24,11 @@ export function ExportedContainers() {
 		closeDetails,
 		filteredData,
 		control,
+		paginatedData,
+		currentPage,
+		totalItems,
+		goToPage,
+		itemsPerPage,
 	} = useExportedContainers();
 
 	if (loading) {
@@ -43,7 +49,7 @@ export function ExportedContainers() {
 					<SelectInput name='destinationPort' control={control} options={portOptions} isMulti={true} />
 				</FilterContainer>
 
-				{Object.keys(filteredData()).map((exp_id) => (
+				{paginatedData.map(([exp_id, containerData]) => (
 					<div key={exp_id} className='my-4'>
 						<div className='titleContainer flex flex-row justify-between items-center'>
 							<h2 className='text-3xl font-bold text-white mb-4 font-bayard uppercase'>{exp_id}</h2>
@@ -54,14 +60,20 @@ export function ExportedContainers() {
 								{t('viewDetails')}
 							</button>
 						</div>
-
 						<TableGeneric
 							headersTable={TABLE_HEADERS.EXPORTED}
-							dataTable={filteredData()[exp_id]}
+							dataTable={containerData}
 							renderRowContent={(row) => row}
 						/>
 					</div>
 				))}
+
+				<Pagination 
+					currentPage={currentPage}
+					totalItems={totalItems}
+					itemsPerPage={itemsPerPage}
+					onPageChange={goToPage}
+				/>
 
 				{/* Mostrar ViewDetails si showDetails es true */}
 				{showDetails && <ViewDetails onClose={closeDetails} exp_id={selectedExpId} />}

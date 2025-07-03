@@ -27,6 +27,7 @@ export const filterUtils = {
   },
 
   filterViewContainerData(data, filters) {
+    if (!data) return {};
     return Object.keys(data).reduce((filteredData, exp_id) => {
       const filteredItems = data[exp_id].filter((item) => {
         const itemDate = new Date(item.date_landing);

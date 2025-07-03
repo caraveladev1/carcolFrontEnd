@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { containerService } from '../services/index.js';
@@ -11,6 +11,8 @@ export const useCreateContainer = () => {
   const [icoList, setIcoList] = useState([]);
   const [filteredIcoList, setFilteredIcoList] = useState([]);
   const [selectedIcos, setSelectedIcos] = useState(new Set());
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 100;
 
   const [selectOptions, setSelectOptions] = useState({
     shipmentPorts: [],
@@ -70,7 +72,7 @@ export const useCreateContainer = () => {
     fetchData();
   }, []);
 
-  const handleCheckboxChange = (ico_id) => {
+  const handleCheckboxChange = useCallback((ico_id) => {
     setSelectedIcos((prevSelectedIcos) => {
       const newSelectedIcos = new Set(prevSelectedIcos);
       if (newSelectedIcos.has(ico_id)) {
@@ -80,7 +82,7 @@ export const useCreateContainer = () => {
       }
       return newSelectedIcos;
     });
-  };
+  }, []);
 
 
 
@@ -105,6 +107,22 @@ export const useCreateContainer = () => {
       />
     ),
   }));
+
+  const paginatedData = useMemo(() => {
+    if (!preparedDataTable || preparedDataTable.length === 0) return [];
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return preparedDataTable.slice(startIndex, endIndex);
+  }, [preparedDataTable, currentPage]);
+
+  const totalItems = preparedDataTable?.length || 0;
+
+  const goToPage = (page) => {
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
 
   const handleSubmit = handleFormSubmit(async (data) => {
     const selectedData = icoList.filter((ico) => selectedIcos.has(ico.ico_id));
@@ -140,5 +158,10 @@ export const useCreateContainer = () => {
     handleSubmit,
     handleCheckboxChange,
     control,
+    paginatedData,
+    currentPage,
+    totalItems,
+    goToPage,
+    itemsPerPage,
   };
 };

@@ -10,6 +10,7 @@ import { DateInput } from '../components/DateInput';
 import { SelectInput } from '../components/SelectInput';
 import { TextInput } from '../components/TextInput';
 import { FilterContainer } from '../components/FilterContainer';
+import { Pagination } from '../components/Pagination';
 import commentsButton from '../assets/img/commentsButton.webp';
 import { Comments } from '../components/Comments';
 import { Announcements } from '../components/Announcements';
@@ -37,12 +38,17 @@ export function ViewContainers() {
 		setIsAnnouncementsOpen,
 		mapDataWithButtons,
 		control,
+		paginatedData,
+		currentPage,
+		totalItems,
+		goToPage,
+		itemsPerPage,
 	} = useViewContainers();
 	if (loading) {
 		return <Loader />;
 	}
 
-	const filteredDataResult = filteredData();
+
 
 	return (
 		<div className='bg-dark-background bg-cover bg-fixed min-h-screen'>
@@ -70,9 +76,8 @@ export function ViewContainers() {
 					)}
 				</FilterContainer>
 
-				{filteredDataResult &&
-					Object.keys(filteredDataResult).map((exp_id) => {
-						const dataWithButtons = mapDataWithButtons(filteredDataResult[exp_id], role);
+				{paginatedData.map(([exp_id, containerData]) => {
+						const dataWithButtons = mapDataWithButtons(containerData, role);
 						const totalWeight = dataWithButtons.reduce((sum, item) => {
 							const weight = parseFloat(item.weight) || 0;
 							return sum + weight;
@@ -105,6 +110,13 @@ export function ViewContainers() {
 							</div>
 						);
 					})}
+
+				<Pagination 
+					currentPage={currentPage}
+					totalItems={totalItems}
+					itemsPerPage={itemsPerPage}
+					onPageChange={goToPage}
+				/>
 
 				{isCommentsOpen && <Comments ico={selectedIco} onClose={closeComments} />}
 				{isAnnouncementsOpen && <Announcements ico={selectedIco} onClose={closeAnnouncements} />}

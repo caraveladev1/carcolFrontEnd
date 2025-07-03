@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { containerService } from '../services/index.js';
 import { dataTransformers, filterUtils } from '../utils/index.js';
@@ -10,6 +10,8 @@ export const useExportedContainers = () => {
   const [selectedExpId, setSelectedExpId] = useState(null);
   const [countryOptions, setCountryOptions] = useState([]);
   const [portOptions, setPortOptions] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   const { control, watch } = useForm({
     defaultValues: {
@@ -63,7 +65,30 @@ export const useExportedContainers = () => {
   };
 
   const filteredData = () => {
+    if (!organizedData) return {};
     return filterUtils.filterExportedContainerData(organizedData, filters);
+  };
+
+  const paginatedData = useMemo(() => {
+    if (!organizedData) return [];
+    const filtered = filteredData();
+    const entries = Object.entries(filtered || {});
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return entries.slice(startIndex, endIndex);
+  }, [organizedData, filters, currentPage]);
+
+  const totalItems = useMemo(() => {
+    if (!organizedData) return 0;
+    const filtered = filteredData();
+    return Object.keys(filtered || {}).length;
+  }, [organizedData, filters]);
+
+  const goToPage = (page) => {
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
   };
 
   return {
@@ -77,5 +102,10 @@ export const useExportedContainers = () => {
     closeDetails,
     filteredData,
     control,
+    paginatedData,
+    currentPage,
+    totalItems,
+    goToPage,
+    itemsPerPage,
   };
 };

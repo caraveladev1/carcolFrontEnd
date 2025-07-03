@@ -9,7 +9,9 @@ import { TABLE_HEADERS } from '../constants';
 import { SelectInput } from '../components/SelectInput';
 import { DateInput } from '../components/DateInput';
 import { FilterContainer } from '../components/FilterContainer';
+import { Pagination } from '../components/Pagination';
 import { useEditContainer } from '../hooks';
+import { usePagination } from '../Hooks/usePagination';
 
 export const EditContainer = () => {
 	const { t } = useTranslation();
@@ -20,6 +22,19 @@ export const EditContainer = () => {
 		handleCheckboxChange,
 		control,
 	} = useEditContainer();
+
+	const tableData = filteredTableData().map((row) => ({
+		...row,
+		select: (
+			<input
+				type='checkbox'
+				checked={state.selectedIcos.some((ico) => ico.ico === row.select)}
+				onChange={() => handleCheckboxChange(row.select)}
+			/>
+		),
+	}));
+
+	const { currentPage, paginatedData, totalItems, goToPage } = usePagination(tableData, 100);
 
 	if (state.loading) return <Loader />;
 
@@ -39,16 +54,13 @@ export const EditContainer = () => {
 				<FiltersEditContainer filterValues={state.filtersData} selectedIcos={state.selectedIcos} oldExportId={id} />
 				<TableGeneric
 					headersTable={TABLE_HEADERS.EDIT_CONTAINER}
-					dataTable={filteredTableData().map((row) => ({
-						...row,
-						select: (
-							<input
-								type='checkbox'
-								checked={state.selectedIcos.some((ico) => ico.ico === row.select)}
-								onChange={() => handleCheckboxChange(row.select)}
-							/>
-						),
-					}))}
+					dataTable={paginatedData}
+				/>
+				<Pagination 
+					currentPage={currentPage}
+					totalItems={totalItems}
+					itemsPerPage={100}
+					onPageChange={goToPage}
 				/>
 			</section>
 		</div>

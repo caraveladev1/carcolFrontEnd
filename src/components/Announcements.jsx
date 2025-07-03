@@ -4,7 +4,9 @@ import { DateInput } from './DateInput';
 import { SelectInput } from './SelectInput';
 import { TextInput } from './TextInput';
 import { FilterContainer } from './FilterContainer';
+import { Pagination } from './Pagination';
 import { useAnnouncements } from '../Hooks/useAnnouncements';
+import { usePagination } from '../Hooks/usePagination';
 
 export function Announcements({ onClose }) {
 	const { t } = useTranslation();
@@ -16,6 +18,8 @@ export function Announcements({ onClose }) {
 		formControl,
 		submitAnnouncements,
 	} = useAnnouncements(onClose);
+
+	const { currentPage, paginatedData, totalItems, goToPage } = usePagination(filteredData, 50);
 
 	return (
 		<div className='announcementContainer fixed inset-0 bg-black/50 flex justify-center items-center'>
@@ -34,7 +38,7 @@ export function Announcements({ onClose }) {
 				</FilterContainer>
 
 				<div className='container space-y-4'>
-					{filteredData.length > 0 ? (
+					{paginatedData.length > 0 ? (
 						<>
 							<div className='grid grid-cols-11 gap-4 font-bold text-pink text-center'>
 								<p className='col-span-1 text-2xl font-bayard'>ICO</p>
@@ -49,7 +53,7 @@ export function Announcements({ onClose }) {
 								<p className='col-span-1 text-2xl font-bayard'>Sales Code</p>
 								<p className='col-span-1 text-2xl font-bayard'>Revision Number</p>
 							</div>
-							{filteredData.map((item) => (
+							{paginatedData.map((item) => (
 								<div key={item.ico} className='grid grid-cols-11 gap-4'>
 									<p className='col-span-1 font-bayard text-2xl text-center m-auto text-pink'>{item.ico}</p>
 									<p className='col-span-1 text-center font-bayard text-2xl m-auto text-pink'>{item.date_landing}</p>
@@ -103,6 +107,12 @@ export function Announcements({ onClose }) {
 								<p className='col-span-1 text-2xl m-auto uppercase font-bayard'>{totals.filteredUnits}</p>
 								<p className='col-span-4'></p>
 							</div>
+							<Pagination 
+								currentPage={currentPage}
+								totalItems={totalItems}
+								itemsPerPage={50}
+								onPageChange={goToPage}
+							/>
 						</>
 					) : (
 						<p>No items to display.</p>

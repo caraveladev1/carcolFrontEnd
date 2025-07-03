@@ -8,6 +8,7 @@ import { BookingAndDates } from '../components/BookingAndDates';
 import { DateInput } from '../components/DateInput';
 import { SelectInput } from '../components/SelectInput';
 import { FilterContainer } from '../components/FilterContainer';
+import { Pagination } from '../components/Pagination';
 import { usePendingTasks } from '../hooks';
 
 export function PendingTask() {
@@ -23,6 +24,11 @@ export function PendingTask() {
 		toggleBookingAndDates,
 		filteredData,
 		control,
+		paginatedData,
+		currentPage,
+		totalItems,
+		goToPage,
+		itemsPerPage,
 	} = usePendingTasks();
 
 	if (loading) {
@@ -41,11 +47,10 @@ export function PendingTask() {
 					<SelectInput name='destinationPort' control={control} options={portOptions} isMulti={true} />
 				</FilterContainer>
 
-				{Object.keys(filteredData()).map((exp_id) => (
+				{paginatedData.map(([exp_id, taskData]) => (
 					<div key={exp_id} className='my-4'>
 						<div className='titleContainer flex flex-row justify-between items-center'>
 							<h2 className='text-3xl font-bold text-white mb-4 font-bayard uppercase'>{exp_id}</h2>
-
 							<button
 								className='bg-yellow-500 text-celeste font-bayard uppercase text-3xl'
 								onClick={() => toggleBookingAndDates(exp_id)}
@@ -53,7 +58,6 @@ export function PendingTask() {
 								{showBookingAndDates[exp_id] ? t('addBookingAndDates') : t('addBookingAndDates')}
 							</button>
 						</div>
-
 						{showBookingAndDates[exp_id] && (
 							<BookingAndDates
 								exportNumber={exp_id}
@@ -65,11 +69,18 @@ export function PendingTask() {
 						)}
 						<TableGeneric
 							headersTable={TABLE_HEADERS.PENDING}
-							dataTable={filteredData()[exp_id]}
+							dataTable={taskData}
 							renderRowContent={(row) => row}
 						/>
 					</div>
 				))}
+
+				<Pagination 
+					currentPage={currentPage}
+					totalItems={totalItems}
+					itemsPerPage={itemsPerPage}
+					onPageChange={goToPage}
+				/>
 			</section>
 		</div>
 	);
