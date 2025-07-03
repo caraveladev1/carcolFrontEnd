@@ -9,7 +9,7 @@ import { DateInput } from '../components/DateInput';
 import { SelectInput } from '../components/SelectInput';
 import { FilterContainer } from '../components/FilterContainer';
 import { Pagination } from '../components/Pagination';
-import { useExportedContainers } from '../hooks';
+import { useExportedContainers } from '../Hooks';
 
 export function ExportedContainers() {
 	const { t } = useTranslation();

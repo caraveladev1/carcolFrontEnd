@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAuth } from '../../hooks';
+import { useAuth } from '../../Hooks';
 
 export function Unauthorized() {
 	const { logout } = useAuth();

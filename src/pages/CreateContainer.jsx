@@ -11,7 +11,7 @@ import { Pagination } from '../components/Pagination';
 import { Loader } from '../components/Loader';
 import { SubmitButton } from '../components/SubmitButton';
 import { TableGeneric } from '../components/TableGeneric';
-import { useCreateContainer } from '../hooks';
+import { useCreateContainer } from '../Hooks';
 
 export function CreateContainer() {
 	const { t } = useTranslation();

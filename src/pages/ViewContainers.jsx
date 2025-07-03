@@ -15,7 +15,7 @@ import commentsButton from '../assets/img/commentsButton.webp';
 import { Comments } from '../components/Comments';
 import { Announcements } from '../components/Announcements';
 import { useRole } from '../Hooks/RoleContext.js';
-import { useViewContainers } from '../hooks';
+import { useViewContainers } from '../Hooks';
 
 export function ViewContainers() {
 	const { t } = useTranslation();

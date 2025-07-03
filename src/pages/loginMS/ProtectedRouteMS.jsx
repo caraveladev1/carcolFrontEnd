@@ -1,7 +1,7 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import { RoleContext } from '../../Hooks/RoleContext.js';
-import { useProtectedRoute } from '../../hooks';
+import { useProtectedRoute } from '../../Hooks';
 
 export function ProtectedRouteMS({ allowedRoles }) {
 	const { authorized, role } = useProtectedRoute(allowedRoles);
