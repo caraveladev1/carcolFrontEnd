@@ -1,7 +1,7 @@
 import React from 'react';
 import ms_icon from '../../assets/img/MS_icon.svg';
 import caravela_logo from '../../assets/img/logoCaravela.webp';
-import { useAuth } from '../../hooks';
+import { useAuth } from '../../Hooks';
 
 export function LoginMS() {
 	const { checking, login } = useAuth();

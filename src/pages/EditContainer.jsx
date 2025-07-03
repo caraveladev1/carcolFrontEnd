@@ -10,7 +10,7 @@ import { SelectInput } from '../components/SelectInput';
 import { DateInput } from '../components/DateInput';
 import { FilterContainer } from '../components/FilterContainer';
 import { Pagination } from '../components/Pagination';
-import { useEditContainer } from '../hooks';
+import { useEditContainer } from '../Hooks';
 import { usePagination } from '../Hooks/usePagination';
 
 export const EditContainer = () => {
