@@ -1,16 +1,20 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { authService } from '../services/index.js';
 
 export const useAuth = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [checking, setChecking] = useState(true);
 
   useEffect(() => {
     const checkAuth = async () => {
       try {
         await authService.checkProtectedRoute();
-        navigate('/view-containers', { replace: true });
+        // Only redirect to view-containers if we're on the login page
+        if (location.pathname === '/login') {
+          navigate('/view-containers', { replace: true });
+        }
       } catch (error) {
         // User is not authenticated, stay on login page
       } finally {
@@ -19,7 +23,7 @@ export const useAuth = () => {
     };
 
     checkAuth();
-  }, [navigate]);
+  }, [navigate, location.pathname]);
 
   useEffect(() => {
     if (!checking) {

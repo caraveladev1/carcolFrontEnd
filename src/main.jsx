@@ -27,8 +27,8 @@ createRoot(document.getElementById('root')).render(
 					<Route path='/exported-containers' element={<ExportedContainers />} />
 					<Route path='/unauthorized' element={<Unauthorized />} />
 					{/* Ruta comodín */}
-					<Route path='*' element={<Navigate to='/login' replace />} />
 				</Route>
+				<Route path='*' element={<Navigate to='/login' replace />} />
 
 				{/* Rutas exclusivas de Admin */}
 				<Route element={<ProtectedRouteMS allowedRoles={['Admin']} />}>
