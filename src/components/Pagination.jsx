@@ -6,52 +6,54 @@ export function Pagination({ currentPage, totalItems, itemsPerPage = 100, onPage
 	if (totalPages <= 1) return null;
 
 	const getVisiblePages = () => {
-		const delta = 2;
-		const range = [];
-		const rangeWithDots = [];
-
-		for (let i = Math.max(2, currentPage - delta); i <= Math.min(totalPages - 1, currentPage + delta); i++) {
-			range.push(i);
-		}
-
-		if (currentPage - delta > 2) {
-			rangeWithDots.push(1, '...');
+		const maxVisible = 5;
+		const pages = [];
+		
+		if (totalPages <= maxVisible) {
+			for (let i = 1; i <= totalPages; i++) {
+				pages.push(i);
+			}
 		} else {
-			rangeWithDots.push(1);
+			let start = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+			let end = Math.min(totalPages, start + maxVisible - 1);
+			
+			if (end - start + 1 < maxVisible) {
+				start = Math.max(1, end - maxVisible + 1);
+			}
+			
+			for (let i = start; i <= end; i++) {
+				pages.push(i);
+			}
 		}
-
-		rangeWithDots.push(...range);
-
-		if (currentPage + delta < totalPages - 1) {
-			rangeWithDots.push('...', totalPages);
-		} else {
-			rangeWithDots.push(totalPages);
-		}
-
-		return rangeWithDots;
+		
+		return pages;
 	};
 
 	return (
 		<div className='flex items-center justify-center gap-2 my-6'>
 			<button
+				onClick={() => onPageChange(1)}
+				disabled={currentPage === 1}
+				className='w-10 h-10 bg-pink text-white font-bayard disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center'
+			>
+				«
+			</button>
+			<button
 				onClick={() => onPageChange(currentPage - 1)}
 				disabled={currentPage === 1}
-				className='p-1.5 bg-pink text-white font-bayard disabled:opacity-50 disabled:cursor-not-allowed'
+				className='w-10 h-10 bg-pink text-white font-bayard disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center'
 			>
-				Previous
+				‹
 			</button>
 
-			{getVisiblePages().map((page, index) => (
+			{getVisiblePages().map((page) => (
 				<button
-					key={index}
-					onClick={() => typeof page === 'number' && onPageChange(page)}
-					disabled={page === '...'}
-					className={`p-1.5 font-bayard ${
+					key={page}
+					onClick={() => onPageChange(page)}
+					className={`w-10 h-10 font-bayard flex items-center justify-center ${
 						page === currentPage
 							? 'bg-pink text-white'
-							: page === '...'
-								? 'cursor-default'
-								: 'bg-transparent border-2 border-pink text-pink hover:bg-pink hover:text-white'
+							: 'bg-transparent border-2 border-pink text-pink hover:bg-pink hover:text-white'
 					}`}
 				>
 					{page}
@@ -61,9 +63,16 @@ export function Pagination({ currentPage, totalItems, itemsPerPage = 100, onPage
 			<button
 				onClick={() => onPageChange(currentPage + 1)}
 				disabled={currentPage === totalPages}
-				className='p-1.5 bg-pink text-white font-bayard disabled:opacity-50 disabled:cursor-not-allowed'
+				className='w-10 h-10 bg-pink text-white font-bayard disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center'
 			>
-				Next
+				›
+			</button>
+			<button
+				onClick={() => onPageChange(totalPages)}
+				disabled={currentPage === totalPages}
+				className='w-10 h-10 bg-pink text-white font-bayard disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center'
+			>
+				»
 			</button>
 		</div>
 	);
