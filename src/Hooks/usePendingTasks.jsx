@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 import { containerService } from '../services/index.js';
 import { dataTransformers, filterUtils } from '../utils/index.js';
 
@@ -10,12 +11,17 @@ export const usePendingTasks = () => {
   const [initialFormData, setInitialFormData] = useState({});
   const [countryOptions, setCountryOptions] = useState([]);
   const [portOptions, setPortOptions] = useState([]);
-  const [filters, setFilters] = useState({
-    initialDate: '',
-    finalDate: '',
-    exportCountry: [],
-    destinationPort: [],
+
+  const { control, watch } = useForm({
+    defaultValues: {
+      initialDate: '',
+      finalDate: '',
+      exportCountry: [],
+      destinationPort: [],
+    }
   });
+
+  const filters = watch();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -76,13 +82,7 @@ export const usePendingTasks = () => {
     }));
   };
 
-  const handleFilterChange = (e) => {
-    const { name, value } = e.target;
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      [name]: name === 'initialDate' || name === 'finalDate' ? value : value,
-    }));
-  };
+
 
   const filteredData = () => {
     return filterUtils.filterPendingData(organizedData, filters);
@@ -96,9 +96,8 @@ export const usePendingTasks = () => {
     initialFormData,
     countryOptions,
     portOptions,
-    filters,
     toggleBookingAndDates,
-    handleFilterChange,
     filteredData,
+    control,
   };
 };

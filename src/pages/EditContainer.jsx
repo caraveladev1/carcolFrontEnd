@@ -1,23 +1,24 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router-dom';
 import { Banner } from '../components/Banner';
 import { Loader } from '../components/Loader';
 import { TableGeneric } from '../components/TableGeneric';
 import { FiltersEditContainer } from '../components/FiltersEditContainer';
 import { TABLE_HEADERS } from '../constants';
-import { InputGeneric } from '../components/InputGeneric';
+import { SelectInput } from '../components/SelectInput';
+import { DateInput } from '../components/DateInput';
+import { FilterContainer } from '../components/FilterContainer';
 import { useEditContainer } from '../hooks';
 
 export const EditContainer = () => {
 	const { t } = useTranslation();
+	const { id } = useParams();
 	const {
 		state,
-		handleDestinationPortChange,
-		handleIncotermChange,
-		handleStartDateChange,
-		handleEndDateChange,
 		filteredTableData,
 		handleCheckboxChange,
+		control,
 	} = useEditContainer();
 
 	if (state.loading) return <Loader />;
@@ -28,40 +29,12 @@ export const EditContainer = () => {
 				<Banner />
 				<h1 className='text-5xl font-bold uppercase text-pink font-bayard mb-6'>{t('editContainer')}</h1>
 				<h2 className='text-5xl font-bold uppercase text-pink font-bayard mb-6'>{t('filters')}</h2>
-				<div className='filtersContainers flex flex-row justify-between gap-6'>
-					<InputGeneric
-						type='select'
-						filter='destinationPort'
-						options={[...new Set(state.tableData.map((row) => row.destinationPort))]}
-						onChange={handleDestinationPortChange}
-						multiple={true}
-						placeholder='Select destination ports'
-						className='mb-6'
-					/>
-					<InputGeneric
-						type='select'
-						filter='incoterm'
-						options={[...new Set(state.tableData.map((row) => row.incoterm))]}
-						onChange={handleIncotermChange}
-						multiple={true}
-						placeholder='Select incoterms'
-						className='mb-6'
-					/>
-					<InputGeneric
-						type='date'
-						filter='startDate'
-						onChange={handleStartDateChange}
-						placeholder='Select start date'
-						className='mb-6'
-					/>
-					<InputGeneric
-						type='date'
-						filter='endDate'
-						onChange={handleEndDateChange}
-						placeholder='Select end date'
-						className='mb-6'
-					/>
-				</div>
+				<FilterContainer columns={4}>
+					<SelectInput name='destinationPort' control={control} options={[...new Set(state.tableData.map((row) => row.destinationPort))]} isMulti={true} placeholder='Select destination ports' />
+					<SelectInput name='incoterm' control={control} options={[...new Set(state.tableData.map((row) => row.incoterm))]} isMulti={true} placeholder='Select incoterms' />
+					<DateInput name='startDate' control={control} placeholder='Select start date' />
+					<DateInput name='endDate' control={control} placeholder='Select end date' />
+				</FilterContainer>
 				<h2 className='text-5xl font-bold uppercase text-pink font-bayard mb-6'>{t('containerData')}</h2>
 				<FiltersEditContainer filterValues={state.filtersData} selectedIcos={state.selectedIcos} oldExportId={id} />
 				<TableGeneric

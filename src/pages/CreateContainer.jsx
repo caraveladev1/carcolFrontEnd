@@ -3,7 +3,10 @@ import { LabelGeneric } from '../components/LabelGeneric';
 import { useTranslation } from 'react-i18next';
 import { FILTER_NAMES, TABLE_HEADERS } from '../constants';
 import { Banner } from '../components/Banner';
-import { InputGeneric } from '../components/InputGeneric';
+import { TextInput } from '../components/TextInput';
+import { SelectInput } from '../components/SelectInput';
+import { DateInput } from '../components/DateInput';
+import { FilterContainer } from '../components/FilterContainer';
 import { Loader } from '../components/Loader';
 import { SubmitButton } from '../components/SubmitButton';
 import { TableGeneric } from '../components/TableGeneric';
@@ -14,10 +17,9 @@ export function CreateContainer() {
 	const {
 		loading,
 		selectOptions,
-		filters,
 		preparedDataTable,
-		handleFilterChange,
 		handleSubmit,
+		control,
 	} = useCreateContainer();
 
 	if (loading) {
@@ -30,51 +32,49 @@ export function CreateContainer() {
 				<Banner />
 				<h1 className='text-5xl font-bold uppercase text-pink font-bayard'>{t('createContainer')}</h1>
 				<form onSubmit={handleSubmit}>
-					<div className='grid grid-cols-4 gap-4'>
-						{FILTER_NAMES.CREATE_CONTAINER.map((filter) => (
-							<div key={filter} className='col-span-2 flex items-center gap-4 '>
-								<LabelGeneric htmlFor={filter} filter={filter} />
-								<InputGeneric
-									type={
-										filter === 'port' ||
-										filter === 'capacityContainer' ||
-										filter === 'exportCountry' ||
-										filter === 'incoterm' ||
-										filter === 'originPort'
-											? 'select'
-											: filter === 'shipmentMonthStart' || filter === 'shipmentMonthFinal'
-												? 'date'
-												: 'text'
-									}
-									filter={filter}
-									name={filter}
-									defaultValue={filters[filter]}
-									options={
-										filter === 'port'
-											? selectOptions.destinationPorts
-											: filter === 'exportCountry'
-												? selectOptions.exportCountry
-												: filter === 'capacityContainer'
-													? selectOptions.capacityContainer
-													: filter === 'incoterm'
-														? selectOptions.incoterm
-														: filter === 'originPort'
-															? selectOptions.originPort
-															: []
-									}
-									onChange={handleFilterChange}
-									required={
-										filter === 'port' ||
-										filter === 'capacityContainer' ||
-										filter === 'exportCountry' ||
-										filter === 'incoterm' ||
-										filter === 'originPort'
-									}
-								/>
-							</div>
-						))}
+					<FilterContainer columns={4}>
+						{FILTER_NAMES.CREATE_CONTAINER.map((filter) => {
+							const isSelect = ['port', 'capacityContainer', 'exportCountry', 'incoterm', 'originPort'].includes(filter);
+							const isDate = ['shipmentMonthStart', 'shipmentMonthFinal'].includes(filter);
+							const isRequired = ['port', 'capacityContainer', 'exportCountry', 'incoterm', 'originPort'].includes(filter);
+							
+							const getOptions = () => {
+								switch(filter) {
+									case 'port': return selectOptions.destinationPorts;
+									case 'exportCountry': return selectOptions.exportCountry;
+									case 'capacityContainer': return selectOptions.capacityContainer;
+									case 'incoterm': return selectOptions.incoterm;
+									case 'originPort': return selectOptions.originPort;
+									default: return [];
+								}
+							};
+
+							return (
+								<div key={filter} className='col-span-2 flex items-stretch gap-4'>
+									<LabelGeneric htmlFor={filter} filter={filter} />
+									{isSelect ? (
+										<SelectInput
+											name={filter}
+											control={control}
+											options={getOptions()}
+											required={isRequired}
+										/>
+									) : isDate ? (
+										<DateInput
+											name={filter}
+											control={control}
+										/>
+									) : (
+										<TextInput
+											name={filter}
+											control={control}
+										/>
+									)}
+								</div>
+							);
+						})}
 						<SubmitButton className='bg-celeste col-span-2' typeButton='submit' buttonText='submit' />
-					</div>
+					</FilterContainer>
 				</form>
 				<TableGeneric headersTable={TABLE_HEADERS.CREATE_CONTAINER} dataTable={preparedDataTable} />
 			</section>

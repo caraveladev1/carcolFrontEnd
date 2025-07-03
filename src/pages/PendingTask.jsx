@@ -5,7 +5,9 @@ import { TableGeneric } from '../components/TableGeneric';
 import { TABLE_HEADERS } from '../constants';
 import { Loader } from '../components/Loader';
 import { BookingAndDates } from '../components/BookingAndDates';
-import { InputGeneric } from '../components/InputGeneric';
+import { DateInput } from '../components/DateInput';
+import { SelectInput } from '../components/SelectInput';
+import { FilterContainer } from '../components/FilterContainer';
 import { usePendingTasks } from '../hooks';
 
 export function PendingTask() {
@@ -18,10 +20,9 @@ export function PendingTask() {
 		initialFormData,
 		countryOptions,
 		portOptions,
-		filters,
 		toggleBookingAndDates,
-		handleFilterChange,
 		filteredData,
+		control,
 	} = usePendingTasks();
 
 	if (loading) {
@@ -33,41 +34,12 @@ export function PendingTask() {
 				<Banner />
 				<h1 className='text-5xl font-bold my-8 uppercase text-celeste font-bayard'>{t('pendingTasks')}</h1>
 
-				{/* Filtros */}
-				<div className='filters-container gap-6 flex flex-row '>
-					<InputGeneric
-						type='date'
-						filter='initialDate'
-						onChange={handleFilterChange}
-						required={false}
-						defaultValue={filters.initialDate}
-					/>
-					<InputGeneric
-						type='date'
-						filter='finalDate'
-						onChange={handleFilterChange}
-						required={false}
-						defaultValue={filters.finalDate}
-					/>
-					<InputGeneric
-						type='select'
-						filter='exportCountry'
-						onChange={handleFilterChange}
-						required={false}
-						defaultValue={filters.exportCountry}
-						options={countryOptions}
-						multiple={true}
-					/>
-					<InputGeneric
-						type='select'
-						filter='destinationPort'
-						onChange={handleFilterChange}
-						required={false}
-						defaultValue={filters.destinationContainer}
-						options={portOptions}
-						multiple={true}
-					/>
-				</div>
+				<FilterContainer columns={4}>
+					<DateInput name='initialDate' control={control} />
+					<DateInput name='finalDate' control={control} />
+					<SelectInput name='exportCountry' control={control} options={countryOptions} isMulti={true} />
+					<SelectInput name='destinationPort' control={control} options={portOptions} isMulti={true} />
+				</FilterContainer>
 
 				{Object.keys(filteredData()).map((exp_id) => (
 					<div key={exp_id} className='my-4'>

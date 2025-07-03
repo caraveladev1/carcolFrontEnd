@@ -5,7 +5,9 @@ import { useTranslation } from 'react-i18next';
 import { TableGeneric } from '../components/TableGeneric';
 import { TABLE_HEADERS } from '../constants';
 import { Loader } from '../components/Loader';
-import { InputGeneric } from '../components/InputGeneric';
+import { DateInput } from '../components/DateInput';
+import { SelectInput } from '../components/SelectInput';
+import { FilterContainer } from '../components/FilterContainer';
 import { useExportedContainers } from '../hooks';
 
 export function ExportedContainers() {
@@ -17,11 +19,10 @@ export function ExportedContainers() {
 		selectedExpId,
 		countryOptions,
 		portOptions,
-		filters,
-		handleFilterChange,
 		handleViewDetails,
 		closeDetails,
 		filteredData,
+		control,
 	} = useExportedContainers();
 
 	if (loading) {
@@ -35,40 +36,12 @@ export function ExportedContainers() {
 				<h1 className='text-5xl font-bold my-8 uppercase text-beige font-bayard'>{t('exportedContainers')}</h1>
 
 				{/* Filtros */}
-				<div className='filters-container gap-6 flex flex-row '>
-					<InputGeneric
-						type='date'
-						filter='initialDate'
-						onChange={handleFilterChange}
-						required={false}
-						defaultValue={filters.initialDate}
-					/>
-					<InputGeneric
-						type='date'
-						filter='finalDate'
-						onChange={handleFilterChange}
-						required={false}
-						defaultValue={filters.finalDate}
-					/>
-					<InputGeneric
-						type='select'
-						filter='exportCountry'
-						onChange={handleFilterChange}
-						required={false}
-						defaultValue={filters.exportCountry}
-						options={countryOptions}
-						multiple={true}
-					/>
-					<InputGeneric
-						type='select'
-						filter='destinationPort'
-						onChange={handleFilterChange}
-						required={false}
-						defaultValue={filters.destinationPort}
-						options={portOptions}
-						multiple={true}
-					/>
-				</div>
+				<FilterContainer columns={4}>
+					<DateInput name='initialDate' control={control} />
+					<DateInput name='finalDate' control={control} />
+					<SelectInput name='exportCountry' control={control} options={countryOptions} isMulti={true} />
+					<SelectInput name='destinationPort' control={control} options={portOptions} isMulti={true} />
+				</FilterContainer>
 
 				{Object.keys(filteredData()).map((exp_id) => (
 					<div key={exp_id} className='my-4'>

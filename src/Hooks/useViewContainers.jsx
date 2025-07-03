@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 import { containerService } from '../services/index.js';
 import { dataTransformers, filterUtils } from '../utils/index.js';
 import { ViewContainerRow } from '../components/ViewContainerRow.jsx';
@@ -6,16 +7,21 @@ import { ViewContainerRow } from '../components/ViewContainerRow.jsx';
 export const useViewContainers = () => {
   const [organizedData, setOrganizedData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState({
-    office: [],
-    exportMonth: [],
-    packaging: [],
-    contract: [],
-    destination: [],
-    initialDate: '',
-    finalDate: '',
-    ico: '',
+
+  const { control, watch } = useForm({
+    defaultValues: {
+      office: [],
+      exportMonth: [],
+      packaging: [],
+      contract: [],
+      destination: [],
+      initialDate: '',
+      finalDate: '',
+      ico: '',
+    }
   });
+
+  const filters = watch();
 
   const [officeOptions, setOfficeOptions] = useState([]);
   const [packagingOptions, setPackagingOptions] = useState([]);
@@ -87,15 +93,7 @@ export const useViewContainers = () => {
     setSelectedIco(null);
   };
 
-  const handleFilterChange = (e) => {
-    const { name, value, multiple, selectedOptions } = e.target;
-    const updatedValue = multiple ? [...selectedOptions].map((option) => option.value) : value;
 
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      [name]: name === 'initialDate' || name === 'finalDate' ? value : updatedValue,
-    }));
-  };
 
   const filteredData = () => {
     return filterUtils.filterViewContainerData(organizedData, filters);
@@ -104,7 +102,6 @@ export const useViewContainers = () => {
   return {
     organizedData,
     loading,
-    filters,
     officeOptions,
     packagingOptions,
     contractOptions,
@@ -116,9 +113,9 @@ export const useViewContainers = () => {
     handleAnnouncementsButtonClick,
     closeComments,
     closeAnnouncements,
-    handleFilterChange,
     filteredData,
     setIsAnnouncementsOpen,
     mapDataWithButtons,
+    control,
   };
 };

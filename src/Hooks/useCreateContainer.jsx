@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
 import { containerService } from '../services/index.js';
 import { dataTransformers, filterUtils } from '../utils/index.js';
 import { CONTAINER_CAPACITY } from '../constants/index.js';
@@ -20,15 +21,19 @@ export const useCreateContainer = () => {
     originPort: [],
   });
 
-  const [filters, setFilters] = useState({
-    port: '',
-    exportCountry: '',
-    capacityContainer: '',
-    incoterm: '',
-    shipmentMonthStart: '',
-    shipmentMonthFinal: '',
-    originPort: '',
+  const { control, handleSubmit: handleFormSubmit, watch } = useForm({
+    defaultValues: {
+      port: '',
+      exportCountry: '',
+      capacityContainer: '',
+      incoterm: '',
+      shipmentMonthStart: '',
+      shipmentMonthFinal: '',
+      originPort: '',
+    }
   });
+
+  const filters = watch();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -77,19 +82,17 @@ export const useCreateContainer = () => {
     });
   };
 
-  const handleFilterChange = (e) => {
-    const { name, value } = e.target;
-    setFilters((prevFilters) => ({ ...prevFilters, [name]: value }));
-  };
+
 
   useEffect(() => {
-    const filteredList = filterUtils.filterCreateContainerData(icoList, filters);
-    
-    // Combine and sort: selected items first, then filtered items
-    setFilteredIcoList([
-      ...icoList.filter((item) => selectedIcos.has(item.ico_id)),
-      ...filteredList.filter((item) => !selectedIcos.has(item.ico_id)),
-    ]);
+    if (icoList.length > 0) {
+      const filteredList = filterUtils.filterCreateContainerData(icoList, filters);
+      
+      setFilteredIcoList([
+        ...icoList.filter((item) => selectedIcos.has(item.ico_id)),
+        ...filteredList.filter((item) => !selectedIcos.has(item.ico_id)),
+      ]);
+    }
   }, [filters, icoList, selectedIcos]);
 
   const preparedDataTable = filteredIcoList.map((item) => ({
@@ -103,12 +106,11 @@ export const useCreateContainer = () => {
     ),
   }));
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = handleFormSubmit(async (data) => {
     const selectedData = icoList.filter((ico) => selectedIcos.has(ico.ico_id));
 
     const payload = {
-      filters,
+      filters: data,
       selectedIcos: selectedData,
     };
 
@@ -129,15 +131,14 @@ export const useCreateContainer = () => {
     } else {
       window.alert('The total weight of the icos exceeds the capacity of the container.');
     }
-  };
+  });
 
   return {
     loading,
     selectOptions,
-    filters,
     preparedDataTable,
-    handleFilterChange,
     handleSubmit,
     handleCheckboxChange,
+    control,
   };
 };

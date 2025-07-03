@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 import { containerService } from '../services/index.js';
 import { dataTransformers, filterUtils } from '../utils/index.js';
 
@@ -9,12 +10,17 @@ export const useExportedContainers = () => {
   const [selectedExpId, setSelectedExpId] = useState(null);
   const [countryOptions, setCountryOptions] = useState([]);
   const [portOptions, setPortOptions] = useState([]);
-  const [filters, setFilters] = useState({
-    initialDate: '',
-    finalDate: '',
-    exportCountry: [],
-    destinationPort: [],
+
+  const { control, watch } = useForm({
+    defaultValues: {
+      initialDate: '',
+      finalDate: '',
+      exportCountry: [],
+      destinationPort: [],
+    }
   });
+
+  const filters = watch();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -44,13 +50,7 @@ export const useExportedContainers = () => {
     fetchData();
   }, []);
 
-  const handleFilterChange = (e) => {
-    const { name, value } = e.target;
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      [name]: Array.isArray(value) ? value : [value],
-    }));
-  };
+
 
   const handleViewDetails = (exp_id) => {
     setSelectedExpId(exp_id);
@@ -73,10 +73,9 @@ export const useExportedContainers = () => {
     selectedExpId,
     countryOptions,
     portOptions,
-    filters,
-    handleFilterChange,
     handleViewDetails,
     closeDetails,
     filteredData,
+    control,
   };
 };

@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
 import { containerService } from '../services/index.js';
 import { dataTransformers, filterUtils } from '../utils/index.js';
 
@@ -10,11 +11,18 @@ export const useEditContainer = () => {
     tableData: [],
     selectedIcos: [],
     filtersData: [],
-    selectedDestinationPorts: [],
-    startDate: '',
-    endDate: '',
-    selectedIncoterm: [],
   });
+
+  const { control, watch } = useForm({
+    defaultValues: {
+      destinationPort: [],
+      incoterm: [],
+      startDate: '',
+      endDate: '',
+    }
+  });
+
+  const filters = watch();
 
   const fetchContainerData = useCallback(async () => {
     try {
@@ -42,30 +50,14 @@ export const useEditContainer = () => {
     fetchContainerData();
   }, [fetchContainerData]);
 
-  const handleDestinationPortChange = (e) => {
-    const { value } = e.target;
-    setState((prevState) => ({ ...prevState, selectedDestinationPorts: value }));
-  };
 
-  const handleIncotermChange = (e) => {
-    const { value } = e.target;
-    setState((prevState) => ({ ...prevState, selectedIncoterm: value }));
-  };
-
-  const handleStartDateChange = (e) => {
-    setState((prevState) => ({ ...prevState, startDate: e.target.value }));
-  };
-
-  const handleEndDateChange = (e) => {
-    setState((prevState) => ({ ...prevState, endDate: e.target.value }));
-  };
 
   const filteredTableData = () => {
     return filterUtils.filterEditContainerData(state.tableData, {
-      selectedDestinationPorts: state.selectedDestinationPorts,
-      startDate: state.startDate,
-      endDate: state.endDate,
-      selectedIncoterm: state.selectedIncoterm,
+      selectedDestinationPorts: filters.destinationPort,
+      startDate: filters.startDate,
+      endDate: filters.endDate,
+      selectedIncoterm: filters.incoterm,
     });
   };
 
@@ -84,11 +76,8 @@ export const useEditContainer = () => {
 
   return {
     state,
-    handleDestinationPortChange,
-    handleIncotermChange,
-    handleStartDateChange,
-    handleEndDateChange,
     filteredTableData,
     handleCheckboxChange,
+    control,
   };
 };

@@ -6,7 +6,10 @@ import { TABLE_HEADERS } from '../constants';
 import { Loader } from '../components/Loader';
 import editContainer from '../assets/img/editContainer.webp';
 import { Link } from 'react-router-dom';
-import { InputGeneric } from '../components/InputGeneric';
+import { DateInput } from '../components/DateInput';
+import { SelectInput } from '../components/SelectInput';
+import { TextInput } from '../components/TextInput';
+import { FilterContainer } from '../components/FilterContainer';
 import commentsButton from '../assets/img/commentsButton.webp';
 import { Comments } from '../components/Comments';
 import { Announcements } from '../components/Announcements';
@@ -19,7 +22,6 @@ export function ViewContainers() {
 	const {
 		organizedData,
 		loading,
-		filters,
 		officeOptions,
 		packagingOptions,
 		contractOptions,
@@ -31,10 +33,10 @@ export function ViewContainers() {
 		handleAnnouncementsButtonClick,
 		closeComments,
 		closeAnnouncements,
-		handleFilterChange,
 		filteredData,
 		setIsAnnouncementsOpen,
 		mapDataWithButtons,
+		control,
 	} = useViewContainers();
 	if (loading) {
 		return <Loader />;
@@ -48,68 +50,17 @@ export function ViewContainers() {
 				<Banner />
 				<h1 className='text-5xl font-bold my-8 uppercase text-yellow font-bayard'>{t('viewContainers')}</h1>
 
-				<div className='filtersContainer flex flex-row justify-between gap-6'>
-					<InputGeneric
-						type='date'
-						filter='initialDate'
-						onChange={handleFilterChange}
-						required={false}
-						defaultValue={filters.initialDate}
-					/>
-					<InputGeneric
-						type='date'
-						filter='finalDate'
-						onChange={handleFilterChange}
-						required={false}
-						defaultValue={filters.finalDate}
-					/>
-					<InputGeneric
-						type='select'
-						filter='office'
-						onChange={handleFilterChange}
-						required={false}
-						defaultValue={filters.office}
-						options={officeOptions}
-						multiple={true}
-					/>
-					<InputGeneric
-						type='select'
-						filter='packaging'
-						onChange={handleFilterChange}
-						required={false}
-						defaultValue={filters.packaging}
-						options={packagingOptions}
-						multiple={true}
-					/>
-					<InputGeneric
-						type='select'
-						filter='contract'
-						onChange={handleFilterChange}
-						required={false}
-						defaultValue={filters.contract}
-						options={contractOptions}
-						multiple={true}
-					/>
-					<InputGeneric
-						type='select'
-						filter='destination'
-						onChange={handleFilterChange}
-						required={false}
-						defaultValue={filters.destination}
-						options={destinationOptions}
-						multiple={true}
-					/>
-					<InputGeneric
-						type='select'
-						filter='ico'
-						placeholder={t('ico_id')}
-						onChange={handleFilterChange}
-						required={false}
-						defaultValue={filters.ico}
-					/>
+				<FilterContainer columns={7}>
+					<DateInput name='initialDate' control={control} />
+					<DateInput name='finalDate' control={control} />
+					<SelectInput name='office' control={control} options={officeOptions} isMulti={true} />
+					<SelectInput name='packaging' control={control} options={packagingOptions} isMulti={true} />
+					<SelectInput name='contract' control={control} options={contractOptions} isMulti={true} />
+					<SelectInput name='destination' control={control} options={destinationOptions} isMulti={true} />
+					<TextInput name='ico' control={control} placeholder={t('ico_id')} />
 					{role === 'Admin' && (
 						<button
-							className='bg-pink font-bayard text-xl uppercase border-2 border-pink p-5 w-full text-white focus:outline-none focus:border-2 focus:border-pink text-start'
+							className='bg-pink font-bayard text-xl uppercase border-2 border-pink p-4 w-full h-full  text-white focus:outline-none focus:border-2 focus:border-pink text-start'
 							type='button'
 							value='Manage Announcements'
 							onClick={() => setIsAnnouncementsOpen(true)}
@@ -117,7 +68,7 @@ export function ViewContainers() {
 							Edit Announcements
 						</button>
 					)}
-				</div>
+				</FilterContainer>
 
 				{filteredDataResult &&
 					Object.keys(filteredDataResult).map((exp_id) => {
