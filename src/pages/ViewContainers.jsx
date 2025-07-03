@@ -48,15 +48,13 @@ export function ViewContainers() {
 		return <Loader />;
 	}
 
-
-
 	return (
 		<div className='bg-dark-background bg-cover bg-fixed min-h-screen'>
 			<section className='homeContainer max-w-[90%] m-auto pb-5'>
 				<Banner />
 				<h1 className='text-5xl font-bold my-8 uppercase text-yellow font-bayard'>{t('viewContainers')}</h1>
 
-				<FilterContainer columns={7}>
+				<FilterContainer columns={8}>
 					<DateInput name='initialDate' control={control} />
 					<DateInput name='finalDate' control={control} />
 					<SelectInput name='office' control={control} options={officeOptions} isMulti={true} />
@@ -66,7 +64,7 @@ export function ViewContainers() {
 					<TextInput name='ico' control={control} placeholder={t('ico_id')} />
 					{role === 'Admin' && (
 						<button
-							className='bg-pink font-bayard text-xl uppercase border-2 border-pink p-4 w-full h-full  text-white focus:outline-none focus:border-2 focus:border-pink text-start'
+							className='bg-pink font-bayard text-xl uppercase border-2 border-pink p-4 w-full h-full min-h-[60px] text-white focus:outline-none focus:border-2 focus:border-pink text-start'
 							type='button'
 							value='Manage Announcements'
 							onClick={() => setIsAnnouncementsOpen(true)}
@@ -77,41 +75,41 @@ export function ViewContainers() {
 				</FilterContainer>
 
 				{paginatedData.map(([exp_id, containerData]) => {
-						const dataWithButtons = mapDataWithButtons(containerData, role);
-						const totalWeight = dataWithButtons.reduce((sum, item) => {
-							const weight = parseFloat(item.weight) || 0;
-							return sum + weight;
-						}, 0);
+					const dataWithButtons = mapDataWithButtons(containerData, role);
+					const totalWeight = dataWithButtons.reduce((sum, item) => {
+						const weight = parseFloat(item.weight) || 0;
+						return sum + weight;
+					}, 0);
 
-						return (
-							<div key={exp_id} className='my-4 gap-6'>
-								<div className='titleContainer flex flex-row justify-between gap-10 items-center'>
-									<div className='flex flex-row justify-between items-center gap-6'>
-										<h2 className='text-3xl font-bold text-white font-bayard uppercase'>{exp_id}</h2>
-										{role === 'Admin' && (
-											<Link to={`/edit-container/${dataWithButtons[0].container_id}`}>
-												<img className='max-w-[50%]' src={editContainer} alt='Edit Container' />
-											</Link>
-										)}
-									</div>
-									<div className='containerData flex flex-row gap-4'>
-										<p className='text-xl font-bold text-pink font-bayard uppercase'>{`Total Weight (kg): ${totalWeight || 'No available'}`}</p>
-										<p className='text-xl font-bold text-pink font-bayard uppercase'>{`Booking: ${dataWithButtons[0]?.booking || 'No available'}`}</p>
-										<p className='text-xl font-bold text-celeste font-bayard uppercase'>{`Loading to Port: ${dataWithButtons[0]?.date_landing || 'No available'}`}</p>
-									</div>
+					return (
+						<div key={exp_id} className='my-4 gap-6'>
+							<div className='titleContainer flex flex-row justify-between gap-10 items-center'>
+								<div className='flex flex-row justify-between items-center gap-6'>
+									<h2 className='text-3xl font-bold text-white font-bayard uppercase'>{exp_id}</h2>
+									{role === 'Admin' && (
+										<Link to={`/edit-container/${dataWithButtons[0].container_id}`}>
+											<img className='max-w-[50%]' src={editContainer} alt='Edit Container' />
+										</Link>
+									)}
 								</div>
-								<div className='my-4'>
-									<TableGeneric
-										headersTable={TABLE_HEADERS.VIEW}
-										dataTable={dataWithButtons}
-										renderRowContent={(row) => row}
-									/>
+								<div className='containerData flex flex-row gap-4'>
+									<p className='text-xl font-bold text-pink font-bayard uppercase'>{`Total Weight (kg): ${totalWeight || 'No available'}`}</p>
+									<p className='text-xl font-bold text-pink font-bayard uppercase'>{`Booking: ${dataWithButtons[0]?.booking || 'No available'}`}</p>
+									<p className='text-xl font-bold text-celeste font-bayard uppercase'>{`Loading to Port: ${dataWithButtons[0]?.date_landing || 'No available'}`}</p>
 								</div>
 							</div>
-						);
-					})}
+							<div className='my-4'>
+								<TableGeneric
+									headersTable={TABLE_HEADERS.VIEW}
+									dataTable={dataWithButtons}
+									renderRowContent={(row) => row}
+								/>
+							</div>
+						</div>
+					);
+				})}
 
-				<Pagination 
+				<Pagination
 					currentPage={currentPage}
 					totalItems={totalItems}
 					itemsPerPage={itemsPerPage}

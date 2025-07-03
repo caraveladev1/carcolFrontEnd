@@ -17,17 +17,17 @@ export function SelectInput({
 	const { t } = useTranslation();
 
 	const customStyles = {
-		control: (provided) => ({
+		control: (provided, state) => ({
 			...provided,
 			backgroundColor: 'transparent',
 			border: '2px solid #E0B2B9',
 			borderRadius: 0,
 			padding: '8px',
-			minHeight: '56px',
+			minHeight: '60px',
 			height: '100%',
 			width: '100%',
-			minWidth: 0,
-			flex: 1,
+			display: 'flex',
+			alignItems: 'stretch',
 			fontFamily: 'bayard',
 			fontSize: '20px',
 			textTransform: 'uppercase',
@@ -74,7 +74,7 @@ export function SelectInput({
 	};
 
 	return (
-		<div className='w-full min-w-0 h-full'>
+		<div className='w-full min-w-0 h-full min-h-[60px] flex'>
 			<Controller
 				name={name}
 				control={control}
@@ -88,6 +88,7 @@ export function SelectInput({
 							isMulti={isMulti}
 							isSearchable={isSearchable}
 							placeholder={placeholder || `Select ${t(name)}`}
+							className='flex-1'
 							styles={customStyles}
 							value={
 								isMulti

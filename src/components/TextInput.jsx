@@ -23,7 +23,7 @@ export function TextInput({
     rules: { required: required && `${name} is required`, ...rules }
   });
 
-  const baseClassName = `bg-transparent font-bayard text-xl uppercase border-2 border-pink p-4 w-full h-full min-h-[56px] text-pink focus:outline-none focus:border-2 focus:border-pink ${className}`;
+  const baseClassName = `bg-transparent font-bayard text-xl uppercase border-2 border-pink p-4 w-full h-full min-h-[60px] text-pink focus:outline-none focus:border-2 focus:border-pink ${className}`;
 
   const Component = as;
 
