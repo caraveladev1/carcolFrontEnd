@@ -20,7 +20,7 @@ export function SelectInput({
 		control: (provided) => ({
 			...provided,
 			backgroundColor: 'transparent',
-			border: '2px solid #e91e63',
+			border: '2px solid #E0B2B9',
 			borderRadius: 0,
 			padding: '8px',
 			minHeight: '56px',
@@ -31,27 +31,27 @@ export function SelectInput({
 			fontFamily: 'bayard',
 			fontSize: '20px',
 			textTransform: 'uppercase',
-			color: '#e91e63',
+			color: '#E0B2B9',
 			'&:hover': {
-				borderColor: '#e91e63',
+				borderColor: '#E0B2B9',
 			},
 			'&:focus-within': {
-				borderColor: '#e91e63',
+				borderColor: '#E0B2B9',
 				boxShadow: 'none',
 			},
 		}),
 		placeholder: (provided) => ({
 			...provided,
-			color: '#e91e63',
+			color: '#E0B2B9',
 			opacity: 0.7,
 		}),
 		singleValue: (provided) => ({
 			...provided,
-			color: '#e91e63',
+			color: '#E0B2B9',
 		}),
 		multiValue: (provided) => ({
 			...provided,
-			backgroundColor: '#e91e63',
+			backgroundColor: '#E0B2B9',
 			color: 'white',
 		}),
 		multiValueLabel: (provided) => ({
@@ -60,8 +60,8 @@ export function SelectInput({
 		}),
 		option: (provided, state) => ({
 			...provided,
-			backgroundColor: state.isSelected ? '#e91e63' : state.isFocused ? '#f8bbd9' : 'white',
-			color: state.isSelected ? 'white' : '#e91e63',
+			backgroundColor: state.isSelected ? '#E0B2B9' : state.isFocused ? '#482E20' : 'white',
+			color: state.isSelected ? 'white' : '#E0B2B9',
 			fontFamily: 'bayard',
 			fontSize: '18px',
 			textTransform: 'uppercase',
