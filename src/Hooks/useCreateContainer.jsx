@@ -42,12 +42,12 @@ export const useCreateContainer = () => {
       try {
         const data = await containerService.getAllExports();
         
-        const shipmentPorts = [...new Set(data.map((item) => item.shipment_port))];
-        const destinationPorts = [...new Set(data.map((item) => item.destination_port))];
-        const exportCountry = [...new Set(data.map((item) => item.origin_iso))];
-        const originPort = [...new Set(data.map((item) => item.origin_port))];
-        const capacityContainer = [20, 40];
-        const incoterm = [...new Set(data.map((item) => item.incoterm))];
+        const shipmentPorts = [...new Set(data.map((item) => item.shipment_port).filter(Boolean))];
+        const destinationPorts = [...new Set(data.map((item) => item.destination_port).filter(Boolean))];
+        const exportCountry = [...new Set(data.map((item) => item.origin_iso).filter(Boolean))];
+        const originPort = [...new Set(data.map((item) => item.origin_port).filter(Boolean))];
+        const capacityContainer = Object.keys(CONTAINER_CAPACITY);
+        const incoterm = [...new Set(data.map((item) => item.incoterm).filter(Boolean))];
 
         const updatedIcoList = dataTransformers.mapCreateContainerData(data);
 

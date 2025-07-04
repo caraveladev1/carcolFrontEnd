@@ -87,6 +87,7 @@ export function SelectInput({
 							options={formatOptions(options)}
 							isMulti={isMulti}
 							isSearchable={isSearchable}
+							isClearable={true}
 							placeholder={placeholder || `Select ${t(name)}`}
 							className='flex-1'
 							styles={customStyles}

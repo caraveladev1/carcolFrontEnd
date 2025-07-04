@@ -61,11 +61,12 @@ export const filterUtils = {
       const shipmentMonthFinal = new Date(filters.shipmentMonthFinal);
       
       return (
-        (filters.port === '' || item.destinationPort === filters.port) &&
-        (filters.exportCountry === '' || item.exportCountry === filters.exportCountry) &&
-        (filters.incoterm === '' || item.incoterm === filters.incoterm) &&
-        (filters.shipmentMonthStart === '' || shipmentMonth >= shipmentMonthStart) &&
-        (filters.shipmentMonthFinal === '' || shipmentMonth <= shipmentMonthFinal)
+        (!filters.port || filters.port === '' || item.destinationPort === filters.port) &&
+        (!filters.exportCountry || filters.exportCountry === '' || item.exportCountry === filters.exportCountry) &&
+        (!filters.incoterm || filters.incoterm === '' || item.incoterm === filters.incoterm) &&
+        (!filters.originPort || filters.originPort === '' || item.originPort === filters.originPort) &&
+        (!filters.shipmentMonthStart || filters.shipmentMonthStart === '' || shipmentMonth >= shipmentMonthStart) &&
+        (!filters.shipmentMonthFinal || filters.shipmentMonthFinal === '' || shipmentMonth <= shipmentMonthFinal)
       );
     });
   },
