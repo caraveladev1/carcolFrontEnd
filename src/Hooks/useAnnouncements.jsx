@@ -5,6 +5,12 @@ import { API_BASE_URL } from '../utils/consts';
 export const useAnnouncements = (onClose) => {
 	const [data, setData] = useState([]);
 	const [filteredData, setFilteredData] = useState([]);
+	const [filterOptions, setFilterOptions] = useState({
+		packaging: [],
+		originPort: [],
+		ico: [],
+		lotType: [],
+	});
 	const [totals, setTotals] = useState({
 		totalEstimatedKg: 0,
 		filteredEstimatedKg: 0,
@@ -58,6 +64,19 @@ export const useAnnouncements = (onClose) => {
 			.then((data) => {
 				setData(data);
 				setFilteredData(data);
+
+				// Extract unique options for filters
+				const packagingOptions = [...new Set(data.map((item) => item.contract_atlas?.packaging_type).filter(Boolean))];
+				const originPortOptions = [...new Set(data.map((item) => item.origin_port).filter(Boolean))];
+				const icoOptions = [...new Set(data.map((item) => item.ico).filter(Boolean))];
+				const lotTypeOptions = [...new Set(data.map((item) => item.contract_atlas?.lot_type).filter(Boolean))];
+
+				setFilterOptions({
+					packaging: packagingOptions,
+					originPort: originPortOptions,
+					ico: icoOptions,
+					lotType: lotTypeOptions,
+				});
 
 				data.forEach((item) => {
 					setValue(`${item.ico}.announcement`, item.announcement || '');
@@ -133,5 +152,6 @@ export const useAnnouncements = (onClose) => {
 		filterControl,
 		formControl,
 		submitAnnouncements,
+		filterOptions,
 	};
 };

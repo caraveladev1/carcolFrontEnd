@@ -10,14 +10,8 @@ import { usePagination } from '../Hooks/usePagination';
 
 export function Announcements({ onClose }) {
 	const { t } = useTranslation();
-	const {
-		data,
-		filteredData,
-		totals,
-		filterControl,
-		formControl,
-		submitAnnouncements,
-	} = useAnnouncements(onClose);
+	const { data, filteredData, totals, filterControl, formControl, submitAnnouncements, filterOptions } =
+		useAnnouncements(onClose);
 
 	const { currentPage, paginatedData, totalItems, goToPage } = usePagination(filteredData, 50);
 
@@ -31,10 +25,34 @@ export function Announcements({ onClose }) {
 				<FilterContainer columns={6}>
 					<DateInput name='startDate' control={filterControl} />
 					<DateInput name='endDate' control={filterControl} />
-					<SelectInput name='packaging' control={filterControl} isMulti={true} options={[...new Set(data.map((item) => item.contract_atlas.packaging_type))]} placeholder='Select Packaging' />
-					<SelectInput name='originPort' control={filterControl} isMulti={true} options={[...new Set(data.map((item) => item.origin_port))]} placeholder='Select Origin Port' />
-					<SelectInput name='ico' control={filterControl} isMulti={true} options={[...new Set(data.map((item) => item.ico))]} placeholder='Select ICOs' />
-					<SelectInput name='lotType' control={filterControl} isMulti={true} options={[...new Set(data.map((item) => item.contract_atlas.lot_type))]} placeholder='Select Lot Type' />
+					<SelectInput
+						name='packaging'
+						control={filterControl}
+						isMulti={true}
+						options={filterOptions.packaging || []}
+						placeholder='Select Packaging'
+					/>
+					<SelectInput
+						name='originPort'
+						control={filterControl}
+						isMulti={true}
+						options={filterOptions.originPort || []}
+						placeholder='Select Origin Port'
+					/>
+					<SelectInput
+						name='ico'
+						control={filterControl}
+						isMulti={true}
+						options={filterOptions.ico || []}
+						placeholder='Select ICOs'
+					/>
+					<SelectInput
+						name='lotType'
+						control={filterControl}
+						isMulti={true}
+						options={filterOptions.lotType || []}
+						placeholder='Select Lot Type'
+					/>
 				</FilterContainer>
 
 				<div className='container space-y-4'>
@@ -71,25 +89,13 @@ export function Announcements({ onClose }) {
 										{item.contract_atlas.units}
 									</p>
 									<div className='col-span-1'>
-										<TextInput
-											name={`${item.ico}.announcement`}
-											control={formControl}
-											placeholder='Announcement'
-										/>
+										<TextInput name={`${item.ico}.announcement`} control={formControl} placeholder='Announcement' />
 									</div>
 									<div className='col-span-1'>
-										<TextInput
-											name={`${item.ico}.allocation`}
-											control={formControl}
-											placeholder='Allocation'
-										/>
+										<TextInput name={`${item.ico}.allocation`} control={formControl} placeholder='Allocation' />
 									</div>
 									<div className='col-span-1'>
-										<TextInput
-											name={`${item.ico}.sales_code`}
-											control={formControl}
-											placeholder='Sales Code'
-										/>
+										<TextInput name={`${item.ico}.sales_code`} control={formControl} placeholder='Sales Code' />
 									</div>
 									<div className='col-span-1'>
 										<TextInput
@@ -107,12 +113,7 @@ export function Announcements({ onClose }) {
 								<p className='col-span-1 text-2xl m-auto uppercase font-bayard'>{totals.filteredUnits}</p>
 								<p className='col-span-4'></p>
 							</div>
-							<Pagination 
-								currentPage={currentPage}
-								totalItems={totalItems}
-								itemsPerPage={50}
-								onPageChange={goToPage}
-							/>
+							<Pagination currentPage={currentPage} totalItems={totalItems} itemsPerPage={50} onPageChange={goToPage} />
 						</>
 					) : (
 						<p>No items to display.</p>
