@@ -22,7 +22,7 @@ export function Banner() {
 							<Link to='/pending-task'>
 								<button className='cursor-pointer text-3xl text-celeste uppercase'>{t('pendingTasks')}</button>
 							</Link>
-							<Link to='/create'>
+							<Link to='/admin/create'>
 								<button className='cursor-pointer text-3xl text-pink uppercase'>{t('createContainers')}</button>
 							</Link>
 						</>
