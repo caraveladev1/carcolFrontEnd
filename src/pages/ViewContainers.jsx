@@ -87,7 +87,7 @@ export function ViewContainers() {
 								<div className='flex flex-row justify-between items-center gap-6'>
 									<h2 className='text-3xl font-bold text-white font-bayard uppercase'>{exp_id}</h2>
 									{role === 'Admin' && (
-										<Link to={`/admin/edit-container/${dataWithButtons[0].container_id}`}>
+										<Link to={`/edit-container/${dataWithButtons[0].container_id}`}>
 											<img className='max-w-[50%]' src={editContainer} alt='Edit Container' />
 										</Link>
 									)}
