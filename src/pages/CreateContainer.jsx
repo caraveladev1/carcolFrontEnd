@@ -11,6 +11,7 @@ import { Pagination } from '../components/Pagination';
 import { Loader } from '../components/Loader';
 import { SubmitButton } from '../components/SubmitButton';
 import { TableGeneric } from '../components/TableGeneric';
+import { Popup } from '../components/Popup';
 import { useCreateContainer } from '../Hooks';
 
 export function CreateContainer() {
@@ -26,6 +27,8 @@ export function CreateContainer() {
 		totalItems,
 		goToPage,
 		itemsPerPage,
+		popup,
+		closePopup,
 	} = useCreateContainer();
 
 	if (loading) {
@@ -89,6 +92,13 @@ export function CreateContainer() {
 					onPageChange={goToPage}
 				/>
 			</section>
+			<Popup
+				isOpen={popup.isOpen}
+				onClose={closePopup}
+				title={t(popup.title)}
+				message={t(popup.message)}
+				type={popup.type}
+			/>
 		</div>
 	);
 }

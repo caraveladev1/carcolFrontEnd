@@ -12,6 +12,12 @@ export const useCreateContainer = () => {
 	const [filteredIcoList, setFilteredIcoList] = useState([]);
 	const [selectedIcos, setSelectedIcos] = useState(new Set());
 	const [currentPage, setCurrentPage] = useState(1);
+	const [popup, setPopup] = useState({
+		isOpen: false,
+		title: '',
+		message: '',
+		type: 'info',
+	});
 	const itemsPerPage = 100;
 
 	const [selectOptions, setSelectOptions] = useState({
@@ -144,6 +150,20 @@ export const useCreateContainer = () => {
 	const handleSubmit = handleFormSubmit(async (data) => {
 		const selectedData = icoList.filter((ico) => selectedIcos.has(ico.ico_id));
 
+		// Validación: verificar que el país de exportación coincida con el país de origen de los ICOs seleccionados
+		const exportCountry = data.exportCountry;
+		const invalidIcos = selectedData.filter((ico) => ico.origin_iso !== exportCountry);
+
+		if (invalidIcos.length > 0) {
+			setPopup({
+				isOpen: true,
+				title: 'validationError',
+				message: 'exportCountryMismatch',
+				type: 'error',
+			});
+			return; // No continuar con la creación del contenedor
+		}
+
 		const payload = {
 			filters: data,
 			selectedIcos: selectedData,
@@ -163,9 +183,23 @@ export const useCreateContainer = () => {
 				console.error('Error:', error);
 			}
 		} else {
-			window.alert('The total weight of the icos exceeds the capacity of the container.');
+			setPopup({
+				isOpen: true,
+				title: 'validationError',
+				message: 'The total weight of the icos exceeds the capacity of the container.',
+				type: 'error',
+			});
 		}
 	});
+
+	const closePopup = () => {
+		setPopup({
+			isOpen: false,
+			title: '',
+			message: '',
+			type: 'info',
+		});
+	};
 
 	return {
 		loading,
@@ -179,5 +213,7 @@ export const useCreateContainer = () => {
 		totalItems,
 		goToPage,
 		itemsPerPage,
+		popup,
+		closePopup,
 	};
 };

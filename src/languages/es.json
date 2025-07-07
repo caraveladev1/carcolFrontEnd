@@ -1,4 +1,8 @@
 {
-	"createContainers": "Create Containers",
-	"viewContainers": "View Containers"
+	"createContainers": "Crear Contenedores",
+	"viewContainers": "Ver Contenedores",
+	"close": "Cerrar",
+	"validationError": "Error de Validación",
+	"exportCountryMismatch": "El país de exportación no coincide con el país de origen de los ICOs seleccionados. Por favor verifica y corrige la información antes de continuar.",
+	"cannotProceed": "No se puede proceder con la creación del contenedor"
 }
