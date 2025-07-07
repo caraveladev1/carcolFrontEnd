@@ -22,6 +22,7 @@
 	"estimatedDelivery": "Estimated Delivery",
 	"estimatedArrival": "Estimated Arrival",
 	"submit": "Submit",
+	"resetFilters": "Reset Filters",
 	"exportId": "Export Id",
 	"port": "Destination Port",
 	"approvalDate": "Approval Date",

@@ -16,12 +16,7 @@ import { usePagination } from '../Hooks/usePagination';
 export const EditContainer = () => {
 	const { t } = useTranslation();
 	const { id } = useParams();
-	const {
-		state,
-		filteredTableData,
-		handleCheckboxChange,
-		control,
-	} = useEditContainer();
+	const { state, filteredTableData, handleCheckboxChange, control, resetFilters } = useEditContainer();
 
 	const tableData = filteredTableData().map((row) => ({
 		...row,
@@ -44,24 +39,35 @@ export const EditContainer = () => {
 				<Banner />
 				<h1 className='text-5xl font-bold uppercase text-pink font-bayard mb-6'>{t('editContainer')}</h1>
 				<h2 className='text-5xl font-bold uppercase text-pink font-bayard mb-6'>{t('filters')}</h2>
-				<FilterContainer columns={4}>
-					<SelectInput name='destinationPort' control={control} options={[...new Set(state.tableData.map((row) => row.destinationPort))]} isMulti={true} placeholder='Select destination ports' />
-					<SelectInput name='incoterm' control={control} options={[...new Set(state.tableData.map((row) => row.incoterm))]} isMulti={true} placeholder='Select incoterms' />
+				<FilterContainer columns={5}>
+					<SelectInput
+						name='destinationPort'
+						control={control}
+						options={[...new Set(state.tableData.map((row) => row.destinationPort))]}
+						isMulti={true}
+						placeholder='Select destination ports'
+					/>
+					<SelectInput
+						name='incoterm'
+						control={control}
+						options={[...new Set(state.tableData.map((row) => row.incoterm))]}
+						isMulti={true}
+						placeholder='Select incoterms'
+					/>
 					<DateInput name='startDate' control={control} placeholder='Select start date' />
 					<DateInput name='endDate' control={control} placeholder='Select end date' />
+					<button
+						type='button'
+						onClick={resetFilters}
+						className='bg-naranja hover:bg-red-600 text-white font-bayard text-xl uppercase p-4 w-full h-full min-h-[60px] transition-colors duration-200'
+					>
+						{t('resetFilters')}
+					</button>
 				</FilterContainer>
 				<h2 className='text-5xl font-bold uppercase text-pink font-bayard mb-6'>{t('containerData')}</h2>
 				<FiltersEditContainer filterValues={state.filtersData} selectedIcos={state.selectedIcos} oldExportId={id} />
-				<TableGeneric
-					headersTable={TABLE_HEADERS.EDIT_CONTAINER}
-					dataTable={paginatedData}
-				/>
-				<Pagination 
-					currentPage={currentPage}
-					totalItems={totalItems}
-					itemsPerPage={100}
-					onPageChange={goToPage}
-				/>
+				<TableGeneric headersTable={TABLE_HEADERS.EDIT_CONTAINER} dataTable={paginatedData} />
+				<Pagination currentPage={currentPage} totalItems={totalItems} itemsPerPage={100} onPageChange={goToPage} />
 			</section>
 		</div>
 	);

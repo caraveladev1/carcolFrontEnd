@@ -29,6 +29,7 @@ export function ExportedContainers() {
 		totalItems,
 		goToPage,
 		itemsPerPage,
+		resetFilters,
 	} = useExportedContainers();
 
 	if (loading) {
@@ -42,11 +43,18 @@ export function ExportedContainers() {
 				<h1 className='text-5xl font-bold my-8 uppercase text-beige font-bayard'>{t('exportedContainers')}</h1>
 
 				{/* Filtros */}
-				<FilterContainer columns={4}>
+				<FilterContainer columns={5}>
 					<DateInput name='initialDate' control={control} />
 					<DateInput name='finalDate' control={control} />
 					<SelectInput name='exportCountry' control={control} options={countryOptions} isMulti={true} />
 					<SelectInput name='destinationPort' control={control} options={portOptions} isMulti={true} />
+					<button
+						type='button'
+						onClick={resetFilters}
+						className='bg-naranja hover:bg-red-600 text-white font-bayard text-xl uppercase p-4 w-full h-full min-h-[60px] transition-colors duration-200'
+					>
+						{t('resetFilters')}
+					</button>
 				</FilterContainer>
 
 				{paginatedData.map(([exp_id, containerData]) => (
@@ -68,7 +76,7 @@ export function ExportedContainers() {
 					</div>
 				))}
 
-				<Pagination 
+				<Pagination
 					currentPage={currentPage}
 					totalItems={totalItems}
 					itemsPerPage={itemsPerPage}

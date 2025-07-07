@@ -43,6 +43,7 @@ export function ViewContainers() {
 		totalItems,
 		goToPage,
 		itemsPerPage,
+		resetFilters,
 	} = useViewContainers();
 	if (loading) {
 		return <Loader />;
@@ -62,7 +63,7 @@ export function ViewContainers() {
 					<SelectInput name='contract' control={control} options={contractOptions} isMulti={true} />
 					<SelectInput name='destination' control={control} options={destinationOptions} isMulti={true} />
 					<TextInput name='ico' control={control} placeholder={t('ico_id')} />
-					{role === 'Admin' && (
+					{role === 'Admin' ? (
 						<button
 							className='bg-pink font-bayard text-xl uppercase border-2 border-pink p-4 w-full h-full min-h-[60px] text-white focus:outline-none focus:border-2 focus:border-pink text-start'
 							type='button'
@@ -70,6 +71,14 @@ export function ViewContainers() {
 							onClick={() => setIsAnnouncementsOpen(true)}
 						>
 							Edit Announcements
+						</button>
+					) : (
+						<button
+							type='button'
+							onClick={resetFilters}
+							className='bg-naranja hover:bg-red-600 text-white font-bayard text-xl uppercase p-4 w-full h-full min-h-[60px] transition-colors duration-200'
+						>
+							{t('resetFilters')}
 						</button>
 					)}
 				</FilterContainer>

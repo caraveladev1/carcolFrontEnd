@@ -34,6 +34,7 @@ export const useCreateContainer = () => {
 		control,
 		handleSubmit: handleFormSubmit,
 		watch,
+		reset,
 	} = useForm({
 		defaultValues: {
 			port: '',
@@ -212,6 +213,20 @@ export const useCreateContainer = () => {
 		}
 	});
 
+	const resetFilters = () => {
+		reset({
+			port: '',
+			exportCountry: '',
+			capacityContainer: '',
+			incoterm: '',
+			shipmentMonthStart: '',
+			shipmentMonthFinal: '',
+			originPort: '',
+		});
+		setSelectedIcos(new Set());
+		setCurrentPage(1);
+	};
+
 	const closePopup = () => {
 		setPopup({
 			isOpen: false,
@@ -236,5 +251,6 @@ export const useCreateContainer = () => {
 		itemsPerPage,
 		popup,
 		closePopup,
+		resetFilters,
 	};
 };

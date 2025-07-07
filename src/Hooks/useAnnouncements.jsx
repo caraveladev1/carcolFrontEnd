@@ -25,7 +25,11 @@ export const useAnnouncements = (onClose) => {
 		totalUnits: 0,
 	});
 
-	const { control: filterControl, watch: watchFilters } = useForm({
+	const {
+		control: filterControl,
+		watch: watchFilters,
+		reset: resetFilters,
+	} = useForm({
 		defaultValues: {
 			startDate: '',
 			endDate: '',
@@ -189,5 +193,6 @@ export const useAnnouncements = (onClose) => {
 		popup,
 		closePopup,
 		submitLoading,
+		resetFilters,
 	};
 };

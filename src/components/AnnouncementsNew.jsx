@@ -68,12 +68,12 @@ export function Announcements({ onClose }) {
 
 	return (
 		<div className='bg-dark-background bg-cover bg-fixed min-h-screen fixed inset-0 bg-black/50 flex justify-center items-center'>
-			<div className='max-w-[90%] w-full max-h-[90%] overflow-auto bg-dark-background p-6 relative'>
+			<div className='max-w-[95%] w-full max-h-[90%] overflow-auto bg-dark-background p-6 relative'>
 				<button
-					className='absolute top-4 right-4 bg-red-500 hover:bg-red-600 text-beige p-1 transition-colors duration-200'
+					className='absolute top-4 right-4 bg-red-500 hover:bg-red-600 text-white p-2 rounded transition-colors duration-200'
 					onClick={onClose}
 				>
-					<span className='font-bayard text-2xl py-2 px-2'>Close</span>
+					<span className='font-bayard text-xl px-2'>✕</span>
 				</button>
 
 				<h1 className='text-4xl font-bold uppercase text-pink font-bayard mb-6'>{t('addAnnouncements')}</h1>
@@ -112,7 +112,7 @@ export function Announcements({ onClose }) {
 					<button
 						type='button'
 						onClick={() => resetFilters()}
-						className='bg-naranja hover:bg-red-600 text-beige font-bayard text-xl uppercase p-4 w-full h-full min-h-[60px] transition-colors duration-200'
+						className='bg-naranja hover:bg-red-600 text-white font-bayard text-xl uppercase p-4 w-full h-full min-h-[60px] transition-colors duration-200'
 					>
 						{t('resetFilters')}
 					</button>
@@ -121,12 +121,12 @@ export function Announcements({ onClose }) {
 				{/* Totals Section */}
 				<div className='my-6'>
 					<div className='titleContainer flex flex-row justify-between gap-10 items-center'>
-						<h2 className='text-3xl font-bold text-beige font-bayard uppercase'>ANNOUNCEMENTS DATA</h2>
+						<h2 className='text-3xl font-bold text-white font-bayard uppercase'>ANNOUNCEMENTS DATA</h2>
 						<div className='containerData flex flex-row gap-4'>
-							<p className='text-2xl font-bold text-pink font-bayard uppercase'>
+							<p className='text-xl font-bold text-pink font-bayard uppercase'>
 								{`Total Estimated KG: ${totals.filteredEstimatedKg || 'No available'}`}
 							</p>
-							<p className='text-2xl font-bold text-celeste font-bayard uppercase'>
+							<p className='text-xl font-bold text-celeste font-bayard uppercase'>
 								{`Total Units: ${totals.filteredUnits || 'No available'}`}
 							</p>
 						</div>

@@ -30,6 +30,7 @@ export function CreateContainer() {
 		itemsPerPage,
 		popup,
 		closePopup,
+		resetFilters,
 	} = useCreateContainer();
 
 	if (loading) {
@@ -90,6 +91,13 @@ export function CreateContainer() {
 							loading={submitLoading}
 							disabled={submitLoading}
 						/>
+						<button
+							type='button'
+							onClick={resetFilters}
+							className='bg-naranja hover:bg-red-600 text-white font-bayard text-xl uppercase p-4 col-span-2 transition-colors duration-200'
+						>
+							{t('resetFilters')}
+						</button>
 					</FilterContainer>
 				</form>
 				<TableGeneric headersTable={TABLE_HEADERS.CREATE_CONTAINER} dataTable={paginatedData} />
