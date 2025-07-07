@@ -5,6 +5,7 @@ import { API_BASE_URL } from '../utils/consts';
 export const useAnnouncements = (onClose) => {
 	const [data, setData] = useState([]);
 	const [filteredData, setFilteredData] = useState([]);
+	const [submitLoading, setSubmitLoading] = useState(false);
 	const [popup, setPopup] = useState({
 		isOpen: false,
 		title: '',
@@ -134,6 +135,7 @@ export const useAnnouncements = (onClose) => {
 	}, [memoizedFilters, data]);
 
 	const submitAnnouncements = handleSubmit((formData) => {
+		setSubmitLoading(true);
 		fetch(`${API_BASE_URL}api/exports/addAnnouncements`, {
 			method: 'PUT',
 			headers: {
@@ -161,6 +163,9 @@ export const useAnnouncements = (onClose) => {
 					message: 'errorSendingData',
 					type: 'error',
 				});
+			})
+			.finally(() => {
+				setSubmitLoading(false);
 			});
 	});
 
@@ -183,5 +188,6 @@ export const useAnnouncements = (onClose) => {
 		filterOptions,
 		popup,
 		closePopup,
+		submitLoading,
 	};
 };

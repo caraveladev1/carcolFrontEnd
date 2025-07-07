@@ -8,6 +8,7 @@ import { CONTAINER_CAPACITY } from '../constants/index.js';
 export const useCreateContainer = () => {
 	const navigate = useNavigate();
 	const [loading, setLoading] = useState(true);
+	const [submitLoading, setSubmitLoading] = useState(false);
 	const [icoList, setIcoList] = useState([]);
 	const [filteredIcoList, setFilteredIcoList] = useState([]);
 	const [selectedIcos, setSelectedIcos] = useState(new Set());
@@ -148,6 +149,7 @@ export const useCreateContainer = () => {
 	};
 
 	const handleSubmit = handleFormSubmit(async (data) => {
+		setSubmitLoading(true);
 		const selectedData = icoList.filter((ico) => selectedIcos.has(ico.ico_id));
 
 		// Validación: verificar que el país de exportación coincida con el país de origen de los ICOs seleccionados
@@ -161,6 +163,7 @@ export const useCreateContainer = () => {
 				message: 'exportCountryMismatch',
 				type: 'error',
 			});
+			setSubmitLoading(false);
 			return; // No continuar con la creación del contenedor
 		}
 
@@ -195,6 +198,8 @@ export const useCreateContainer = () => {
 					message: 'errorCreatingContainer',
 					type: 'error',
 				});
+			} finally {
+				setSubmitLoading(false);
 			}
 		} else {
 			setPopup({
@@ -203,6 +208,7 @@ export const useCreateContainer = () => {
 				message: 'weightExceedsCapacity',
 				type: 'error',
 			});
+			setSubmitLoading(false);
 		}
 	});
 
@@ -217,6 +223,7 @@ export const useCreateContainer = () => {
 
 	return {
 		loading,
+		submitLoading,
 		selectOptions,
 		preparedDataTable,
 		handleSubmit,

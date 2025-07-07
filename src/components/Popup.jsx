@@ -34,7 +34,7 @@ export function Popup({ isOpen, onClose, title, message, type = 'info' }) {
 
 	return (
 		<div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50'>
-			<div className={`bg-white rounded-lg border-2 ${getTypeStyles()} p-6 max-w-md w-full mx-4 shadow-xl`}>
+			<div className={`bg-beige  border-2 ${getTypeStyles()} p-6 max-w-md w-full mx-4 shadow-xl`}>
 				<div className='flex items-start'>
 					<div className={`flex-shrink-0 ${getIconColor()}`}>
 						{type === 'error' && (
@@ -79,14 +79,14 @@ export function Popup({ isOpen, onClose, title, message, type = 'info' }) {
 						)}
 					</div>
 					<div className='ml-3 w-0 flex-1'>
-						{title && <h3 className='text-lg font-medium text-gray-900 mb-2'>{title}</h3>}
-						<p className='text-sm text-gray-700'>{message}</p>
+						{title && <h3 className='text-xl font-itf font-medium text-cafe mb-2'>{title}</h3>}
+						<p className='text-lg text-cafe font-itf'>{message}</p>
 					</div>
 				</div>
 				<div className='mt-4 flex justify-end'>
 					<button
 						onClick={onClose}
-						className='bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded transition-colors duration-200'
+						className='bg-beige hover:bg-naranja font-itf text-cafe font-medium p-4 transition-colors duration-200'
 					>
 						{t('close') || 'Cerrar'}
 					</button>

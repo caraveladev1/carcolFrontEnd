@@ -12,6 +12,8 @@ export const useFiltersEditContainer = (filterValues, selectedIcos, oldExportId)
 		message: '',
 		type: 'info',
 	});
+	const [submitLoading, setSubmitLoading] = useState(false);
+	const [exportLoading, setExportLoading] = useState(false);
 
 	const containerLabels = Object.keys(containerCapacity);
 
@@ -40,122 +42,148 @@ export const useFiltersEditContainer = (filterValues, selectedIcos, oldExportId)
 	});
 
 	const updateContainer = async (data) => {
-		const payload = {
-			old_id: oldExportId,
-			states: defaultValues[0],
-			selectedIcos: selectedIcos,
-			filters: data,
-		};
-
-		if (defaultValues[0]?.is_pending === '1') {
-			const limitedPayload = {
-				old_id: parseInt(oldExportId),
-				filters: {
-					exportDate: data.exportDate,
-					estimatedArrival: data.estimatedArrival,
-				},
+		setSubmitLoading(true);
+		try {
+			const payload = {
+				old_id: oldExportId,
+				states: defaultValues[0],
+				selectedIcos: selectedIcos,
+				filters: data,
 			};
 
-			const response = await fetch(`${API_BASE_URL}api/exports/updateContainerAfterLoaded`, {
-				method: 'PUT',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(limitedPayload),
-			});
+			if (defaultValues[0]?.is_pending === '1') {
+				const limitedPayload = {
+					old_id: parseInt(oldExportId),
+					filters: {
+						exportDate: data.exportDate,
+						estimatedArrival: data.estimatedArrival,
+					},
+				};
 
-			if (!response.ok || !limitedPayload.filters.exportDate || !limitedPayload.filters.estimatedArrival) {
+				const response = await fetch(`${API_BASE_URL}api/exports/updateContainerAfterLoaded`, {
+					method: 'PUT',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify(limitedPayload),
+				});
+
+				if (!response.ok || !limitedPayload.filters.exportDate || !limitedPayload.filters.estimatedArrival) {
+					setPopup({
+						isOpen: true,
+						title: 'validationError',
+						message: 'containerLoadedUpdateNotice',
+						type: 'warning',
+					});
+					throw new Error('Missing required date fields');
+				}
+
+				setPopup({
+					isOpen: true,
+					title: 'success',
+					message: 'containerLoadedUpdateSuccess',
+					type: 'success',
+				});
+				setTimeout(() => {
+					navigate('/view-containers');
+				}, 3000);
+				return;
+			}
+
+			const sumIcosWeight = payload.selectedIcos.reduce(
+				(acc, element) => acc + (parseInt(element.estimated_kg, 10) || 0),
+				0,
+			);
+
+			const selectedContainerValue = containerCapacity[payload.filters.capacityContainer];
+
+			if (!selectedContainerValue) {
 				setPopup({
 					isOpen: true,
 					title: 'validationError',
-					message: 'containerLoadedUpdateNotice',
-					type: 'warning',
+					message: 'invalidContainerCapacity',
+					type: 'error',
 				});
-				throw new Error('Missing required date fields');
+				return;
 			}
+
+			if (sumIcosWeight > selectedContainerValue) {
+				setPopup({
+					isOpen: true,
+					title: 'validationError',
+					message: 'weightExceedsCapacity',
+					type: 'error',
+				});
+				return;
+			}
+
+			const response = await fetch(`${API_BASE_URL}api/exports/updateContainer`, {
+				method: 'PUT',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(payload),
+			});
+
+			if (!response.ok) throw new Error('Network response was not ok');
 
 			setPopup({
 				isOpen: true,
 				title: 'success',
-				message: 'containerLoadedUpdateSuccess',
+				message: 'containerUpdatedSuccessfully',
 				type: 'success',
 			});
 			setTimeout(() => {
 				navigate('/view-containers');
-			}, 3000);
-			return;
-		}
-
-		const sumIcosWeight = payload.selectedIcos.reduce(
-			(acc, element) => acc + (parseInt(element.estimated_kg, 10) || 0),
-			0,
-		);
-
-		const selectedContainerValue = containerCapacity[payload.filters.capacityContainer];
-
-		if (!selectedContainerValue) {
+			}, 2000);
+		} catch (error) {
+			console.error('Error:', error);
 			setPopup({
 				isOpen: true,
-				title: 'validationError',
-				message: 'invalidContainerCapacity',
+				title: 'error',
+				message: 'errorCreatingContainer',
 				type: 'error',
 			});
-			return;
+		} finally {
+			setSubmitLoading(false);
 		}
-
-		if (sumIcosWeight > selectedContainerValue) {
-			setPopup({
-				isOpen: true,
-				title: 'validationError',
-				message: 'weightExceedsCapacity',
-				type: 'error',
-			});
-			return;
-		}
-
-		const response = await fetch(`${API_BASE_URL}api/exports/updateContainer`, {
-			method: 'PUT',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify(payload),
-		});
-
-		if (!response.ok) throw new Error('Network response was not ok');
-
-		setPopup({
-			isOpen: true,
-			title: 'success',
-			message: 'containerUpdatedSuccessfully',
-			type: 'success',
-		});
-		setTimeout(() => {
-			navigate('/view-containers');
-		}, 2000);
 	};
 
 	const setExported = async () => {
-		if (defaultValues[0].is_pending !== '1') {
+		setExportLoading(true);
+		try {
+			if (defaultValues[0].is_pending !== '1') {
+				setPopup({
+					isOpen: true,
+					title: 'validationError',
+					message: 'containerNotLoaded',
+					type: 'warning',
+				});
+				return;
+			}
+
+			await fetch(`${API_BASE_URL}api/exports/setExported`, {
+				method: 'PUT',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ id: oldExportId, is_exported: '1' }),
+			});
+
 			setPopup({
 				isOpen: true,
-				title: 'validationError',
-				message: 'containerNotLoaded',
-				type: 'warning',
+				title: 'success',
+				message: 'containerExportedSuccessfully',
+				type: 'success',
 			});
-			return;
+			setTimeout(() => {
+				navigate('/view-containers');
+			}, 2000);
+		} catch (error) {
+			console.error('Error:', error);
+			setPopup({
+				isOpen: true,
+				title: 'error',
+				message: 'errorCreatingContainer',
+				type: 'error',
+			});
+		} finally {
+			setExportLoading(false);
 		}
-
-		await fetch(`${API_BASE_URL}api/exports/setExported`, {
-			method: 'PUT',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ id: oldExportId, is_exported: '1' }),
-		});
-
-		setPopup({
-			isOpen: true,
-			title: 'success',
-			message: 'containerExportedSuccessfully',
-			type: 'success',
-		});
-		setTimeout(() => {
-			navigate('/view-containers');
-		}, 2000);
 	};
 
 	const onSubmit = handleSubmit(async (data) => {
@@ -188,5 +216,7 @@ export const useFiltersEditContainer = (filterValues, selectedIcos, oldExportId)
 		setExported,
 		popup,
 		closePopup,
+		submitLoading,
+		exportLoading,
 	};
 };

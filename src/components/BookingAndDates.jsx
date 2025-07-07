@@ -16,6 +16,8 @@ export const BookingAndDates = memo(function BookingAndDates({
 }) {
 	const { t } = useTranslation();
 	const { formData, handleChange } = useBookingForm(initialFormData);
+	const [submitLoading, setSubmitLoading] = useState(false);
+	const [setLoadedLoading, setSetLoadedLoading] = useState(false);
 	const [popup, setPopup] = useState({
 		isOpen: false,
 		title: '',
@@ -25,6 +27,7 @@ export const BookingAndDates = memo(function BookingAndDates({
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
+		setSubmitLoading(true);
 
 		try {
 			await bookingService.updateBookingAndDates(formData, exportNumber);
@@ -45,10 +48,13 @@ export const BookingAndDates = memo(function BookingAndDates({
 				message: 'errorSendingData',
 				type: 'error',
 			});
+		} finally {
+			setSubmitLoading(false);
 		}
 	};
 
 	const setLoaded = async () => {
+		setSetLoadedLoading(true);
 		try {
 			bookingService.validateRelatedData(relatedData);
 			console.log('Datos relacionados:', relatedData);
@@ -70,6 +76,8 @@ export const BookingAndDates = memo(function BookingAndDates({
 				message: error.message || 'errorSendingData',
 				type: 'error',
 			});
+		} finally {
+			setSetLoadedLoading(false);
 		}
 	};
 
@@ -142,13 +150,22 @@ export const BookingAndDates = memo(function BookingAndDates({
 					</React.Fragment>
 				))}
 				<div className='flex flex-row gap-4 justify-between	w-full col-span-4'>
-					<SubmitButton className='w-full' color='verdeTexto' typeButton='submit' buttonText='submit' />
+					<SubmitButton
+						className='w-full'
+						color='verdeTexto'
+						typeButton='submit'
+						buttonText='submit'
+						loading={submitLoading}
+						disabled={submitLoading}
+					/>
 					<SubmitButton
 						className='w-full'
 						color='naranja'
 						typeButton='button'
 						onClick={setLoaded}
 						buttonText='setLoaded'
+						loading={setLoadedLoading}
+						disabled={setLoadedLoading}
 					/>
 				</div>
 			</form>

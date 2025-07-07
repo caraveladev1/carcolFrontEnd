@@ -18,6 +18,7 @@ export function CreateContainer() {
 	const { t } = useTranslation();
 	const {
 		loading,
+		submitLoading,
 		selectOptions,
 		preparedDataTable,
 		handleSubmit,
@@ -81,7 +82,14 @@ export function CreateContainer() {
 								</div>
 							);
 						})}
-						<SubmitButton className='bg-celeste col-span-2' color='celeste' typeButton='submit' buttonText='submit' />
+						<SubmitButton
+							className='bg-celeste col-span-2'
+							color='celeste'
+							typeButton='submit'
+							buttonText='submit'
+							loading={submitLoading}
+							disabled={submitLoading}
+						/>
 					</FilterContainer>
 				</form>
 				<TableGeneric headersTable={TABLE_HEADERS.CREATE_CONTAINER} dataTable={paginatedData} />

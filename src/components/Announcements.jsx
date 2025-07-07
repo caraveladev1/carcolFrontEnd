@@ -5,6 +5,7 @@ import { SelectInput } from './SelectInput';
 import { TextInput } from './TextInput';
 import { FilterContainer } from './FilterContainer';
 import { Pagination } from './Pagination';
+import { SubmitButton } from './SubmitButton';
 import { Popup } from './Popup';
 import { useAnnouncements } from '../Hooks/useAnnouncements';
 import { usePagination } from '../Hooks/usePagination';
@@ -21,6 +22,7 @@ export function Announcements({ onClose }) {
 		filterOptions,
 		popup,
 		closePopup,
+		submitLoading,
 	} = useAnnouncements(onClose);
 
 	const { currentPage, paginatedData, totalItems, goToPage } = usePagination(filteredData, 50);
@@ -131,9 +133,15 @@ export function Announcements({ onClose }) {
 				</div>
 
 				<div className='flex justify-end'>
-					<button className='bg-pink text-white p-1 my-4' onClick={submitAnnouncements}>
-						<p className='font-bayard text-2xl px-4'>Submit</p>
-					</button>
+					<SubmitButton
+						className='my-4'
+						color='pink'
+						typeButton='button'
+						onClick={submitAnnouncements}
+						buttonText='Submit'
+						loading={submitLoading}
+						disabled={submitLoading}
+					/>
 				</div>
 			</div>
 			<Popup

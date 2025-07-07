@@ -11,11 +11,8 @@ import { useFiltersEditContainer } from '../Hooks/useFiltersEditContainer';
 
 export function FiltersEditContainer({ filterValues, selectedIcos, oldExportId }) {
 	const { t } = useTranslation();
-	const { control, optionsByFilter, onSubmit, setExported, popup, closePopup } = useFiltersEditContainer(
-		filterValues,
-		selectedIcos,
-		oldExportId,
-	);
+	const { control, optionsByFilter, onSubmit, setExported, popup, closePopup, submitLoading, exportLoading } =
+		useFiltersEditContainer(filterValues, selectedIcos, oldExportId);
 
 	const getInputComponent = (filter) => {
 		const isSelect = ['capacityContainer', 'port', 'incoterm', 'originPort'].includes(filter);
@@ -59,13 +56,22 @@ export function FiltersEditContainer({ filterValues, selectedIcos, oldExportId }
 							{getInputComponent(filter)}
 						</div>
 					))}
-					<SubmitButton className='col-span-1' color='celeste' typeButton='submit' buttonText='submit' />
+					<SubmitButton
+						className='col-span-1'
+						color='celeste'
+						typeButton='submit'
+						buttonText='submit'
+						loading={submitLoading}
+						disabled={submitLoading}
+					/>
 					<SubmitButton
 						className='col-span-1'
 						color='pink'
 						typeButton='button'
 						buttonText='setExported'
 						onClick={setExported}
+						loading={exportLoading}
+						disabled={exportLoading}
 					/>
 				</div>
 			</form>
