@@ -28,8 +28,6 @@ export function CreateContainer() {
 		itemsPerPage,
 	} = useCreateContainer();
 
-
-
 	if (loading) {
 		return <Loader />;
 	}
@@ -42,18 +40,28 @@ export function CreateContainer() {
 				<form onSubmit={handleSubmit}>
 					<FilterContainer columns={4}>
 						{FILTER_NAMES.CREATE_CONTAINER.map((filter) => {
-							const isSelect = ['port', 'capacityContainer', 'exportCountry', 'incoterm', 'originPort'].includes(filter);
+							const isSelect = ['port', 'capacityContainer', 'exportCountry', 'incoterm', 'originPort'].includes(
+								filter,
+							);
 							const isDate = ['shipmentMonthStart', 'shipmentMonthFinal'].includes(filter);
-							const isRequired = ['port', 'capacityContainer', 'exportCountry', 'incoterm', 'originPort'].includes(filter);
-							
+							const isRequired = ['port', 'capacityContainer', 'exportCountry', 'incoterm', 'originPort'].includes(
+								filter,
+							);
+
 							const getOptions = () => {
-								switch(filter) {
-									case 'port': return selectOptions.destinationPorts;
-									case 'exportCountry': return selectOptions.exportCountry;
-									case 'capacityContainer': return selectOptions.capacityContainer;
-									case 'incoterm': return selectOptions.incoterm;
-									case 'originPort': return selectOptions.originPort;
-									default: return [];
+								switch (filter) {
+									case 'port':
+										return selectOptions.destinationPorts;
+									case 'exportCountry':
+										return selectOptions.exportCountry;
+									case 'capacityContainer':
+										return selectOptions.capacityContainer;
+									case 'incoterm':
+										return selectOptions.incoterm;
+									case 'originPort':
+										return selectOptions.originPort;
+									default:
+										return [];
 								}
 							};
 
@@ -61,31 +69,20 @@ export function CreateContainer() {
 								<div key={filter} className='col-span-2 flex items-stretch gap-4'>
 									<LabelGeneric htmlFor={filter} filter={filter} />
 									{isSelect ? (
-										<SelectInput
-											name={filter}
-											control={control}
-											options={getOptions()}
-											required={isRequired}
-										/>
+										<SelectInput name={filter} control={control} options={getOptions()} required={isRequired} />
 									) : isDate ? (
-										<DateInput
-											name={filter}
-											control={control}
-										/>
+										<DateInput name={filter} control={control} />
 									) : (
-										<TextInput
-											name={filter}
-											control={control}
-										/>
+										<TextInput name={filter} control={control} />
 									)}
 								</div>
 							);
 						})}
-						<SubmitButton className='bg-celeste col-span-2' typeButton='submit' buttonText='submit' />
+						<SubmitButton className='bg-celeste col-span-2' color='celeste' typeButton='submit' buttonText='submit' />
 					</FilterContainer>
 				</form>
 				<TableGeneric headersTable={TABLE_HEADERS.CREATE_CONTAINER} dataTable={paginatedData} />
-				<Pagination 
+				<Pagination
 					currentPage={currentPage}
 					totalItems={totalItems}
 					itemsPerPage={itemsPerPage}

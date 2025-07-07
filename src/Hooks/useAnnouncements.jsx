@@ -1,128 +1,137 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { API_BASE_URL } from '../utils/consts';
 
 export const useAnnouncements = (onClose) => {
-  const [data, setData] = useState([]);
-  const [filteredData, setFilteredData] = useState([]);
-  const [totals, setTotals] = useState({
-    totalEstimatedKg: 0,
-    filteredEstimatedKg: 0,
-    filteredUnits: 0,
-    totalUnits: 0
-  });
+	const [data, setData] = useState([]);
+	const [filteredData, setFilteredData] = useState([]);
+	const [totals, setTotals] = useState({
+		totalEstimatedKg: 0,
+		filteredEstimatedKg: 0,
+		filteredUnits: 0,
+		totalUnits: 0,
+	});
 
-  const { control: filterControl, watch: watchFilters } = useForm({
-    defaultValues: {
-      startDate: '',
-      endDate: '',
-      packaging: [],
-      originPort: [],
-      ico: [],
-      lotType: []
-    }
-  });
+	const { control: filterControl, watch: watchFilters } = useForm({
+		defaultValues: {
+			startDate: '',
+			endDate: '',
+			packaging: [],
+			originPort: [],
+			ico: [],
+			lotType: [],
+		},
+	});
 
-  const { control: formControl, handleSubmit, setValue } = useForm({
-    defaultValues: {}
-  });
+	const {
+		control: formControl,
+		handleSubmit,
+		setValue,
+	} = useForm({
+		defaultValues: {},
+	});
 
-  const filters = watchFilters();
+	const filters = watchFilters();
 
-  const calculateTotals = () => {
-    const totalKg = data.reduce((sum, item) => sum + (parseFloat(item.contract_atlas.estimated_kg) || 0), 0);
-    const filteredKg = filteredData.reduce((sum, item) => sum + (parseFloat(item.contract_atlas.estimated_kg) || 0), 0);
-    const totalUnitsSum = data.reduce((sum, item) => sum + (parseInt(item.contract_atlas.units) || 0), 0);
-    const filteredUnitsSum = filteredData.reduce((sum, item) => sum + (parseInt(item.contract_atlas.units) || 0), 0);
-    
-    setTotals({
-      totalEstimatedKg: totalKg,
-      filteredEstimatedKg: filteredKg,
-      totalUnits: totalUnitsSum,
-      filteredUnits: filteredUnitsSum
-    });
-  };
+	const memoizedFilters = useMemo(
+		() => filters,
+		[filters.startDate, filters.endDate, filters.packaging, filters.originPort, filters.ico, filters.lotType],
+	);
 
-  useEffect(() => {
-    fetch(`${API_BASE_URL}api/exports/getAnnouncements`)
-      .then((response) => response.json())
-      .then((data) => {
-        setData(data);
-        setFilteredData(data);
+	const calculateTotals = useCallback(() => {
+		const totalKg = data.reduce((sum, item) => sum + (parseFloat(item.contract_atlas.estimated_kg) || 0), 0);
+		const filteredKg = filteredData.reduce((sum, item) => sum + (parseFloat(item.contract_atlas.estimated_kg) || 0), 0);
+		const totalUnitsSum = data.reduce((sum, item) => sum + (parseInt(item.contract_atlas.units) || 0), 0);
+		const filteredUnitsSum = filteredData.reduce((sum, item) => sum + (parseInt(item.contract_atlas.units) || 0), 0);
 
-        data.forEach((item) => {
-          setValue(`${item.ico}.announcement`, item.announcement || '');
-          setValue(`${item.ico}.orders`, item.orders || '');
-          setValue(`${item.ico}.revision_number`, item.revision_number || '');
-          setValue(`${item.ico}.allocation`, item.allocation || '');
-          setValue(`${item.ico}.sales_code`, item.sales_code || '');
-        });
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-      });
-  }, [setValue]);
+		setTotals({
+			totalEstimatedKg: totalKg,
+			filteredEstimatedKg: filteredKg,
+			totalUnits: totalUnitsSum,
+			filteredUnits: filteredUnitsSum,
+		});
+	}, [data, filteredData]);
 
-  useEffect(() => {
-    calculateTotals();
-  }, [filteredData, data]);
+	useEffect(() => {
+		fetch(`${API_BASE_URL}api/exports/getAnnouncements`)
+			.then((response) => response.json())
+			.then((data) => {
+				setData(data);
+				setFilteredData(data);
 
-  useEffect(() => {
-    let filtered = [...data];
+				data.forEach((item) => {
+					setValue(`${item.ico}.announcement`, item.announcement || '');
+					setValue(`${item.ico}.orders`, item.orders || '');
+					setValue(`${item.ico}.revision_number`, item.revision_number || '');
+					setValue(`${item.ico}.allocation`, item.allocation || '');
+					setValue(`${item.ico}.sales_code`, item.sales_code || '');
+				});
+			})
+			.catch((error) => {
+				console.error('Error:', error);
+			});
+	}, [setValue]);
 
-    if (filters.startDate || filters.endDate) {
-      const start = filters.startDate ? new Date(filters.startDate) : null;
-      const end = filters.endDate ? new Date(filters.endDate) : null;
+	useEffect(() => {
+		calculateTotals();
+	}, [filteredData, data]);
 
-      filtered = filtered.filter((item) => {
-        const date = new Date(item.date_landing);
-        return (!start || date >= start) && (!end || date <= end);
-      });
-    }
+	useEffect(() => {
+		let filtered = [...data];
 
-    if (filters.packaging?.length > 0) {
-      filtered = filtered.filter((item) => filters.packaging.includes(item.contract_atlas.packaging_type));
-    }
+		if (memoizedFilters.startDate || memoizedFilters.endDate) {
+			const start = memoizedFilters.startDate ? new Date(memoizedFilters.startDate) : null;
+			const end = memoizedFilters.endDate ? new Date(memoizedFilters.endDate) : null;
 
-    if (filters.originPort?.length > 0) {
-      filtered = filtered.filter((item) => filters.originPort.includes(item.origin_port));
-    }
+			filtered = filtered.filter((item) => {
+				const date = new Date(item.date_landing);
+				return (!start || date >= start) && (!end || date <= end);
+			});
+		}
 
-    if (filters.ico?.length > 0) {
-      filtered = filtered.filter((item) => filters.ico.includes(item.ico));
-    }
+		if (memoizedFilters.packaging?.length > 0) {
+			filtered = filtered.filter((item) => memoizedFilters.packaging.includes(item.contract_atlas.packaging_type));
+		}
 
-    if (filters.lotType?.length > 0) {
-      filtered = filtered.filter((item) => filters.lotType.includes(item.contract_atlas.lot_type));
-    }
+		if (memoizedFilters.originPort?.length > 0) {
+			filtered = filtered.filter((item) => memoizedFilters.originPort.includes(item.origin_port));
+		}
 
-    setFilteredData(filtered);
-  }, [filters, data]);
+		if (memoizedFilters.ico?.length > 0) {
+			filtered = filtered.filter((item) => memoizedFilters.ico.includes(item.ico));
+		}
 
-  const submitAnnouncements = handleSubmit((formData) => {
-    fetch(`${API_BASE_URL}api/exports/addAnnouncements`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formData),
-    })
-      .then((response) => response.json())
-      .then(() => {
-        window.alert('Announcements added successfully');
-        onClose?.();
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-      });
-  });
+		if (memoizedFilters.lotType?.length > 0) {
+			filtered = filtered.filter((item) => memoizedFilters.lotType.includes(item.contract_atlas.lot_type));
+		}
 
-  return {
-    data,
-    filteredData,
-    totals,
-    filterControl,
-    formControl,
-    submitAnnouncements,
-  };
+		setFilteredData(filtered);
+	}, [memoizedFilters, data]);
+
+	const submitAnnouncements = handleSubmit((formData) => {
+		fetch(`${API_BASE_URL}api/exports/addAnnouncements`, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(formData),
+		})
+			.then((response) => response.json())
+			.then(() => {
+				window.alert('Announcements added successfully');
+				onClose?.();
+			})
+			.catch((error) => {
+				console.error('Error:', error);
+			});
+	});
+
+	return {
+		data,
+		filteredData,
+		totals,
+		filterControl,
+		formControl,
+		submitAnnouncements,
+	};
 };

@@ -57,9 +57,10 @@ export function FiltersEditContainer({ filterValues, selectedIcos, oldExportId }
 						{getInputComponent(filter)}
 					</div>
 				))}
-				<SubmitButton className='bg-celeste col-span-1' typeButton='submit' buttonText='submit' />
+				<SubmitButton className='col-span-1' color='celeste' typeButton='submit' buttonText='submit' />
 				<SubmitButton
-					className='bg-pink col-span-1'
+					className='col-span-1'
+					color='pink'
 					typeButton='button'
 					buttonText='setExported'
 					onClick={setExported}

@@ -59,7 +59,7 @@ export const BookingAndDates = memo(function BookingAndDates({
 								<select
 									id={label}
 									name={label}
-									value={formData[label]}
+									value={formData[label] || ''}
 									onChange={handleChange}
 									className='bg-transparent font-itf border-2 border-verdeTexto p-4 mt-4 w-full text-verdeTexto focus:outline-none focus:border-2 focus:border-verdeTexto  uppercase'
 								>
@@ -83,7 +83,7 @@ export const BookingAndDates = memo(function BookingAndDates({
 									}
 									id={label}
 									name={label}
-									value={formData[label]}
+									value={formData[label] || ''}
 									min={
 										label === 'exportDate' ||
 										label === 'dateLandingPort' ||

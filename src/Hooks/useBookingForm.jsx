@@ -16,7 +16,11 @@ export const useBookingForm = (initialFormData) => {
 
 	useEffect(() => {
 		if (initialFormData) {
-			setFormData(initialFormData);
+			const sanitizedData = {};
+			Object.keys(formData).forEach((key) => {
+				sanitizedData[key] = initialFormData[key] || '';
+			});
+			setFormData(sanitizedData);
 		}
 	}, [initialFormData]);
 
