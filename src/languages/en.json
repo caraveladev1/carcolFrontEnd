@@ -69,5 +69,18 @@
 	"close": "Close",
 	"validationError": "Validation Error",
 	"exportCountryMismatch": "The export country does not match the origin country of the selected ICOs. Please verify and correct the information before proceeding.",
-	"cannotProceed": "Cannot proceed with container creation"
+	"cannotProceed": "Cannot proceed with container creation",
+	"success": "Success",
+	"error": "Error",
+	"containerCreatedSuccessfully": "Container created successfully",
+	"errorCreatingContainer": "Error creating container. Please try again.",
+	"containerUpdatedSuccessfully": "Container updated successfully",
+	"errorSendingData": "Error sending data",
+	"containerLoadedUpdateNotice": "The container is loaded, you can only update 'Estimated Arrival' and 'Export date'. Please fill in the required fields",
+	"containerLoadedUpdateSuccess": "Container updated successfully.\n\nPlease note: The container is loaded, only 'Estimated Arrival' and 'Export date' fields were updated.",
+	"invalidContainerCapacity": "Invalid container capacity selected.",
+	"weightExceedsCapacity": "The total weight of the ICOs exceeds the capacity of the container.",
+	"containerNotLoaded": "Container is not loaded",
+	"containerExportedSuccessfully": "Container set as exported successfully",
+	"announcementsAddedSuccessfully": "Announcements added successfully"
 }

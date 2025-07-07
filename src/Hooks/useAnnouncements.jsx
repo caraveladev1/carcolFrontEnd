@@ -5,6 +5,12 @@ import { API_BASE_URL } from '../utils/consts';
 export const useAnnouncements = (onClose) => {
 	const [data, setData] = useState([]);
 	const [filteredData, setFilteredData] = useState([]);
+	const [popup, setPopup] = useState({
+		isOpen: false,
+		title: '',
+		message: '',
+		type: 'info',
+	});
 	const [filterOptions, setFilterOptions] = useState({
 		packaging: [],
 		originPort: [],
@@ -137,13 +143,35 @@ export const useAnnouncements = (onClose) => {
 		})
 			.then((response) => response.json())
 			.then(() => {
-				window.alert('Announcements added successfully');
-				onClose?.();
+				setPopup({
+					isOpen: true,
+					title: 'success',
+					message: 'announcementsAddedSuccessfully',
+					type: 'success',
+				});
+				setTimeout(() => {
+					onClose?.();
+				}, 2000);
 			})
 			.catch((error) => {
 				console.error('Error:', error);
+				setPopup({
+					isOpen: true,
+					title: 'error',
+					message: 'errorSendingData',
+					type: 'error',
+				});
 			});
 	});
+
+	const closePopup = () => {
+		setPopup({
+			isOpen: false,
+			title: '',
+			message: '',
+			type: 'info',
+		});
+	};
 
 	return {
 		data,
@@ -153,5 +181,7 @@ export const useAnnouncements = (onClose) => {
 		formControl,
 		submitAnnouncements,
 		filterOptions,
+		popup,
+		closePopup,
 	};
 };

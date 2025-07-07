@@ -5,13 +5,23 @@ import { SelectInput } from './SelectInput';
 import { TextInput } from './TextInput';
 import { FilterContainer } from './FilterContainer';
 import { Pagination } from './Pagination';
+import { Popup } from './Popup';
 import { useAnnouncements } from '../Hooks/useAnnouncements';
 import { usePagination } from '../Hooks/usePagination';
 
 export function Announcements({ onClose }) {
 	const { t } = useTranslation();
-	const { data, filteredData, totals, filterControl, formControl, submitAnnouncements, filterOptions } =
-		useAnnouncements(onClose);
+	const {
+		data,
+		filteredData,
+		totals,
+		filterControl,
+		formControl,
+		submitAnnouncements,
+		filterOptions,
+		popup,
+		closePopup,
+	} = useAnnouncements(onClose);
 
 	const { currentPage, paginatedData, totalItems, goToPage } = usePagination(filteredData, 50);
 
@@ -126,6 +136,13 @@ export function Announcements({ onClose }) {
 					</button>
 				</div>
 			</div>
+			<Popup
+				isOpen={popup.isOpen}
+				onClose={closePopup}
+				title={t(popup.title)}
+				message={t(popup.message)}
+				type={popup.type}
+			/>
 		</div>
 	);
 }

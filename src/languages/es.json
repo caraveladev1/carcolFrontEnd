@@ -4,5 +4,18 @@
 	"close": "Cerrar",
 	"validationError": "Error de Validación",
 	"exportCountryMismatch": "El país de exportación no coincide con el país de origen de los ICOs seleccionados. Por favor verifica y corrige la información antes de continuar.",
-	"cannotProceed": "No se puede proceder con la creación del contenedor"
+	"cannotProceed": "No se puede proceder con la creación del contenedor",
+	"success": "Éxito",
+	"error": "Error",
+	"containerCreatedSuccessfully": "Contenedor creado exitosamente",
+	"errorCreatingContainer": "Error al crear el contenedor. Por favor intenta de nuevo.",
+	"containerUpdatedSuccessfully": "Contenedor actualizado exitosamente",
+	"errorSendingData": "Error al enviar los datos",
+	"containerLoadedUpdateNotice": "El contenedor está cargado, solo puedes actualizar 'Llegada Estimada' y 'Fecha de Exportación'. Por favor completa los campos requeridos",
+	"containerLoadedUpdateSuccess": "Contenedor actualizado exitosamente.\n\nNota: El contenedor está cargado, solo se actualizaron los campos 'Llegada Estimada' y 'Fecha de Exportación'.",
+	"invalidContainerCapacity": "Capacidad de contenedor seleccionada inválida.",
+	"weightExceedsCapacity": "El peso total de los ICOs excede la capacidad del contenedor.",
+	"containerNotLoaded": "El contenedor no está cargado",
+	"containerExportedSuccessfully": "Contenedor marcado como exportado exitosamente",
+	"announcementsAddedSuccessfully": "Anuncios agregados exitosamente"
 }

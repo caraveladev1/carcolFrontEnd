@@ -177,10 +177,24 @@ export const useCreateContainer = () => {
 		if (sumIcosWeight < selectedContainerValue) {
 			try {
 				await containerService.createContainer(payload);
-				window.alert('Container created successfully');
-				navigate('/view-containers');
+				setPopup({
+					isOpen: true,
+					title: 'success',
+					message: 'containerCreatedSuccessfully',
+					type: 'success',
+				});
+				// Navegar después de un pequeño delay para que el usuario vea el mensaje
+				setTimeout(() => {
+					navigate('/view-containers');
+				}, 2000);
 			} catch (error) {
 				console.error('Error:', error);
+				setPopup({
+					isOpen: true,
+					title: 'error',
+					message: 'errorCreatingContainer',
+					type: 'error',
+				});
 			}
 		} else {
 			setPopup({

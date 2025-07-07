@@ -5,12 +5,13 @@ import { TextInput } from './TextInput';
 import { SelectInput } from './SelectInput';
 import { DateInput } from './DateInput';
 import { SubmitButton } from './SubmitButton';
+import { Popup } from './Popup';
 import { useTranslation } from 'react-i18next';
 import { useFiltersEditContainer } from '../Hooks/useFiltersEditContainer';
 
 export function FiltersEditContainer({ filterValues, selectedIcos, oldExportId }) {
 	const { t } = useTranslation();
-	const { control, optionsByFilter, onSubmit, setExported } = useFiltersEditContainer(
+	const { control, optionsByFilter, onSubmit, setExported, popup, closePopup } = useFiltersEditContainer(
 		filterValues,
 		selectedIcos,
 		oldExportId,
@@ -49,23 +50,32 @@ export function FiltersEditContainer({ filterValues, selectedIcos, oldExportId }
 	];
 
 	return (
-		<form onSubmit={onSubmit}>
-			<div className='grid grid-cols-4 gap-4 items-stretch'>
-				{orderedFilters.map((filter, index) => (
-					<div key={index} className='col-span-2 flex items-stretch gap-4'>
-						<LabelGeneric filter={filter} />
-						{getInputComponent(filter)}
-					</div>
-				))}
-				<SubmitButton className='col-span-1' color='celeste' typeButton='submit' buttonText='submit' />
-				<SubmitButton
-					className='col-span-1'
-					color='pink'
-					typeButton='button'
-					buttonText='setExported'
-					onClick={setExported}
-				/>
-			</div>
-		</form>
+		<>
+			<form onSubmit={onSubmit}>
+				<div className='grid grid-cols-4 gap-4 items-stretch'>
+					{orderedFilters.map((filter, index) => (
+						<div key={index} className='col-span-2 flex items-stretch gap-4'>
+							<LabelGeneric filter={filter} />
+							{getInputComponent(filter)}
+						</div>
+					))}
+					<SubmitButton className='col-span-1' color='celeste' typeButton='submit' buttonText='submit' />
+					<SubmitButton
+						className='col-span-1'
+						color='pink'
+						typeButton='button'
+						buttonText='setExported'
+						onClick={setExported}
+					/>
+				</div>
+			</form>
+			<Popup
+				isOpen={popup.isOpen}
+				onClose={closePopup}
+				title={t(popup.title)}
+				message={t(popup.message)}
+				type={popup.type}
+			/>
+		</>
 	);
 }

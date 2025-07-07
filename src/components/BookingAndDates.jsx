@@ -1,6 +1,7 @@
-import React, { memo } from 'react';
+import React, { memo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SubmitButton } from './SubmitButton';
+import { Popup } from './Popup';
 import { labelsBoogkindAndDates } from '../utils/consts';
 import { useBookingForm } from '../Hooks';
 import { bookingService } from '../services';
@@ -15,17 +16,35 @@ export const BookingAndDates = memo(function BookingAndDates({
 }) {
 	const { t } = useTranslation();
 	const { formData, handleChange } = useBookingForm(initialFormData);
+	const [popup, setPopup] = useState({
+		isOpen: false,
+		title: '',
+		message: '',
+		type: 'info',
+	});
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 
 		try {
 			await bookingService.updateBookingAndDates(formData, exportNumber);
-			window.alert('Container updated successfully');
-			window.location.reload();
+			setPopup({
+				isOpen: true,
+				title: 'success',
+				message: 'containerUpdatedSuccessfully',
+				type: 'success',
+			});
+			setTimeout(() => {
+				window.location.reload();
+			}, 2000);
 		} catch (error) {
 			console.error('Error al enviar los datos:', error);
-			window.alert('Error al enviar los datos');
+			setPopup({
+				isOpen: true,
+				title: 'error',
+				message: 'errorSendingData',
+				type: 'error',
+			});
 		}
 	};
 
@@ -34,12 +53,33 @@ export const BookingAndDates = memo(function BookingAndDates({
 			bookingService.validateRelatedData(relatedData);
 			console.log('Datos relacionados:', relatedData);
 			await bookingService.setContainerLoaded(exportNumber);
-			window.alert('Container updated successfully');
-			window.location.reload();
+			setPopup({
+				isOpen: true,
+				title: 'success',
+				message: 'containerUpdatedSuccessfully',
+				type: 'success',
+			});
+			setTimeout(() => {
+				window.location.reload();
+			}, 2000);
 		} catch (error) {
 			console.error('Error al enviar los datos:', error);
-			window.alert(error.message || 'Ocurrió un error al enviar los datos.');
+			setPopup({
+				isOpen: true,
+				title: 'error',
+				message: error.message || 'errorSendingData',
+				type: 'error',
+			});
 		}
+	};
+
+	const closePopup = () => {
+		setPopup({
+			isOpen: false,
+			title: '',
+			message: '',
+			type: 'info',
+		});
 	};
 
 	const today = dateUtils.getCurrentDate();
@@ -112,6 +152,13 @@ export const BookingAndDates = memo(function BookingAndDates({
 					/>
 				</div>
 			</form>
+			<Popup
+				isOpen={popup.isOpen}
+				onClose={closePopup}
+				title={t(popup.title)}
+				message={t(popup.message)}
+				type={popup.type}
+			/>
 		</div>
 	);
 });
