@@ -152,7 +152,7 @@ export const useCreateContainer = () => {
 
 		// Validación: verificar que el país de exportación coincida con el país de origen de los ICOs seleccionados
 		const exportCountry = data.exportCountry;
-		const invalidIcos = selectedData.filter((ico) => ico.origin_iso !== exportCountry);
+		const invalidIcos = selectedData.filter((ico) => ico.exportCountry !== exportCountry);
 
 		if (invalidIcos.length > 0) {
 			setPopup({
@@ -200,7 +200,7 @@ export const useCreateContainer = () => {
 			setPopup({
 				isOpen: true,
 				title: 'validationError',
-				message: 'The total weight of the icos exceeds the capacity of the container.',
+				message: 'weightExceedsCapacity',
 				type: 'error',
 			});
 		}
