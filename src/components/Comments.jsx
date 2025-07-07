@@ -37,6 +37,7 @@ export function Comments({ ico, onClose }) {
 							placeholder={t('typeComment')}
 							className='h-30 bg-transparent text-xl border-2 border-cafe font-itf p-5 w-full text-cafe focus:outline-none focus:border-cafe resize-none overflow-y-auto'
 							as='textarea'
+							caseSensitive={true}
 						/>
 						<button type='submit' className='bg-cafe font-bayard text-2xl text-white p-4 h-30'>
 							{t('submit')}
