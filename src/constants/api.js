@@ -1,6 +1,6 @@
-export const API_BASE_URL = 'https://bckcarcoltest.caravela.coffee/';
+//export const API_BASE_URL = 'https://bckcarcoltest.caravela.coffee/';
 //export const API_BASE_URL = 'https://bckcarcol.caravela.coffee/';
-//export const API_BASE_URL = 'http://localhost:8080/';
+export const API_BASE_URL = 'http://localhost:8080/';
 
 export const API_ENDPOINTS = {
 	PENDING_CONTAINERS: 'api/exports/getPendingContainers',
@@ -13,4 +13,7 @@ export const API_ENDPOINTS = {
 	MS_LOGIN: 'api/microsoft/login',
 	MS_LOGOUT: 'api/microsoft/logout',
 	MS_REDIRECT: 'api/microsoft/redirect',
+	BOOKING_AND_DATES: 'api/exports/addBookingAndDates',
+	SET_LOADED: 'api/exports/setLoaded',
+	VALIDATE_TOKEN: 'api/auth/validate-token',
 };

@@ -1,7 +1,10 @@
-import React, { useState, useEffect, memo } from 'react';
+import React, { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SubmitButton } from './SubmitButton';
-import { labelsBoogkindAndDates, API_BASE_URL } from '../utils/consts';
+import { labelsBoogkindAndDates } from '../utils/consts';
+import { useBookingForm } from '../Hooks';
+import { bookingService } from '../services';
+import { dateUtils } from '../utils';
 
 export const BookingAndDates = memo(function BookingAndDates({
 	exportNumber,
@@ -11,120 +14,35 @@ export const BookingAndDates = memo(function BookingAndDates({
 	relatedData,
 }) {
 	const { t } = useTranslation();
-
-	const [formData, setFormData] = useState({
-		booking: '',
-		dateLandingPort: '',
-		estimatedDelivery: '',
-		estimatedArrival: '',
-		exportId: '',
-		announcement: '',
-		order: '',
-		review: '',
-		salesCode: '',
-		exportDate: '',
-	});
-
-	useEffect(() => {
-		if (initialFormData) {
-			setFormData(initialFormData);
-		}
-	}, [initialFormData]);
-
-	const handleChange = (e) => {
-		const { name, value } = e.target;
-		//console.log(name, value);
-		setFormData((prevData) => ({
-			...prevData,
-			[name]: value,
-		}));
-	};
+	const { formData, handleChange } = useBookingForm(initialFormData);
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		//console.log({ ...formData, exportNumber });
 
 		try {
-			const response = await fetch(`${API_BASE_URL}api/exports/addBookingAndDates`, {
-				method: 'PUT',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({ ...formData, exportNumber }),
-			});
-
-			if (!response.ok) {
-				window.alert('Error al enviar los datos');
-			}
-
+			await bookingService.updateBookingAndDates(formData, exportNumber);
 			window.alert('Container updated successfully');
 			window.location.reload();
 		} catch (error) {
 			console.error('Error al enviar los datos:', error);
+			window.alert('Error al enviar los datos');
 		}
 	};
-	async function setLoaded() {
-		if (!relatedData || relatedData.length === 0) {
-			window.alert('No hay datos relacionados para validar.');
-			return;
-		}
 
-		console.log('Datos relacionados:', relatedData);
-
-		const invalidEntries = relatedData.filter((item) => {
-			if (
-				item.contract_atlas.customerCuppingState === 'Not Sent' ||
-				item.contract_atlas.customerCuppingState === 'Sent' ||
-				item.contract_atlas.customerCuppingState === 'Rejected' ||
-				item.contract_atlas.milling_state !== 'closed'
-			) {
-				return true;
-			}
-
-			if (item.contract_atlas.price_type !== 'fixed' && item.contract_atlas.fixed_price_status !== 'fixed') {
-				return true;
-			}
-
-			return false;
-		});
-
-		if (invalidEntries.length > 0) {
-			window.alert(
-				'The sample, fixation or milling state are not valid for loading the container. Please check the data before proceeding.',
-			);
-			console.warn('Datos no válidos:', invalidEntries);
-			return;
-		}
-
+	const setLoaded = async () => {
 		try {
-			const response = await fetch(`${API_BASE_URL}api/exports/setLoaded`, {
-				method: 'PUT',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({ setLoaded: '1', exportNumber }),
-			});
-
-			if (!response.ok) {
-				window.alert('Error al enviar los datos');
-			} else {
-				window.alert('Container updated successfully');
-				window.location.reload();
-			}
+			bookingService.validateRelatedData(relatedData);
+			console.log('Datos relacionados:', relatedData);
+			await bookingService.setContainerLoaded(exportNumber);
+			window.alert('Container updated successfully');
+			window.location.reload();
 		} catch (error) {
 			console.error('Error al enviar los datos:', error);
-			window.alert('Ocurrió un error al enviar los datos.');
+			window.alert(error.message || 'Ocurrió un error al enviar los datos.');
 		}
-	}
-
-	const getCurrentDate = () => {
-		const today = new Date();
-		const year = today.getFullYear();
-		const month = String(today.getMonth() + 1).padStart(2, '0');
-		const day = String(today.getDate()).padStart(2, '0');
-		return `${year}-${month}-${day}`;
 	};
-	const today = getCurrentDate();
+
+	const today = dateUtils.getCurrentDate();
 	return (
 		<div className='flex items-center justify-center w-full bg-beige'>
 			<form onSubmit={handleSubmit} className='grid grid-cols-4 gap-4 p-4'>
