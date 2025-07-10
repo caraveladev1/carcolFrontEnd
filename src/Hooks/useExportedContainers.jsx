@@ -10,6 +10,7 @@ export const useExportedContainers = () => {
 	const [selectedExpId, setSelectedExpId] = useState(null);
 	const [countryOptions, setCountryOptions] = useState([]);
 	const [portOptions, setPortOptions] = useState([]);
+	const [weightsTooltipVisible, setWeightsTooltipVisible] = useState({});
 	const [currentPage, setCurrentPage] = useState(1);
 	const itemsPerPage = 10;
 
@@ -100,6 +101,72 @@ export const useExportedContainers = () => {
 		setCurrentPage(1);
 	};
 
+	// Calculate weights data for tooltip
+	const calculateWeightsData = (containerData) => {
+		const packagingBreakdown = {};
+		let totalWeight = 0;
+		let totalPendingWeightsToMill = 0;
+		let weightsInProgress = 0;
+		let weightsFinished = 0;
+
+		containerData.forEach((item) => {
+			const weight = parseFloat(item.weight) || 0;
+			const units = parseFloat(item.units) || 0;
+			const packaging = item.packaging || 'Unknown';
+			const millingState = item.milling_state || '';
+			
+			totalWeight += weight;
+			
+			// Sum units by packaging instead of weight
+			if (!packagingBreakdown[packaging]) {
+				packagingBreakdown[packaging] = 0;
+			}
+			packagingBreakdown[packaging] += units;
+
+			// Calculate weights by milling state
+			if (millingState !== 'initialized' && millingState !== 'closed' && millingState !== 'approved_qa') {
+				totalPendingWeightsToMill += weight;
+			}
+			if (millingState === 'initialized' || millingState === 'approved_qa') {
+				weightsInProgress += weight;
+			}
+			if (millingState === 'closed') {
+				weightsFinished += weight;
+			}
+		});
+
+		// Convert to array format for display (now showing units)
+		const packagingArray = Object.entries(packagingBreakdown).map(([packaging, units]) => ({
+			packaging,
+			units: units.toFixed(0) // Show units as whole numbers
+		}));
+
+		// Calculate 69kg bags (rounded down)
+		const totalBags = Math.floor(totalWeight / 69);
+		
+		// Calculate 60kg bags (rounded down)
+		const total60kgBags = Math.floor(totalWeight / 60);
+
+		return {
+			packagingBreakdown: packagingArray,
+			totalBags,
+			total60kgBags,
+			totalWeight: totalWeight.toFixed(2),
+			totalPendingWeightsToMill: totalPendingWeightsToMill.toFixed(2),
+			weightsInProgress: weightsInProgress.toFixed(2),
+			weightsFinished: weightsFinished.toFixed(2)
+		};
+	};
+
+	// Handle tooltip visibility
+	const showWeightsTooltip = (expId) => {
+		setWeightsTooltipVisible(prev => ({ ...prev, [expId]: true }));
+	};
+
+	const hideWeightsTooltip = (expId) => {
+		setWeightsTooltipVisible(prev => ({ ...prev, [expId]: false }));
+	};
+
 	return {
 		organizedData,
 		loading,
@@ -117,5 +184,9 @@ export const useExportedContainers = () => {
 		goToPage,
 		itemsPerPage,
 		resetFilters,
+		weightsTooltipVisible,
+		calculateWeightsData,
+		showWeightsTooltip,
+		hideWeightsTooltip,
 	};
 };

@@ -14,6 +14,7 @@ import { Pagination } from '../components/Pagination';
 import commentsButton from '../assets/img/commentsButton.webp';
 import { Comments } from '../components/Comments';
 import { Announcements } from '../components/Announcements';
+import { WeightsTooltip } from '../components/WeightsTooltip';
 import { useRole } from '../Hooks/RoleContext.js';
 import { useViewContainers } from '../Hooks';
 
@@ -44,6 +45,10 @@ export function ViewContainers() {
 		goToPage,
 		itemsPerPage,
 		resetFilters,
+		weightsTooltipVisible,
+		calculateWeightsData,
+		showWeightsTooltip,
+		hideWeightsTooltip,
 	} = useViewContainers();
 	if (loading) {
 		return <Loader />;
@@ -89,6 +94,8 @@ export function ViewContainers() {
 						return sum + weight;
 					}, 0);
 
+					const weightsData = calculateWeightsData(dataWithButtons);
+
 					return (
 						<div key={exp_id} className='my-4 gap-6'>
 							<div className='titleContainer flex flex-row justify-between gap-10 items-center'>
@@ -100,10 +107,24 @@ export function ViewContainers() {
 										</Link>
 									)}
 								</div>
-								<div className='containerData flex flex-row gap-4'>
-									<p className='text-lg font-bold text-pink font-itf uppercase'>{`Total Weight (kg): ${totalWeight || 'No available'}`}</p>
+								<div className='containerData flex flex-row gap-4 items-center'>
+								
 									<p className='text-lg font-bold text-pink font-itf uppercase'>{`Booking: ${dataWithButtons[0]?.booking || 'No available'}`}</p>
 									<p className='text-lg font-bold text-celeste font-itf uppercase'>{`Loading to Port: ${dataWithButtons[0]?.date_landing || 'No available'}`}</p>
+									<div 
+										className='relative'
+										onMouseEnter={() => showWeightsTooltip(exp_id)}
+										onMouseLeave={() => hideWeightsTooltip(exp_id)}
+									>
+										<button className='text-lg font-bold text-cafe font-itf uppercase cursor-pointer hover:text-pink-400 transition-colors duration-200 bg-beige px-2 py-1'>
+											{t('weightDetails')}
+										</button>
+										<WeightsTooltip 
+											isVisible={weightsTooltipVisible[exp_id] || false}
+											weightsData={weightsData}
+											position="top"
+										/>
+									</div>
 								</div>
 							</div>
 							<div className='my-4'>

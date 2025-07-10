@@ -23,3 +23,4 @@ export { BookingAndDates } from './BookingAndDates';
 export { IcoSelectionTable } from './IcoSelectionTable';
 export { Filter } from './Filter';
 export { Popup } from './Popup';
+export { WeightsTooltip } from './WeightsTooltip';

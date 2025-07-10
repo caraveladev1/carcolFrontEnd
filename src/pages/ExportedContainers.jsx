@@ -9,6 +9,7 @@ import { DateInput } from '../components/DateInput';
 import { SelectInput } from '../components/SelectInput';
 import { FilterContainer } from '../components/FilterContainer';
 import { Pagination } from '../components/Pagination';
+import { WeightsTooltip } from '../components/WeightsTooltip';
 import { useExportedContainers } from '../Hooks';
 
 export function ExportedContainers() {
@@ -30,6 +31,10 @@ export function ExportedContainers() {
 		goToPage,
 		itemsPerPage,
 		resetFilters,
+		weightsTooltipVisible,
+		calculateWeightsData,
+		showWeightsTooltip,
+		hideWeightsTooltip,
 	} = useExportedContainers();
 
 	if (loading) {
@@ -57,24 +62,52 @@ export function ExportedContainers() {
 					</button>
 				</FilterContainer>
 
-				{paginatedData.map(([exp_id, containerData]) => (
-					<div key={exp_id} className='my-4'>
-						<div className='titleContainer flex flex-row justify-between items-center'>
-							<h2 className='text-2xl font-bold text-white mb-4 font-itf uppercase'>{exp_id}</h2>
-							<button
-								className='text-2xl font-bold text-white mb-4 font-itf uppercase'
-								onClick={() => handleViewDetails(exp_id)}
-							>
-								{t('viewDetails')}
-							</button>
+				{paginatedData.map(([exp_id, containerData]) => {
+					const totalWeight = containerData.reduce((sum, item) => {
+						const weight = parseFloat(item.weight) || 0;
+						return sum + weight;
+					}, 0);
+
+					const weightsData = calculateWeightsData(containerData);
+
+					return (
+						<div key={exp_id} className='my-4'>
+							<div className='titleContainer flex flex-row justify-between items-center'>
+								<div className='flex flex-row justify-between items-center gap-6'>
+									<h2 className='text-2xl font-bold text-white mb-4 font-itf uppercase'>{exp_id}</h2>
+								</div>
+								<div className='containerData flex flex-row gap-4'>
+									
+									<button
+										className='text-lg font-bold text-cafe font-itf uppercase hover:text-celeste-400 transition-colors duration-200 bg-beige px-2 py-1'
+										onClick={() => handleViewDetails(exp_id)}
+									>
+										{t('viewDetails')}
+									</button>
+									<div 
+										className='relative'
+										onMouseEnter={() => showWeightsTooltip(exp_id)}
+										onMouseLeave={() => hideWeightsTooltip(exp_id)}
+									>
+										<button className='text-lg font-bold text-cafe font-itf uppercase cursor-pointer hover:text-pink-400 transition-colors duration-200 bg-beige px-2 py-1'>
+										{t('weightDetails')}
+										</button>
+										<WeightsTooltip 
+											isVisible={weightsTooltipVisible[exp_id] || false}
+											weightsData={weightsData}
+											position="top"
+										/>
+									</div>
+								</div>
+							</div>
+							<TableGeneric
+								headersTable={TABLE_HEADERS.EXPORTED}
+								dataTable={containerData}
+								renderRowContent={(row) => row}
+							/>
 						</div>
-						<TableGeneric
-							headersTable={TABLE_HEADERS.EXPORTED}
-							dataTable={containerData}
-							renderRowContent={(row) => row}
-						/>
-					</div>
-				))}
+					);
+				})}
 
 				<Pagination
 					currentPage={currentPage}

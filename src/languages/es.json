@@ -18,5 +18,12 @@
 	"weightExceedsCapacity": "El peso total de los ICOs excede la capacidad del contenedor.",
 	"containerNotLoaded": "El contenedor no está cargado",
 	"containerExportedSuccessfully": "Contenedor marcado como exportado exitosamente",
-	"announcementsAddedSuccessfully": "Anuncios agregados exitosamente"
+	"announcementsAddedSuccessfully": "Anuncios agregados exitosamente",
+	"weightDetails": "Detalles del Peso",
+  "kg": "kg",
+  "totalWeight60kgBags": "Peso Total (sacos de 60kg)",
+  "totalWeight": "Peso Total",
+  "totalPendingWeightsToMill": "Peso Total Pendiente al Molino",
+  "weightsInProgress": "Pesos en Progreso",
+  "weightsFinished": "Pesos Terminados"
 }
