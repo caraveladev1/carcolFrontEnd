@@ -11,30 +11,30 @@ export function Banner() {
 	const { logout } = useAuth();
 	return (
 		<section className='bannerSection w-full m-auto '>
-			<div className='flex flex-row items-center justify-between py-2 gap-6 font-bayard'>
+			<div className='flex flex-row items-center justify-between py-2 gap-6 font-itf'>
 				<div>
 					<img className='cursor-pointer max-w-[50%]' src={logoCaravela} alt='Logo de caravela' />
 				</div>
-				<div className='flex gap-6'>
+				<div className='flex gap-6 items-center'>
 					{/* Mostrar todos los botones si el rol es "1" */}
 					{role === 'Admin' ? (
 						<>
 							<Link to='/pending-task'>
-								<button className='cursor-pointer text-3xl text-celeste uppercase'>{t('pendingTasks')}</button>
+								<button className='cursor-pointer text-2xl text-celeste uppercase font-bold'>{t('pendingTasks')}</button>
 							</Link>
 							<Link to='/create'>
-								<button className='cursor-pointer text-3xl text-pink uppercase'>{t('createContainers')}</button>
+								<button className='cursor-pointer text-2xl text-pink uppercase font-bold'>{t('createContainers')}</button>
 							</Link>
 						</>
 					) : null}
 					{/* Mostrar siempre estos botones, tanto para "1" como para "2" */}
 					<Link to='/view-containers'>
-						<button className='cursor-pointer text-3xl text-yellow uppercase'>{t('viewContainers')}</button>
+						<button className='cursor-pointer text-2xl text-yellow uppercase font-bold'>{t('viewContainers')}</button>
 					</Link>
 					<Link to='/exported-containers'>
-						<button className='cursor-pointer text-3xl text-beige uppercase'>{t('exportedContainers')}</button>
+						<button className='cursor-pointer text-2xl text-beige uppercase font-bold'>{t('exportedContainers')}</button>
 					</Link>
-					<button className='bg-beige px-4 text-3xl uppercase text-cafe cursor-pointer font-bayard' onClick={logout}>
+					<button className='bg-beige px-4 py-1 text-2xl uppercase text-cafe cursor-pointer font-itf font-bold' onClick={logout}>
 						{t('logout')}
 					</button>
 				</div>

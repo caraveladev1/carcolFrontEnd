@@ -40,7 +40,7 @@ export function ExportedContainers() {
 		<div className='bg-dark-background bg-cover bg-fixed min-h-screen'>
 			<section className='homeContainer max-w-[90%] m-auto pb-5'>
 				<Banner />
-				<h1 className='text-5xl font-bold my-8 uppercase text-beige font-bayard'>{t('exportedContainers')}</h1>
+				<h1 className='text-3xl font-bold my-8 uppercase text-beige font-itf'>{t('exportedContainers')}</h1>
 
 				{/* Filtros */}
 				<FilterContainer columns={5}>
@@ -51,7 +51,7 @@ export function ExportedContainers() {
 					<button
 						type='button'
 						onClick={resetFilters}
-						className='bg-naranja hover:bg-red-600 text-white font-bayard text-xl uppercase p-4 w-full h-full min-h-[60px] transition-colors duration-200'
+						className='bg-naranja hover:bg-red-600 text-white font-itf text-lg uppercase p-4 w-full h-full min-h-[60px] transition-colors duration-200'
 					>
 						{t('resetFilters')}
 					</button>
@@ -60,9 +60,9 @@ export function ExportedContainers() {
 				{paginatedData.map(([exp_id, containerData]) => (
 					<div key={exp_id} className='my-4'>
 						<div className='titleContainer flex flex-row justify-between items-center'>
-							<h2 className='text-3xl font-bold text-white mb-4 font-bayard uppercase'>{exp_id}</h2>
+							<h2 className='text-2xl font-bold text-white mb-4 font-itf uppercase'>{exp_id}</h2>
 							<button
-								className='text-3xl font-bold text-white mb-4 font-bayard uppercase'
+								className='text-2xl font-bold text-white mb-4 font-itf uppercase'
 								onClick={() => handleViewDetails(exp_id)}
 							>
 								{t('viewDetails')}

@@ -37,8 +37,8 @@ export const EditContainer = () => {
 		<div className='bg-dark-background bg-cover bg-fixed min-h-screen'>
 			<section className='max-w-[90%] m-auto'>
 				<Banner />
-				<h1 className='text-5xl font-bold uppercase text-pink font-bayard mb-6'>{t('editContainer')}</h1>
-				<h2 className='text-5xl font-bold uppercase text-pink font-bayard mb-6'>{t('filters')}</h2>
+				<h1 className='text-3xl font-bold uppercase text-pink font-itf mb-6'>{t('editContainer')}</h1>
+				<h2 className='text-3xl font-bold uppercase text-pink font-itf mb-6'>{t('filters')}</h2>
 				<FilterContainer columns={5}>
 					<SelectInput
 						name='destinationPort'
@@ -59,12 +59,12 @@ export const EditContainer = () => {
 					<button
 						type='button'
 						onClick={resetFilters}
-						className='bg-naranja hover:bg-red-600 text-white font-bayard text-xl uppercase p-4 w-full h-full min-h-[60px] transition-colors duration-200'
+						className='bg-naranja hover:bg-red-600 text-white font-itf text-lg uppercase p-4 w-full h-full min-h-[60px] transition-colors duration-200'
 					>
 						{t('resetFilters')}
 					</button>
 				</FilterContainer>
-				<h2 className='text-5xl font-bold uppercase text-pink font-bayard mb-6'>{t('containerData')}</h2>
+				<h2 className='text-3xl font-bold uppercase text-pink font-itf mb-6'>{t('containerData')}</h2>
 				<FiltersEditContainer filterValues={state.filtersData} selectedIcos={state.selectedIcos} oldExportId={id} />
 				<TableGeneric headersTable={TABLE_HEADERS.EDIT_CONTAINER} dataTable={paginatedData} />
 				<Pagination currentPage={currentPage} totalItems={totalItems} itemsPerPage={100} onPageChange={goToPage} />

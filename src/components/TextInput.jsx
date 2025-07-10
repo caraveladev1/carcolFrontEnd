@@ -26,7 +26,7 @@ export function TextInput({
 
 	const textTransformClass = caseSensitive ? '' : 'uppercase';
 	const baseClassName =
-		`bg-transparent font-bayard text-xl ${textTransformClass} border-2 border-pink p-4 w-full h-full min-h-[60px] text-pink focus:outline-none focus:border-2 focus:border-pink ${className}`.trim();
+		`bg-transparent font-itf text-lg ${textTransformClass} border-2 border-pink p-4 w-full h-full min-h-[60px] text-pink focus:outline-none focus:border-2 focus:border-pink ${className}`.trim();
 
 	const Component = as;
 

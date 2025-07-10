@@ -8,7 +8,7 @@ export function TableGeneric({ headersTable, dataTable }) {
 		<div className='overflow-x-auto mt-6 pb-6'>
 			<table className='min-w-full border-[2px] border-cafe' style={{ width: `${headersTable.length * 200}px` }}>
 				<thead>
-					<tr className='bg-beige font-bayard text-2xl border-[2px] border-cafe h-[3rem]'>
+					<tr className='bg-beige uppercase font-itf text-lg border-[2px] border-cafe h-[3rem]'>
 						{headersTable.map((header, index) => (
 							<th className='w-[4rem] h-[3rem] text-center text-verdeTexto border-[2px] border-cafe' key={index}>
 								{t(header)}

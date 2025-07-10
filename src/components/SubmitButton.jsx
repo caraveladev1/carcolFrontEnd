@@ -22,7 +22,7 @@ export function SubmitButton({ color, typeButton, className, onClick, buttonText
 			type={typeButton}
 			onClick={onClick}
 			disabled={isDisabled}
-			className={`${buttonColorClasses} font-bayard text-2xl p-4 h-full flex items-center justify-center gap-2 ${className || ''} ${
+			className={`${buttonColorClasses} font-itf text-lg uppercase p-4 h-full flex items-center justify-center gap-2 ${className || ''} ${
 				isDisabled ? 'opacity-50 cursor-not-allowed' : ''
 			}`}
 		>

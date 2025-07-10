@@ -48,15 +48,15 @@ export function ViewDetails({ onClose, exp_id }) {
 		<div className='announcementContainer fixed inset-0 bg-black/50 flex justify-center items-center'>
 			<div className='popup w-[80%] overflow-auto max-h-[70%] bg-beige pt-12 px-4 relative'>
 				<button className='absolute top-0 right-0 bg-red-500 text-white p-1' onClick={onClose}>
-					<p className='font-bayard text-2xl px-4'>Close</p>
+					<p className='font-itf text-lg px-4'>Close</p>
 				</button>
 				<div>
-					<h2 className='text-xl font-bold mb-4'>Details to: {exp_id}</h2>
+					<h2 className='text-lg font-bold mb-4 font-itf'>Details to: {exp_id}</h2>
 				</div>
 				<div className='details-container'>
 					{data ? (
 						Object.entries(showData).map(([key, value]) => (
-							<div key={key} className='detail-item my-2'>
+							<div key={key} className='detail-item my-2 font-itf'>
 								<strong className='capitalize'>{key.replace('_', ' ')}:</strong> {value}
 							</div>
 						))

@@ -73,10 +73,10 @@ export function Announcements({ onClose }) {
 					className='absolute top-4 right-4 bg-red-500 hover:bg-red-600 text-beige p-1 transition-colors duration-200'
 					onClick={onClose}
 				>
-					<span className='font-bayard text-2xl py-2 px-2'>Close</span>
+					<span className='font-itf text-lg py-2 px-2'>Close</span>
 				</button>
 
-				<h1 className='text-4xl font-bold uppercase text-pink font-bayard mb-6'>{t('addAnnouncements')}</h1>
+				<h1 className='text-3xl font-bold uppercase text-pink font-itf mb-6'>{t('addAnnouncements')}</h1>
 
 				<FilterContainer columns={7}>
 					<DateInput name='startDate' control={filterControl} />
@@ -112,7 +112,7 @@ export function Announcements({ onClose }) {
 					<button
 						type='button'
 						onClick={() => resetFilters()}
-						className='bg-naranja hover:bg-red-600 text-beige font-bayard text-xl uppercase p-4 w-full h-full min-h-[60px] transition-colors duration-200'
+						className='bg-naranja hover:bg-red-600 text-beige font-itf text-lg uppercase p-4 w-full h-full min-h-[60px] transition-colors duration-200'
 					>
 						{t('resetFilters')}
 					</button>
@@ -121,12 +121,12 @@ export function Announcements({ onClose }) {
 				{/* Totals Section */}
 				<div className='my-6'>
 					<div className='titleContainer flex flex-row justify-between gap-10 items-center'>
-						<h2 className='text-3xl font-bold text-beige font-bayard uppercase'>ANNOUNCEMENTS DATA</h2>
+						<h2 className='text-3xl font-bold text-beige font-itf uppercase'>ANNOUNCEMENTS DATA</h2>
 						<div className='containerData flex flex-row gap-4'>
-							<p className='text-2xl font-bold text-pink font-bayard uppercase'>
+							<p className='text-lg font-bold text-pink font-itf uppercase'>
 								{`Total Estimated KG: ${totals.filteredEstimatedKg || 'No available'}`}
 							</p>
-							<p className='text-2xl font-bold text-celeste font-bayard uppercase'>
+							<p className='text-lg font-bold text-celeste font-itf uppercase'>
 								{`Total Units: ${totals.filteredUnits || 'No available'}`}
 							</p>
 						</div>

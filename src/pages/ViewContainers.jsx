@@ -53,9 +53,9 @@ export function ViewContainers() {
 		<div className='bg-dark-background bg-cover bg-fixed min-h-screen'>
 			<section className='homeContainer max-w-[90%] m-auto pb-5'>
 				<Banner />
-				<h1 className='text-5xl font-bold my-8 uppercase text-yellow font-bayard'>{t('viewContainers')}</h1>
+				<h1 className='text-3xl font-bold my-8 uppercase text-yellow font-itf'>{t('viewContainers')}</h1>
 
-				<FilterContainer columns={8}>
+				<FilterContainer columns={9}>
 					<DateInput name='initialDate' control={control} />
 					<DateInput name='finalDate' control={control} />
 					<SelectInput name='office' control={control} options={officeOptions} isMulti={true} />
@@ -63,22 +63,21 @@ export function ViewContainers() {
 					<SelectInput name='contract' control={control} options={contractOptions} isMulti={true} />
 					<SelectInput name='destination' control={control} options={destinationOptions} isMulti={true} />
 					<TextInput name='ico' control={control} placeholder={t('ico_id')} />
-					{role === 'Admin' ? (
+					<button
+						type='button'
+						onClick={resetFilters}
+						className='bg-naranja hover:bg-red-600 text-white font-itf text-lg uppercase p-4 w-full h-full min-h-[60px] transition-colors duration-200'
+					>
+						{t('resetFilters')}
+					</button>
+					{role === 'Admin' && (
 						<button
-							className='bg-pink font-bayard text-xl uppercase border-2 border-pink p-4 w-full h-full min-h-[60px] text-white focus:outline-none focus:border-2 focus:border-pink text-start'
+							className='bg-pink font-itf text-lg uppercase border-2 border-pink p-4 w-full h-full min-h-[60px] text-white focus:outline-none focus:border-2 focus:border-pink text-start'
 							type='button'
 							value='Manage Announcements'
 							onClick={() => setIsAnnouncementsOpen(true)}
 						>
 							Edit Announcements
-						</button>
-					) : (
-						<button
-							type='button'
-							onClick={resetFilters}
-							className='bg-naranja hover:bg-red-600 text-white font-bayard text-xl uppercase p-4 w-full h-full min-h-[60px] transition-colors duration-200'
-						>
-							{t('resetFilters')}
 						</button>
 					)}
 				</FilterContainer>
@@ -94,7 +93,7 @@ export function ViewContainers() {
 						<div key={exp_id} className='my-4 gap-6'>
 							<div className='titleContainer flex flex-row justify-between gap-10 items-center'>
 								<div className='flex flex-row justify-between items-center gap-6'>
-									<h2 className='text-3xl font-bold text-white font-bayard uppercase'>{exp_id}</h2>
+									<h2 className='text-2xl font-bold text-white font-itf uppercase'>{exp_id}</h2>
 									{role === 'Admin' && (
 										<Link to={`/edit-container/${dataWithButtons[0].container_id}`}>
 											<img className='max-w-[50%]' src={editContainer} alt='Edit Container' />
@@ -102,9 +101,9 @@ export function ViewContainers() {
 									)}
 								</div>
 								<div className='containerData flex flex-row gap-4'>
-									<p className='text-xl font-bold text-pink font-bayard uppercase'>{`Total Weight (kg): ${totalWeight || 'No available'}`}</p>
-									<p className='text-xl font-bold text-pink font-bayard uppercase'>{`Booking: ${dataWithButtons[0]?.booking || 'No available'}`}</p>
-									<p className='text-xl font-bold text-celeste font-bayard uppercase'>{`Loading to Port: ${dataWithButtons[0]?.date_landing || 'No available'}`}</p>
+									<p className='text-lg font-bold text-pink font-itf uppercase'>{`Total Weight (kg): ${totalWeight || 'No available'}`}</p>
+									<p className='text-lg font-bold text-pink font-itf uppercase'>{`Booking: ${dataWithButtons[0]?.booking || 'No available'}`}</p>
+									<p className='text-lg font-bold text-celeste font-itf uppercase'>{`Loading to Port: ${dataWithButtons[0]?.date_landing || 'No available'}`}</p>
 								</div>
 							</div>
 							<div className='my-4'>

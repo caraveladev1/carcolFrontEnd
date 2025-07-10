@@ -11,17 +11,17 @@ export function Comments({ ico, onClose }) {
 		<div className='commentsContainer fixed inset-0 bg-black/50 flex justify-center items-center'>
 			<div className='popup w-[40%] bg-beige p-4 relative max-h-[50%] overflow-y-auto overflow-x-hidden'>
 				<button
-					className='absolute top-0 right-0 bg-red-500 font-bayard text-white text-xl px-4 py-3'
+					className='absolute top-0 right-0 bg-red-500 font-itf text-white text-lg px-4 py-3'
 					onClick={onClose}
 				>
 					Close
 				</button>
 				<div className='max-w-[50%]'>
-					<h1 className='text-2xl font-itf text-cafe mt-4'>{ico}</h1>
+					<h1 className='text-lg font-itf text-cafe mt-4'>{ico}</h1>
 				</div>
 				<ul className='mt-6'>
 					{comments.map((comment, index) => (
-						<li className='text-xl font-itf text-cafe border-cafe border-t-2 p-4 break-words' key={index}>
+						<li className='text-lg font-itf text-cafe border-cafe border-t-2 p-4 break-words' key={index}>
 							<p>{comment.comentario}</p>
 							<small className='block text-sm text-gray font-itf'>
 								{comment.user} – {comment.date}
@@ -35,11 +35,11 @@ export function Comments({ ico, onClose }) {
 							name='comment'
 							control={control}
 							placeholder={t('typeComment')}
-							className='h-30 bg-transparent text-xl border-2 border-cafe font-itf p-5 w-full text-cafe focus:outline-none focus:border-cafe resize-none overflow-y-auto'
+							className='h-30 bg-transparent text-lg border-2 border-cafe font-itf p-5 w-full text-cafe focus:outline-none focus:border-cafe resize-none overflow-y-auto'
 							as='textarea'
 							caseSensitive={true}
 						/>
-						<button type='submit' className='bg-cafe font-bayard text-2xl text-white p-4 h-30'>
+						<button type='submit' className='bg-cafe font-itf text-lg text-white p-4 h-30'>
 							{t('submit')}
 						</button>
 					</div>

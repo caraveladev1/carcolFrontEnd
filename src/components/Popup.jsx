@@ -79,7 +79,7 @@ export function Popup({ isOpen, onClose, title, message, type = 'info' }) {
 						)}
 					</div>
 					<div className='ml-3 w-0 flex-1'>
-						{title && <h3 className='text-xl font-itf font-medium text-cafe mb-2'>{title}</h3>}
+						{title && <h3 className='text-lg font-itf font-medium text-cafe mb-2'>{title}</h3>}
 						<p className='text-lg text-cafe font-itf'>{message}</p>
 					</div>
 				</div>

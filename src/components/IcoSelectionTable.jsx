@@ -19,10 +19,10 @@ export function IcoSelectionTable({ headersTable, dataTable, onAddIco = (icoId) 
 
 	return (
 		<div>
-			<h2 className='text-4xl font-bold text-beige mb-4 font-bayard uppercase'>ICO Selection</h2>
+			<h2 className='text-3xl font-bold text-beige mb-4 font-itf uppercase'>ICO Selection</h2>
 			<table className='w-full table-fixed'>
 				<thead>
-					<tr className='bg-beige font-bayard text-2xl'>
+					<tr className='bg-beige font-itf text-lg'>
 						{headersTable.map((header, index) => (
 							<th className={`w-1/${headersTable.length} text-center text-verdeTexto`} key={index}>
 								{t(header)}

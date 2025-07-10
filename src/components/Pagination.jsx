@@ -34,14 +34,14 @@ export function Pagination({ currentPage, totalItems, itemsPerPage = 100, onPage
 			<button
 				onClick={() => onPageChange(1)}
 				disabled={currentPage === 1}
-				className='w-10 h-10 bg-pink text-cafe font-bayard disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center'
+				className='w-10 h-10 bg-pink text-cafe font-itf disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center'
 			>
 				«
 			</button>
 			<button
 				onClick={() => onPageChange(currentPage - 1)}
 				disabled={currentPage === 1}
-				className='w-10 h-10 bg-pink text-cafe font-bayard disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center'
+				className='w-10 h-10 bg-pink text-cafe font-itf disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center'
 			>
 				‹
 			</button>
@@ -50,7 +50,7 @@ export function Pagination({ currentPage, totalItems, itemsPerPage = 100, onPage
 				<button
 					key={page}
 					onClick={() => onPageChange(page)}
-					className={`w-10 h-10 font-bayard flex items-center justify-center ${
+					className={`w-10 h-10 font-itf flex items-center justify-center ${
 						page === currentPage
 							? 'bg-pink text-cafe'
 							: 'bg-transparent border-2 border-pink text-pink hover:bg-pink hover:text-cafe'
@@ -63,14 +63,14 @@ export function Pagination({ currentPage, totalItems, itemsPerPage = 100, onPage
 			<button
 				onClick={() => onPageChange(currentPage + 1)}
 				disabled={currentPage === totalPages}
-				className='w-10 h-10 bg-pink text-cafe font-bayard disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center'
+				className='w-10 h-10 bg-pink text-cafe font-itf disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center'
 			>
 				›
 			</button>
 			<button
 				onClick={() => onPageChange(totalPages)}
 				disabled={currentPage === totalPages}
-				className='w-10 h-10 bg-pink text-cafe font-bayard disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center'
+				className='w-10 h-10 bg-pink text-cafe font-itf disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center'
 			>
 				»
 			</button>

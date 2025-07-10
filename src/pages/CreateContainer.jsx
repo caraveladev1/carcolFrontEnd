@@ -41,7 +41,7 @@ export function CreateContainer() {
 		<div className='bg-dark-background bg-cover bg-fixed min-h-screen'>
 			<section className='max-w-[90%] m-auto'>
 				<Banner />
-				<h1 className='text-5xl font-bold uppercase text-pink font-bayard'>{t('createContainer')}</h1>
+				<h1 className='text-3xl font-bold uppercase text-pink font-itf mb-4'>{t('createContainer')}</h1>
 				<form onSubmit={handleSubmit}>
 					<FilterContainer columns={4}>
 						{FILTER_NAMES.CREATE_CONTAINER.map((filter) => {
@@ -94,7 +94,7 @@ export function CreateContainer() {
 						<button
 							type='button'
 							onClick={resetFilters}
-							className='bg-naranja hover:bg-red-600 text-white font-bayard text-xl uppercase p-4 col-span-2 transition-colors duration-200'
+							className='bg-naranja hover:bg-red-600 text-white font-itf text-lg uppercase p-4 col-span-2 transition-colors duration-200'
 						>
 							{t('resetFilters')}
 						</button>

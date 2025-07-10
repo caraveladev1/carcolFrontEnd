@@ -13,7 +13,7 @@ export function LoginMS() {
 			<div className='flex flex-col justify-center m-auto items-center gap-4'>
 				<img className='max-w-[15%]' src={caravela_logo} alt='Caravela Logo' />
 				<button
-					className='p-4 border-2 text-2xl font-[itf] text-naranja font-bold uppercase flex flex-row justify-center m-auto items-center gap-4 cursor-pointer'
+					className='p-4 border-2 text-lg font-[itf] text-naranja font-bold uppercase flex flex-row justify-center m-auto items-center gap-4 cursor-pointer'
 					onClick={login}
 				>
 					<img src={ms_icon} alt='ms icon' />

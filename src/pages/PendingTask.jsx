@@ -39,7 +39,7 @@ export function PendingTask() {
 		<div className='bg-dark-background bg-cover bg-fixed min-h-screen'>
 			<section className='homeContainer max-w-[90%] m-auto pb-5'>
 				<Banner />
-				<h1 className='text-5xl font-bold my-8 uppercase text-celeste font-bayard'>{t('pendingTasks')}</h1>
+				<h1 className='text-3xl font-bold my-8 uppercase text-celeste font-itf'>{t('pendingTasks')}</h1>
 
 				<FilterContainer columns={5}>
 					<DateInput name='initialDate' control={control} />
@@ -49,7 +49,7 @@ export function PendingTask() {
 					<button
 						type='button'
 						onClick={resetFilters}
-						className='bg-naranja hover:bg-red-600 text-white font-bayard text-xl uppercase p-4 w-full h-full min-h-[60px] transition-colors duration-200'
+						className='bg-naranja hover:bg-red-600 text-white font-itf text-lg uppercase p-4 w-full h-full min-h-[60px] transition-colors duration-200'
 					>
 						{t('resetFilters')}
 					</button>
@@ -58,9 +58,9 @@ export function PendingTask() {
 				{paginatedData.map(([exp_id, taskData]) => (
 					<div key={exp_id} className='my-4'>
 						<div className='titleContainer flex flex-row justify-between items-center'>
-							<h2 className='text-3xl font-bold text-white mb-4 font-bayard uppercase'>{exp_id}</h2>
+							<h2 className='text-2xl font-bold text-white mb-4 font-itf uppercase'>{exp_id}</h2>
 							<button
-								className='bg-yellow-500 text-celeste font-bayard uppercase text-3xl'
+								className='bg-yellow-500 text-cafe font-itf uppercase text-xl font-bold px-2 py-1 bg-pink'
 								onClick={() => toggleBookingAndDates(exp_id)}
 							>
 								{showBookingAndDates[exp_id] ? t('addBookingAndDates') : t('addBookingAndDates')}
