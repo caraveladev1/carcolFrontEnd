@@ -102,11 +102,16 @@ export const useViewContainers = () => {
 	}, []);
 
 	const handleCommentsButtonClick = async (item) => {
+		console.log('🖱️ Click en comentarios para ICO:', item.ico);
+		console.log('📊 Estado actual de unread antes:', hasUnreadComments(item.ico));
+		
 		setSelectedIco(item.ico);
 		setIsCommentsOpen(true);
 		
 		// Marcar como leído cuando se abre el modal
 		await markAsRead(item.ico);
+		
+		console.log('📊 Estado actual de unread después:', hasUnreadComments(item.ico));
 	};
 
 	const handleAnnouncementsButtonClick = (item) => {
