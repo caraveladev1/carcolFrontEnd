@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { API_BASE_URL } from '../utils/consts';
+import { API_BASE_URL, API_ENDPOINTS } from '../constants/api';
 
 export const useCommentNotifications = (user) => {
 	const [unreadComments, setUnreadComments] = useState(new Set());
@@ -17,7 +17,7 @@ export const useCommentNotifications = (user) => {
 			setLoading(true);
 			//console.log('🔄 Obteniendo comentarios no leídos para usuario:', user);
 
-			const response = await fetch(`${API_BASE_URL}api/exports/comments/unread`, {
+			const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.GET_UNREAD_COMMENTS}`, {
 				credentials: 'include',
 			});
 
@@ -38,7 +38,7 @@ export const useCommentNotifications = (user) => {
 	const markAsRead = async (ico) => {
 		try {
 			console.log('🔄 Marcando como leído:', ico);
-			const response = await fetch(`${API_BASE_URL}api/exports/comments/markAsViewed/${ico}`, {
+			const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.MARK_COMMENTS_AS_VIEWED}/${ico}`, {
 				method: 'PUT',
 				credentials: 'include',
 			});

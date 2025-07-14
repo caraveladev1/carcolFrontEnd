@@ -9,13 +9,13 @@ export function Comments({ ico, onClose, onCommentAdded }) {
 
 	return (
 		<div className='commentsContainer fixed inset-0 bg-black/50 flex justify-center items-center'>
+			<button
+				className='absolute top-44 right-[28%] bg-red-500 font-itf text-white text-lg px-4 py-1'
+				onClick={onClose}
+			>
+				X
+			</button>
 			<div className='popup w-[40%] bg-beige p-4 relative max-h-[50%] overflow-y-auto overflow-x-hidden'>
-				<button
-					className='absolute top-0 right-0 bg-red-500 font-itf text-white text-lg px-4 py-3'
-					onClick={onClose}
-				>
-					Close
-				</button>
 				<div className='max-w-[50%]'>
 					<h1 className='text-lg font-itf text-cafe mt-4'>{ico}</h1>
 				</div>
