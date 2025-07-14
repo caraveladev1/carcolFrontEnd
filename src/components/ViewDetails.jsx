@@ -46,23 +46,28 @@ export function ViewDetails({ onClose, exp_id }) {
 
 	return (
 		<div className='announcementContainer fixed inset-0 bg-black/50 flex justify-center items-center'>
-			<div className='popup w-[80%] overflow-auto max-h-[70%] bg-beige pt-12 px-4 relative'>
-				<button className='absolute top-0 right-0 bg-red-500 text-white p-1' onClick={onClose}>
-					<p className='font-itf text-lg px-4'>Close</p>
+			<div className='relative'>
+				<button
+					className='absolute -top-4 -right-4 bg-red-500 font-itf text-white text-lg w-8 h-8 flex items-center justify-center z-10'
+					onClick={onClose}
+				>
+					X
 				</button>
-				<div>
-					<h2 className='text-lg font-bold mb-4 font-itf'>Details to: {exp_id}</h2>
-				</div>
-				<div className='details-container'>
-					{data ? (
-						Object.entries(showData).map(([key, value]) => (
-							<div key={key} className='detail-item my-2 font-itf'>
-								<strong className='capitalize'>{key.replace('_', ' ')}:</strong> {value}
-							</div>
-						))
-					) : (
-						<p>No se encontraron datos para este exp_id.</p>
-					)}
+				<div className='popup w-[80vw] min-w-[300px] max-w-[90vw] overflow-auto max-h-[70vh] bg-beige p-4'>
+					<div>
+						<h2 className='text-lg font-bold mb-4 font-itf'>Details to: {exp_id}</h2>
+					</div>
+					<div className='details-container'>
+						{data ? (
+							Object.entries(showData).map(([key, value]) => (
+								<div key={key} className='detail-item my-2 font-itf'>
+									<strong className='capitalize'>{key.replace('_', ' ')}:</strong> {value}
+								</div>
+							))
+						) : (
+							<p>No se encontraron datos para este exp_id.</p>
+						)}
+					</div>
 				</div>
 			</div>
 		</div>
