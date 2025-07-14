@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { API_BASE_URL } from '../utils/consts';
 
-export const useComments = (ico) => {
+export const useComments = (ico, onCommentAdded) => {
   const [comments, setComments] = useState([]);
   const [commentId, setCommentId] = useState(null);
   const [user, setUser] = useState('');
@@ -64,6 +64,12 @@ export const useComments = (ico) => {
       .then((response) => response.json())
       .then(() => {
         setComments((prevComments) => [...prevComments, newCommentObject]);
+        
+        // Notificar al componente padre que se agregó un comentario
+        if (onCommentAdded) {
+          onCommentAdded(ico);
+        }
+        
         alert('Comment added successfully');
       })
       .catch((error) => {

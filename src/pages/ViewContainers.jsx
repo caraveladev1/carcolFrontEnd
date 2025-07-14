@@ -49,6 +49,7 @@ export function ViewContainers() {
 		calculateWeightsData,
 		showWeightsTooltip,
 		hideWeightsTooltip,
+		refreshNotifications,
 	} = useViewContainers();
 	if (loading) {
 		return <Loader />;
@@ -145,7 +146,7 @@ export function ViewContainers() {
 					onPageChange={goToPage}
 				/>
 
-				{isCommentsOpen && <Comments ico={selectedIco} onClose={closeComments} />}
+				{isCommentsOpen && <Comments ico={selectedIco} onClose={closeComments} onCommentAdded={refreshNotifications} />}
 				{isAnnouncementsOpen && <Announcements ico={selectedIco} onClose={closeAnnouncements} />}
 			</section>
 		</div>

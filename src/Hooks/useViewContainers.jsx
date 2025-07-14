@@ -3,10 +3,15 @@ import { useForm } from 'react-hook-form';
 import { containerService } from '../services/index.js';
 import { dataTransformers, filterUtils } from '../utils/index.js';
 import { ViewContainerRow } from '../components/ViewContainerRow.jsx';
+import { useCommentNotifications } from './useCommentNotifications.jsx';
+import { API_BASE_URL } from '../utils/consts.js';
 
 export const useViewContainers = () => {
 	const [organizedData, setOrganizedData] = useState(null);
 	const [loading, setLoading] = useState(true);
+	const [user, setUser] = useState('');
+
+	const { unreadComments, markAsRead, hasUnreadComments, refreshNotifications } = useCommentNotifications(user);
 
 	const { control, watch, reset } = useForm({
 		defaultValues: {
@@ -43,9 +48,22 @@ export const useViewContainers = () => {
 					role,
 					onCommentsClick: handleCommentsButtonClick,
 					onAnnouncementsClick: handleAnnouncementsButtonClick,
+					hasUnreadComments,
 				}),
 			);
 	};
+
+	// Obtener usuario al cargar el componente
+	useEffect(() => {
+		fetch(`${API_BASE_URL}api/exports/getUsernameFromToken`, {
+			credentials: 'include',
+		})
+			.then((res) => res.json())
+			.then((data) => {
+				setUser(data.username);
+			})
+			.catch((err) => console.error('Error obteniendo el usuario:', err));
+	}, []);
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -83,9 +101,12 @@ export const useViewContainers = () => {
 		fetchData();
 	}, []);
 
-	const handleCommentsButtonClick = (item) => {
+	const handleCommentsButtonClick = async (item) => {
 		setSelectedIco(item.ico);
 		setIsCommentsOpen(true);
+		
+		// Marcar como leído cuando se abre el modal
+		await markAsRead(item.ico);
 	};
 
 	const handleAnnouncementsButtonClick = (item) => {
@@ -239,5 +260,6 @@ export const useViewContainers = () => {
 		calculateWeightsData,
 		showWeightsTooltip,
 		hideWeightsTooltip,
+		refreshNotifications,
 	};
 };

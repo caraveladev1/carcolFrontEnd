@@ -8,3 +8,4 @@ export * from './useProtectedRoute.jsx';
 export * from './RoleContext.js';
 export * from './useBookingForm.jsx';
 export * from './useAuthValidation.jsx';
+export * from './useCommentNotifications.jsx';

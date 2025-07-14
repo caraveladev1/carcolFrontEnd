@@ -3,9 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { TextInput } from './TextInput';
 import { useComments } from '../Hooks/useComments';
 
-export function Comments({ ico, onClose }) {
+export function Comments({ ico, onClose, onCommentAdded }) {
 	const { t } = useTranslation();
-	const { comments, control, addComment } = useComments(ico);
+	const { comments, control, addComment } = useComments(ico, onCommentAdded);
 
 	return (
 		<div className='commentsContainer fixed inset-0 bg-black/50 flex justify-center items-center'>
