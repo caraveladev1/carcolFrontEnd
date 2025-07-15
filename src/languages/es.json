@@ -25,6 +25,7 @@
 	"totalWeight": "Peso Total",
 	"totalPendingWeightsToMill": "Peso Total Pendiente al Molino",
 	"weightsInProgress": "Pesos en Progreso",
-	"weightsFinished": "Pesos Terminados",  "manageUsers": "Gestionar Usuarios",
-  "menu": "Menú"
+	"weightsFinished": "Pesos Terminados",
+	"manageUsers": "Gestionar Usuarios",
+	"menu": "Menú"
 }

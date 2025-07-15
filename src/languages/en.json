@@ -90,6 +90,7 @@
 	"totalWeight": "Total Weight",
 	"totalPendingWeightsToMill": "Total Pending Weights to Mill",
 	"weightsInProgress": "Weights in Progress",
-	"weightsFinished": "Weights Finished",  "manageUsers": "Manage Users",
-  "menu": "Menu"
+	"weightsFinished": "Weights Finished",
+	"manageUsers": "Manage Users",
+	"menu": "Menu"
 }

@@ -42,7 +42,7 @@ export function PendingTask() {
 				<Banner />
 				<h1 className='text-3xl font-bold my-8 uppercase text-celeste font-itf'>{t('pendingTasks')}</h1>
 
-				<FilterSidebar title="filters">
+				<FilterSidebar title='filters'>
 					<DateInput name='initialDate' control={control} />
 					<DateInput name='finalDate' control={control} />
 					<SelectInput name='exportCountry' control={control} options={countryOptions} isMulti={true} />

@@ -49,7 +49,7 @@ export function ExportedContainers() {
 				<h1 className='text-3xl font-bold my-8 uppercase text-beige font-itf'>{t('exportedContainers')}</h1>
 
 				{/* Filtros */}
-				<FilterSidebar title="filters">
+				<FilterSidebar title='filters'>
 					<DateInput name='initialDate' control={control} />
 					<DateInput name='finalDate' control={control} />
 					<SelectInput name='exportCountry' control={control} options={countryOptions} isMulti={true} />
@@ -78,25 +78,24 @@ export function ExportedContainers() {
 									<h2 className='text-2xl font-bold text-white mb-4 font-itf uppercase'>{exp_id}</h2>
 								</div>
 								<div className='containerData flex flex-row gap-4'>
-									
 									<button
 										className='text-lg font-bold text-cafe font-itf uppercase hover:text-celeste-400 transition-colors duration-200 bg-beige px-2 py-1'
 										onClick={() => handleViewDetails(exp_id)}
 									>
 										{t('viewDetails')}
 									</button>
-									<div 
+									<div
 										className='relative'
 										onMouseEnter={() => showWeightsTooltip(exp_id)}
 										onMouseLeave={() => hideWeightsTooltip(exp_id)}
 									>
 										<button className='text-lg font-bold text-cafe font-itf uppercase cursor-pointer hover:text-pink-400 transition-colors duration-200 bg-beige px-2 py-1'>
-										{t('weightDetails')}
+											{t('weightDetails')}
 										</button>
-										<WeightsTooltip 
+										<WeightsTooltip
 											isVisible={weightsTooltipVisible[exp_id] || false}
 											weightsData={weightsData}
-											position="top"
+											position='top'
 										/>
 									</div>
 								</div>

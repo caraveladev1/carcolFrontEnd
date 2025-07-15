@@ -62,7 +62,7 @@ export function ViewContainers() {
 				<Banner />
 				<h1 className='text-3xl font-bold my-8 uppercase text-yellow font-itf'>{t('viewContainers')}</h1>
 
-				<FilterSidebar title="filters">
+				<FilterSidebar title='filters'>
 					<DateInput name='initialDate' control={control} />
 					<DateInput name='finalDate' control={control} />
 					<SelectInput name='office' control={control} options={officeOptions} isMulti={true} />
@@ -110,10 +110,9 @@ export function ViewContainers() {
 									)}
 								</div>
 								<div className='containerData flex flex-row gap-4 items-center'>
-								
 									<p className='text-lg font-bold text-pink font-itf uppercase'>{`Booking: ${dataWithButtons[0]?.booking || 'No available'}`}</p>
 									<p className='text-lg font-bold text-celeste font-itf uppercase'>{`Loading to Port: ${dataWithButtons[0]?.date_landing || 'No available'}`}</p>
-									<div 
+									<div
 										className='relative'
 										onMouseEnter={() => showWeightsTooltip(exp_id)}
 										onMouseLeave={() => hideWeightsTooltip(exp_id)}
@@ -121,10 +120,10 @@ export function ViewContainers() {
 										<button className='text-lg font-bold text-cafe font-itf uppercase cursor-pointer hover:text-pink-400 transition-colors duration-200 bg-beige px-2 py-1'>
 											{t('weightDetails')}
 										</button>
-										<WeightsTooltip 
+										<WeightsTooltip
 											isVisible={weightsTooltipVisible[exp_id] || false}
 											weightsData={weightsData}
-											position="top"
+											position='top'
 										/>
 									</div>
 								</div>

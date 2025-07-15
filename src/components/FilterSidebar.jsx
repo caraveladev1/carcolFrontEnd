@@ -45,18 +45,18 @@ export function FilterSidebar({ children, title = 'filters' }) {
 					className='flex items-center gap-2 bg-beige text-cafe px-6 py-3 font-itf font-bold uppercase transition-colors hover:bg-beige/80'
 				>
 					<svg className='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-						<path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707v4.586a1 1 0 01-.293.707l-2 2A1 1 0 0110 21v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z' />
+						<path
+							strokeLinecap='round'
+							strokeLinejoin='round'
+							strokeWidth={2}
+							d='M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707v4.586a1 1 0 01-.293.707l-2 2A1 1 0 0110 21v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z'
+						/>
 					</svg>
 					{t(title)}
 				</button>
 
 				{/* Overlay oscuro */}
-				{isFilterOpen && (
-					<div 
-						className='fixed inset-0 bg-black/50 z-40'
-						onClick={closeFilter}
-					/>
-				)}
+				{isFilterOpen && <div className='fixed inset-0 bg-black/50 z-40' onClick={closeFilter} />}
 
 				{/* Barra lateral de filtros */}
 				{isFilterOpen && (
@@ -69,10 +69,7 @@ export function FilterSidebar({ children, title = 'filters' }) {
 						{/* Header de la barra lateral */}
 						<div className='flex items-center justify-between p-6 border-b border-beige/20'>
 							<h2 className='text-beige text-xl font-bold uppercase'>{t(title)}</h2>
-							<button
-								onClick={closeFilter}
-								className='text-beige hover:text-white transition-colors'
-							>
+							<button onClick={closeFilter} className='text-beige hover:text-white transition-colors'>
 								<svg className='w-6 h-6' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
 									<path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M6 18L18 6M6 6l12 12' />
 								</svg>
@@ -82,9 +79,7 @@ export function FilterSidebar({ children, title = 'filters' }) {
 						{/* Contenido de los filtros */}
 						<div className='flex flex-col' style={{ height: 'calc(100vh - 73px)' }}>
 							<div className='flex-1 p-6 overflow-y-auto'>
-								<div className='space-y-4'>
-									{children}
-								</div>
+								<div className='space-y-4'>{children}</div>
 							</div>
 						</div>
 					</div>
