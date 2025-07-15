@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate, HashRouter } from 'react-router-dom';
+import { Routes, Route, Navigate, BrowserRouter } from 'react-router-dom';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
@@ -16,7 +16,7 @@ import { PermissionProtectedRoute } from './components/PermissionProtectedRoute'
 import { Unauthorized } from './pages/loginMS/Unauthorized';
 createRoot(document.getElementById('root')).render(
 	<StrictMode>
-		<HashRouter>
+		<BrowserRouter>
 			<Routes>
 				{/* Ruta pública */}
 				<Route path='/login' element={<LoginMS />} />
@@ -51,6 +51,6 @@ createRoot(document.getElementById('root')).render(
 				</Route>
 				<Route path='*' element={<Navigate to='/login' replace />} />
 			</Routes>
-		</HashRouter>
+		</BrowserRouter>
 	</StrictMode>,
 );
