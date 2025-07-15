@@ -8,6 +8,7 @@ import { Loader } from '../components/Loader';
 import { DateInput } from '../components/DateInput';
 import { SelectInput } from '../components/SelectInput';
 import { FilterContainer } from '../components/FilterContainer';
+import { FilterSidebar } from '../components/FilterSidebar';
 import { Pagination } from '../components/Pagination';
 import { WeightsTooltip } from '../components/WeightsTooltip';
 import { useExportedContainers } from '../Hooks';
@@ -48,7 +49,7 @@ export function ExportedContainers() {
 				<h1 className='text-3xl font-bold my-8 uppercase text-beige font-itf'>{t('exportedContainers')}</h1>
 
 				{/* Filtros */}
-				<FilterContainer columns={5}>
+				<FilterSidebar title="filters">
 					<DateInput name='initialDate' control={control} />
 					<DateInput name='finalDate' control={control} />
 					<SelectInput name='exportCountry' control={control} options={countryOptions} isMulti={true} />
@@ -60,7 +61,7 @@ export function ExportedContainers() {
 					>
 						{t('resetFilters')}
 					</button>
-				</FilterContainer>
+				</FilterSidebar>
 
 				{paginatedData.map(([exp_id, containerData]) => {
 					const totalWeight = containerData.reduce((sum, item) => {

@@ -10,6 +10,7 @@ import { DateInput } from '../components/DateInput';
 import { SelectInput } from '../components/SelectInput';
 import { TextInput } from '../components/TextInput';
 import { FilterContainer } from '../components/FilterContainer';
+import { FilterSidebar } from '../components/FilterSidebar';
 import { Pagination } from '../components/Pagination';
 import commentsButton from '../assets/img/commentsButton.webp';
 import { Comments } from '../components/Comments';
@@ -61,7 +62,7 @@ export function ViewContainers() {
 				<Banner />
 				<h1 className='text-3xl font-bold my-8 uppercase text-yellow font-itf'>{t('viewContainers')}</h1>
 
-				<FilterContainer columns={9}>
+				<FilterSidebar title="filters">
 					<DateInput name='initialDate' control={control} />
 					<DateInput name='finalDate' control={control} />
 					<SelectInput name='office' control={control} options={officeOptions} isMulti={true} />
@@ -86,7 +87,7 @@ export function ViewContainers() {
 							Edit Announcements
 						</button>
 					)}
-				</FilterContainer>
+				</FilterSidebar>
 
 				{paginatedData.map(([exp_id, containerData]) => {
 					const dataWithButtons = mapDataWithButtons(containerData, role);

@@ -8,6 +8,7 @@ import { BookingAndDates } from '../components/BookingAndDates';
 import { DateInput } from '../components/DateInput';
 import { SelectInput } from '../components/SelectInput';
 import { FilterContainer } from '../components/FilterContainer';
+import { FilterSidebar } from '../components/FilterSidebar';
 import { Pagination } from '../components/Pagination';
 import { usePendingTasks } from '../Hooks';
 
@@ -41,7 +42,7 @@ export function PendingTask() {
 				<Banner />
 				<h1 className='text-3xl font-bold my-8 uppercase text-celeste font-itf'>{t('pendingTasks')}</h1>
 
-				<FilterContainer columns={5}>
+				<FilterSidebar title="filters">
 					<DateInput name='initialDate' control={control} />
 					<DateInput name='finalDate' control={control} />
 					<SelectInput name='exportCountry' control={control} options={countryOptions} isMulti={true} />
@@ -53,7 +54,7 @@ export function PendingTask() {
 					>
 						{t('resetFilters')}
 					</button>
-				</FilterContainer>
+				</FilterSidebar>
 
 				{paginatedData.map(([exp_id, taskData]) => (
 					<div key={exp_id} className='my-4'>

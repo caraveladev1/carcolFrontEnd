@@ -20,10 +20,11 @@
 	"containerExportedSuccessfully": "Contenedor marcado como exportado exitosamente",
 	"announcementsAddedSuccessfully": "Anuncios agregados exitosamente",
 	"weightDetails": "Detalles del Peso",
-  "kg": "kg",
-  "totalWeight60kgBags": "Peso Total (sacos de 60kg)",
-  "totalWeight": "Peso Total",
-  "totalPendingWeightsToMill": "Peso Total Pendiente al Molino",
-  "weightsInProgress": "Pesos en Progreso",
-  "weightsFinished": "Pesos Terminados"
+	"kg": "kg",
+	"totalWeight60kgBags": "Peso Total (sacos de 60kg)",
+	"totalWeight": "Peso Total",
+	"totalPendingWeightsToMill": "Peso Total Pendiente al Molino",
+	"weightsInProgress": "Pesos en Progreso",
+	"weightsFinished": "Pesos Terminados",  "manageUsers": "Gestionar Usuarios",
+  "menu": "Menú"
 }

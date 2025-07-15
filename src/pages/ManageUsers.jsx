@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
-import { TableGeneric, Loader, TextInput, SelectInput, SubmitButton } from '../components';
+import { TableGeneric, Loader, TextInput, SelectInput, SubmitButton, Pagination } from '../components';
 import { useUserManagement } from '../Hooks/useUserManagement';
 import { Banner } from '../components/Banner';
 import { headersTableManageUsers } from '../utils/consts';
@@ -9,6 +9,8 @@ export function ManageUsers() {
 	const { users, roles, loading, error, createUser, updateUserRole } = useUserManagement();
 	const [showCreateForm, setShowCreateForm] = useState(false);
 	const [formLoading, setFormLoading] = useState(false);
+	const [currentPage, setCurrentPage] = useState(1);
+	const itemsPerPage = 20; // Número de usuarios por página
 	const methods = useForm({ defaultValues: { email: '', roleId: '' } });
 
 	const handleCreateUser = async (data) => {
@@ -20,6 +22,7 @@ export function ManageUsers() {
 		if (result.success) {
 			methods.reset();
 			setShowCreateForm(false);
+			setCurrentPage(1); // Resetear a la primera página cuando se añade un usuario
 		}
 		setFormLoading(false);
 	};
@@ -30,8 +33,14 @@ export function ManageUsers() {
 
 	const tableHeaders = headersTableManageUsers;
 
+	// Calcular datos paginados
+	const totalUsers = users?.length || 0;
+	const startIndex = (currentPage - 1) * itemsPerPage;
+	const endIndex = startIndex + itemsPerPage;
+	const paginatedUsers = users?.slice(startIndex, endIndex) || [];
+
 	const tableData =
-		users?.map((user) => ({
+		paginatedUsers?.map((user) => ({
 			username: user.username,
 			'role.name': user.role?.name || 'No Role',
 			actions: (
@@ -97,6 +106,14 @@ export function ManageUsers() {
 					)}
 
 					<TableGeneric headersTable={tableHeaders} dataTable={tableData} />
+
+					{/* Componente de paginación */}
+					<Pagination
+						currentPage={currentPage}
+						totalItems={totalUsers}
+						itemsPerPage={itemsPerPage}
+						onPageChange={setCurrentPage}
+					/>
 				</div>
 			</section>
 		</div>

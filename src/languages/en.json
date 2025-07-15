@@ -85,10 +85,11 @@
 	"containerExportedSuccessfully": "Container set as exported successfully",
 	"announcementsAddedSuccessfully": "Announcements added successfully",
 	"weightDetails": "Weight Details",
-  "kg": "kg",
-  "totalWeight60kgBags": "Total Weight (60kg bags)",
-  "totalWeight": "Total Weight",
-  "totalPendingWeightsToMill": "Total Pending Weights to Mill",
-  "weightsInProgress": "Weights in Progress",
-  "weightsFinished": "Weights Finished"
+	"kg": "kg",
+	"totalWeight60kgBags": "Total Weight (60kg bags)",
+	"totalWeight": "Total Weight",
+	"totalPendingWeightsToMill": "Total Pending Weights to Mill",
+	"weightsInProgress": "Weights in Progress",
+	"weightsFinished": "Weights Finished",  "manageUsers": "Manage Users",
+  "menu": "Menu"
 }
