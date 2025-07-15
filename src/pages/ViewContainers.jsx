@@ -61,7 +61,7 @@ export function ViewContainers() {
 				<Banner />
 				<h1 className='text-3xl font-bold my-8 uppercase text-yellow font-itf'>{t('viewContainers')}</h1>
 
-				<FilterContainer columns={9}>
+				<FilterContainer columns={role === 'Admin' ? 9 : 8}>
 					<DateInput name='initialDate' control={control} />
 					<DateInput name='finalDate' control={control} />
 					<SelectInput name='office' control={control} options={officeOptions} isMulti={true} />
