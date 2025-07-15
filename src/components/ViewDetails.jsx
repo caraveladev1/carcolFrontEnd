@@ -11,12 +11,12 @@ export function ViewDetails({ onClose, exp_id }) {
 		fetch(url)
 			.then((response) => response.json())
 			.then((responseData) => {
-				console.log('API Response:', responseData);
+				//console.log('API Response:', responseData);
 
 				// Accede al array correspondiente al `exp_id`
 				if (responseData && responseData[exp_id]) {
 					const filteredData = responseData[exp_id][0]; // Primer elemento del array
-					console.log('Filtered Data for:', filteredData);
+					//console.log('Filtered Data for:', filteredData);
 					setData(filteredData || null);
 				} else {
 					console.error('No data found for:', exp_id);

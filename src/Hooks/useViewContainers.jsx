@@ -40,17 +40,15 @@ export const useViewContainers = () => {
 	const itemsPerPage = 10;
 
 	const mapDataWithButtons = (data, role) => {
-		return dataTransformers
-			.mapViewContainerData(data)
-			.map((item) =>
-				ViewContainerRow({
-					item,
-					role,
-					onCommentsClick: handleCommentsButtonClick,
-					onAnnouncementsClick: handleAnnouncementsButtonClick,
-					hasUnreadComments,
-				}),
-			);
+		return dataTransformers.mapViewContainerData(data).map((item) =>
+			ViewContainerRow({
+				item,
+				role,
+				onCommentsClick: handleCommentsButtonClick,
+				onAnnouncementsClick: handleAnnouncementsButtonClick,
+				hasUnreadComments,
+			}),
+		);
 	};
 
 	// Obtener usuario al cargar el componente
@@ -102,16 +100,16 @@ export const useViewContainers = () => {
 	}, []);
 
 	const handleCommentsButtonClick = async (item) => {
-		console.log('🖱️ Click en comentarios para ICO:', item.ico);
-		console.log('📊 Estado actual de unread antes:', hasUnreadComments(item.ico));
-		
+		//console.log('🖱️ Click en comentarios para ICO:', item.ico);
+		//console.log('📊 Estado actual de unread antes:', hasUnreadComments(item.ico));
+
 		setSelectedIco(item.ico);
 		setIsCommentsOpen(true);
-		
+
 		// Marcar como leído cuando se abre el modal
 		await markAsRead(item.ico);
-		
-		console.log('📊 Estado actual de unread después:', hasUnreadComments(item.ico));
+
+		//console.log('📊 Estado actual de unread después:', hasUnreadComments(item.ico));
 	};
 
 	const handleAnnouncementsButtonClick = (item) => {
@@ -184,9 +182,9 @@ export const useViewContainers = () => {
 			const units = parseFloat(item.units) || 0;
 			const packaging = item.packaging || 'Unknown';
 			const millingState = item.milling_state || '';
-			
+
 			totalWeight += weight;
-			
+
 			// Sum units by packaging instead of weight
 			if (!packagingBreakdown[packaging]) {
 				packagingBreakdown[packaging] = 0;
@@ -208,12 +206,12 @@ export const useViewContainers = () => {
 		// Convert to array format for display (now showing units)
 		const packagingArray = Object.entries(packagingBreakdown).map(([packaging, units]) => ({
 			packaging,
-			units: units.toFixed(0) // Show units as whole numbers
+			units: units.toFixed(0), // Show units as whole numbers
 		}));
 
 		// Calculate 69kg bags (rounded down)
 		const totalBags = Math.floor(totalWeight / 69);
-		
+
 		// Calculate 60kg bags (rounded down)
 		const total60kgBags = Math.floor(totalWeight / 60);
 
@@ -224,17 +222,17 @@ export const useViewContainers = () => {
 			totalWeight: totalWeight.toFixed(2),
 			totalPendingWeightsToMill: totalPendingWeightsToMill.toFixed(2),
 			weightsInProgress: weightsInProgress.toFixed(2),
-			weightsFinished: weightsFinished.toFixed(2)
+			weightsFinished: weightsFinished.toFixed(2),
 		};
 	};
 
 	// Handle tooltip visibility
 	const showWeightsTooltip = (expId) => {
-		setWeightsTooltipVisible(prev => ({ ...prev, [expId]: true }));
+		setWeightsTooltipVisible((prev) => ({ ...prev, [expId]: true }));
 	};
 
 	const hideWeightsTooltip = (expId) => {
-		setWeightsTooltipVisible(prev => ({ ...prev, [expId]: false }));
+		setWeightsTooltipVisible((prev) => ({ ...prev, [expId]: false }));
 	};
 
 	return {

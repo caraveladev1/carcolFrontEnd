@@ -57,7 +57,7 @@ export const BookingAndDates = memo(function BookingAndDates({
 		setSetLoadedLoading(true);
 		try {
 			bookingService.validateRelatedData(relatedData);
-			console.log('Datos relacionados:', relatedData);
+			//console.log('Datos relacionados:', relatedData);
 			await bookingService.setContainerLoaded(exportNumber);
 			setPopup({
 				isOpen: true,

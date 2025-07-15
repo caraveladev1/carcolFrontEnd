@@ -37,23 +37,23 @@ export const useCommentNotifications = (user) => {
 
 	const markAsRead = async (ico) => {
 		try {
-			console.log('🔄 Marcando como leído:', ico);
+			//console.log('🔄 Marcando como leído:', ico);
 			const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.MARK_COMMENTS_AS_VIEWED}/${ico}`, {
 				method: 'PUT',
 				credentials: 'include',
 			});
 
-			console.log('📡 Respuesta del servidor:', response.status, response.ok);
+			//console.log('📡 Respuesta del servidor:', response.status, response.ok);
 
 			if (response.ok) {
 				const result = await response.json();
-				console.log('✅ Resultado:', result);
+				//console.log('✅ Resultado:', result);
 
 				setUnreadComments((prev) => {
 					const newSet = new Set(prev);
 					const wasRemoved = newSet.delete(ico);
-					console.log('🗑️ Removido de unread:', wasRemoved, 'ICO:', ico);
-					console.log('📋 Nuevos unread:', [...newSet]);
+					//console.log('🗑️ Removido de unread:', wasRemoved, 'ICO:', ico);
+					//console.log('📋 Nuevos unread:', [...newSet]);
 					return newSet;
 				});
 			} else {
