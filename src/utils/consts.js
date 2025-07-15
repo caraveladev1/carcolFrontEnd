@@ -15,6 +15,7 @@ export const headersTableExported = TABLE_HEADERS.EXPORTED;
 export const headersTableView = TABLE_HEADERS.VIEW;
 export const headersTableCreateContainer = TABLE_HEADERS.CREATE_CONTAINER;
 export const headersTableEditContainer = TABLE_HEADERS.EDIT_CONTAINER;
+export const headersTableManageUsers = TABLE_HEADERS.MANAGE_USERS;
 
 // Individual filter names for backward compatibility
 export const nameFilters = FILTER_NAMES.CREATE_CONTAINER;

@@ -74,13 +74,14 @@ export function SelectInput({
 	};
 
 	return (
-		<div className='w-full min-w-0 h-full min-h-[60px] flex'>
-			<Controller
-				name={name}
-				control={control}
-				rules={{ required: required && `${name} is required`, ...rules }}
-				render={({ field, fieldState: { error } }) => (
-					<>
+		<Controller
+			name={name}
+			control={control}
+			rules={{ required: required && `${name} is required`, ...rules }}
+			render={({ field, fieldState: { error } }) => (
+				<div className='w-full min-w-0 h-full min-h-[60px]'>
+					{error && <span className='text-red-500 text-sm block mb-1'>{error.message}</span>}
+					<div className='flex'>
 						<Select
 							{...field}
 							{...props}
@@ -104,10 +105,9 @@ export function SelectInput({
 								}
 							}}
 						/>
-						{error && <span className='text-red-500 text-sm'>{error.message}</span>}
-					</>
-				)}
-			/>
-		</div>
+					</div>
+				</div>
+			)}
+		/>
 	);
 }

@@ -32,6 +32,7 @@ export function TextInput({
 
 	return (
 		<>
+			{error && <span className='text-red-500 text-sm block mb-1'>{error.message}</span>}
 			<Component
 				{...field}
 				{...props}
@@ -39,7 +40,6 @@ export function TextInput({
 				placeholder={placeholder || `Enter ${t(name)}`}
 				className={baseClassName}
 			/>
-			{error && <span className='text-red-500 text-sm'>{error.message}</span>}
 		</>
 	);
 }

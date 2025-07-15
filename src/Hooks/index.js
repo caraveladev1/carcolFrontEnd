@@ -9,3 +9,5 @@ export * from './RoleContext.js';
 export * from './useBookingForm.jsx';
 export * from './useAuthValidation.jsx';
 export * from './useCommentNotifications.jsx';
+export * from './usePermissions.jsx';
+export * from './useUserManagement.jsx';

@@ -111,4 +111,9 @@ export const TABLE_HEADERS = {
 		'sales_code',
 		'revision_number',
 	],
+	MANAGE_USERS: [
+		'username',
+		'role.name',
+		'actions',
+	],
 };
