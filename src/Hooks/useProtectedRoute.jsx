@@ -23,7 +23,7 @@ export const useProtectedRoute = (allowedRoles) => {
 
   useEffect(() => {
     if (authorized === false) {
-      navigate('/login');
+      navigate('/');
     } else if (authorized && role && !allowedRoles.includes(role)) {
       navigate('/unauthorized');
     }

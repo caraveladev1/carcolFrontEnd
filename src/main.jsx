@@ -19,8 +19,7 @@ createRoot(document.getElementById('root')).render(
 		<BrowserRouter>
 			<Routes>
 				{/* Ruta pública */}
-				<Route path='/login' element={<LoginMS />} />
-				<Route path='/' element={<Navigate to='/login' replace />} />
+				<Route path='/' element={<LoginMS />} />
 
 				{/* Rutas protegidas basadas en permisos */}
 				<Route element={<ProtectedRouteMS allowedRoles={['Admin', 'Viewer']} />}>
@@ -50,7 +49,7 @@ createRoot(document.getElementById('root')).render(
 
 					<Route path='/unauthorized' element={<Unauthorized />} />
 				</Route>
-				<Route path='*' element={<Navigate to='/login' replace />} />
+				<Route path='*' element={<Navigate to='/' replace />} />
 			</Routes>
 		</BrowserRouter>
 	</StrictMode>,

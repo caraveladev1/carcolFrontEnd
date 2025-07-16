@@ -12,7 +12,7 @@ export const useAuth = () => {
       try {
         await authService.checkProtectedRoute();
         // Only redirect to view-containers if we're on the login page
-        if (location.pathname === '/login') {
+        if (location.pathname === '/') {
           navigate('/view-containers', { replace: true });
         }
       } catch (error) {
@@ -43,7 +43,7 @@ export const useAuth = () => {
   const logout = async () => {
     try {
       await authService.logout();
-      navigate('/login');
+      navigate('/');
     } catch (error) {
       console.error('Logout error:', error);
     }

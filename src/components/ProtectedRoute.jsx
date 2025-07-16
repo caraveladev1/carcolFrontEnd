@@ -11,7 +11,7 @@ export function ProtectedRoute({ children }) {
 	}
 
 	if (!isValid) {
-		return <Navigate to='/login' />;
+		return <Navigate to='/' />;
 	}
 
 	return children;
