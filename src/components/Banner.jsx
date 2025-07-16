@@ -16,6 +16,88 @@ export function Banner() {
 	const menuRef = useRef(null);
 	const buttonRef = useRef(null);
 
+	// Configuración escalable del menú
+	const menuItems = [
+		{
+			id: 'pending-tasks',
+			label: 'pendingTasks',
+			path: '/pending-task',
+			permission: 'tasks.view',
+			category: 'Contenedores',
+			colorClass: 'text-celeste hover:border-celeste'
+		},
+		{
+			id: 'create-containers',
+			label: 'createContainers',
+			path: '/create',
+			permission: 'containers.create',
+			category: 'Contenedores',
+			colorClass: 'text-pink hover:border-pink'
+		},
+		{
+			id: 'add-announcements',
+			label: 'addAnnouncements',
+			path: '/announcements',
+			permission: 'containers.view',
+			category: 'Contenedores',
+			colorClass: 'text-naranja hover:border-naranja'
+		},
+		{
+			id: 'view-containers',
+			label: 'viewContainers',
+			path: '/view-containers',
+			permission: 'containers.view',
+			category: 'Contenedores',
+			colorClass: 'text-yellow hover:border-yellow'
+		},
+		{
+			id: 'exported-containers',
+			label: 'exportedContainers',
+			path: '/exported-containers',
+			permission: 'containers.view',
+			category: 'Contenedores',
+			colorClass: 'text-beige hover:border-beige'
+		},
+		{
+			id: 'manage-users',
+			label: 'manageUsers',
+			path: '/admin/manage-users',
+			permission: 'users.view',
+			category: 'Usuarios',
+			colorClass: 'text-pink hover:border-pink'
+		}
+	];
+
+	// Agrupar elementos por categoría y filtrar por permisos
+	const groupedMenuItems = menuItems
+		.filter(item => hasPermission(item.permission))
+		.reduce((groups, item) => {
+			if (!groups[item.category]) {
+				groups[item.category] = [];
+			}
+			groups[item.category].push(item);
+			return groups;
+		}, {});
+
+	// Componente para renderizar cada elemento del menú
+	const MenuItem = ({ item }) => (
+		<PermissionGate key={item.id} permission={item.permission}>
+			<Link to={item.path} onClick={closeMenu}>
+				<button className={`w-full text-left px-6 py-4 ${item.colorClass} hover:bg-beige/10 uppercase font-bold transition-colors border-l-4 border-transparent`}>
+					{t(item.label)}
+				</button>
+			</Link>
+		</PermissionGate>
+	);
+
+	// Componente para renderizar cada categoría
+	const MenuCategory = ({ category, items }) => (
+		<div key={category} className='mb-6'>
+			<h3 className='text-beige/70 text-sm uppercase font-bold px-6 mb-3'>{category}</h3>
+			{items.map(item => <MenuItem key={item.id} item={item} />)}
+		</div>
+	);
+
 	// Cerrar menú al hacer clic fuera
 	useEffect(() => {
 		const handleClickOutside = (event) => {
@@ -94,64 +176,11 @@ export function Banner() {
 
 							{/* Contenido del menú */}
 							<div className='flex flex-col' style={{ height: 'calc(100vh - 73px)' }}>
-												
-
 								<div className='flex-1 py-6 overflow-y-auto'>
-									<h3 className='text-beige/70 text-sm uppercase font-bold px-6 mb-3'>Contenedores</h3>
-									
-									<div className='mb-6'>
-										<PermissionGate permission="tasks.view">
-											<Link to='/pending-task' onClick={closeMenu}>
-												<button className='w-full text-left px-6 py-4 text-celeste hover:bg-beige/10 uppercase font-bold transition-colors border-l-4 border-transparent hover:border-celeste'>
-													{t('pendingTasks')}
-												</button>
-											</Link>
-										</PermissionGate>
-										
-										<PermissionGate permission="containers.create">
-											<Link to='/create' onClick={closeMenu}>
-												<button className='w-full text-left px-6 py-4 text-pink hover:bg-beige/10 uppercase font-bold transition-colors border-l-4 border-transparent hover:border-pink'>
-													{t('createContainers')}
-												</button>
-											</Link>
-										</PermissionGate>
-										
-										<PermissionGate permission="containers.view">
-											<Link to='/announcements' onClick={closeMenu}>
-												<button className='w-full text-left px-6 py-4 text-naranja hover:bg-beige/10 uppercase font-bold transition-colors border-l-4 border-transparent hover:border-naranja'>
-													{t('addAnnouncements')}
-												</button>
-											</Link>
-										</PermissionGate>
-										
-										<PermissionGate permission="containers.view">
-											<Link to='/view-containers' onClick={closeMenu}>
-												<button className='w-full text-left px-6 py-4 text-yellow hover:bg-beige/10 uppercase font-bold transition-colors border-l-4 border-transparent hover:border-yellow'>
-													{t('viewContainers')}
-												</button>
-											</Link>
-										</PermissionGate>
-										
-										<PermissionGate permission="containers.view">
-											<Link to='/exported-containers' onClick={closeMenu}>
-												<button className='w-full text-left px-6 py-4 text-beige hover:bg-beige/10 uppercase font-bold transition-colors border-l-4 border-transparent hover:border-beige'>
-													{t('exportedContainers')}
-												</button>
-											</Link>
-										</PermissionGate>
-									</div>
-
-									{/* Botón para gestión de usuarios (solo si tiene permisos) */}
-									{hasPermission('users.view') && (
-										<div className='mb-6'>
-											<h3 className='text-beige/70 text-sm uppercase font-bold px-6 mb-3'>Usuarios</h3>
-											<Link to='/admin/manage-users' onClick={closeMenu}>
-												<button className='w-full text-left px-6 py-4 text-pink hover:bg-beige/10 uppercase font-bold transition-colors border-l-4 border-transparent hover:border-pink'>
-													{t('manageUsers')}
-												</button>
-											</Link>
-										</div>
-									)}
+									{/* Renderizado dinámico de categorías y elementos */}
+									{Object.entries(groupedMenuItems).map(([category, items]) => (
+										<MenuCategory key={category} category={category} items={items} />
+									))}
 								</div>
 
 								{/* Botón de logout al final - siempre visible */}
