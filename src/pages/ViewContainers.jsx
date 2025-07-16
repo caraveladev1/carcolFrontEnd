@@ -14,7 +14,6 @@ import { FilterSidebar } from '../components/FilterSidebar';
 import { Pagination } from '../components/Pagination';
 import commentsButton from '../assets/img/commentsButton.webp';
 import { Comments } from '../components/Comments';
-import { Announcements } from '../components/Announcements';
 import { WeightsTooltip } from '../components/WeightsTooltip';
 import { useRole } from '../Hooks/RoleContext.js';
 import { useViewContainers } from '../Hooks';
@@ -31,13 +30,9 @@ export function ViewContainers() {
 		destinationOptions,
 		isCommentsOpen,
 		selectedIco,
-		isAnnouncementsOpen,
 		handleCommentsButtonClick,
-		handleAnnouncementsButtonClick,
 		closeComments,
-		closeAnnouncements,
 		filteredData,
-		setIsAnnouncementsOpen,
 		mapDataWithButtons,
 		control,
 		paginatedData,
@@ -77,16 +72,6 @@ export function ViewContainers() {
 					>
 						{t('resetFilters')}
 					</button>
-					{role === 'Admin' && (
-						<button
-							className='bg-pink font-itf text-lg uppercase border-2 border-pink p-4 w-full h-full min-h-[60px] text-white focus:outline-none focus:border-2 focus:border-pink text-start'
-							type='button'
-							value='Manage Announcements'
-							onClick={() => setIsAnnouncementsOpen(true)}
-						>
-							Edit Announcements
-						</button>
-					)}
 				</FilterSidebar>
 
 				{paginatedData.map(([exp_id, containerData]) => {
@@ -147,7 +132,6 @@ export function ViewContainers() {
 				/>
 
 				{isCommentsOpen && <Comments ico={selectedIco} onClose={closeComments} onCommentAdded={refreshNotifications} />}
-				{isAnnouncementsOpen && <Announcements ico={selectedIco} onClose={closeAnnouncements} />}
 			</section>
 		</div>
 	);

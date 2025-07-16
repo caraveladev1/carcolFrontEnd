@@ -10,6 +10,7 @@ import { ViewContainers } from './pages/ViewContainers';
 import { EditContainer } from './pages/EditContainer';
 import { ExportedContainers } from './pages/ExportedContainers';
 import { ManageUsers } from './pages/ManageUsers';
+import { AnnouncementsPage } from './pages/AnnouncementsPage';
 import { LoginMS } from './pages/loginMS/LoginMS';
 import { ProtectedRouteMS } from './pages/loginMS/ProtectedRouteMS';
 import { PermissionProtectedRoute } from './components/PermissionProtectedRoute';
@@ -27,6 +28,7 @@ createRoot(document.getElementById('root')).render(
 					<Route element={<PermissionProtectedRoute requiredPermissions={['containers.view']} />}>
 						<Route path='/view-containers' element={<ViewContainers />} />
 						<Route path='/exported-containers' element={<ExportedContainers />} />
+						<Route path='/announcements/:ico?' element={<AnnouncementsPage />} />
 					</Route>
 
 					{/* Rutas que requieren tasks.view */}

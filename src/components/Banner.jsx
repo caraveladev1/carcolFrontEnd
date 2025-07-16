@@ -46,7 +46,9 @@ export function Banner() {
 		<section className='bannerSection w-full m-auto relative'>
 			<div className='flex flex-row items-center justify-between py-2 gap-6 font-itf'>
 				<div>
+					<Link to='/'>
 					<img className='cursor-pointer max-w-[50%]' src={logoCaravela} alt='Logo de caravela' />
+					</Link>
 				</div>
 
 				{/* Botón de hamburguesa */}
@@ -91,11 +93,13 @@ export function Banner() {
 
 							{/* Contenido del menú */}
 							<div className='flex flex-col' style={{ height: 'calc(100vh - 73px)' }}>
+												
+
 								<div className='flex-1 py-6 overflow-y-auto'>
+									<h3 className='text-beige/70 text-sm uppercase font-bold px-6 mb-3'>Contenedores</h3>
 									{/* Botones para Admin */}
-									{role === 'Admin' && (
 										<div className='mb-6'>
-											<h3 className='text-beige/70 text-sm uppercase font-bold px-6 mb-3'>Administración</h3>
+											
 											<Link to='/pending-task' onClick={closeMenu}>
 												<button className='w-full text-left px-6 py-4 text-celeste hover:bg-beige/10 uppercase font-bold transition-colors border-l-4 border-transparent hover:border-celeste'>
 													{t('pendingTasks')}
@@ -106,12 +110,12 @@ export function Banner() {
 													{t('createContainers')}
 												</button>
 											</Link>
-										</div>
-									)}
-
-									{/* Botones para todos los usuarios */}
-									<div className='mb-6'>
-										<h3 className='text-beige/70 text-sm uppercase font-bold px-6 mb-3'>Contenedores</h3>
+											<Link to='/announcements' onClick={closeMenu}>
+												<button className='w-full text-left px-6 py-4 text-naranja hover:bg-beige/10 uppercase font-bold transition-colors border-l-4 border-transparent hover:border-naranja'>
+													{t('addAnnouncements')}
+												</button>
+											</Link>
+											<div className='mb-6'>
 										<Link to='/view-containers' onClick={closeMenu}>
 											<button className='w-full text-left px-6 py-4 text-yellow hover:bg-beige/10 uppercase font-bold transition-colors border-l-4 border-transparent hover:border-yellow'>
 												{t('viewContainers')}
@@ -135,6 +139,10 @@ export function Banner() {
 											</Link>
 										</div>
 									)}
+										</div>
+			
+									{/* Botones para todos los usuarios */}
+									
 								</div>
 
 								{/* Botón de logout al final - siempre visible */}

@@ -1,6 +1,7 @@
 {
 	"createContainers": "Crear Contenedores",
 	"viewContainers": "Ver Contenedores",
+	"announcementFilters": "Filtros de Anuncios",
 	"resetFilters": "Restablecer Filtros",
 	"close": "Cerrar",
 	"validationError": "Error de Validación",

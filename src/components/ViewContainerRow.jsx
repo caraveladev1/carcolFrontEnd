@@ -1,7 +1,7 @@
 import React from 'react';
 import commentsButton from '../assets/img/commentsButton.webp';
 
-export function ViewContainerRow({ item, role, onCommentsClick, onAnnouncementsClick, hasUnreadComments }) {
+export function ViewContainerRow({ item, role, onCommentsClick, hasUnreadComments }) {
   return {
     ...item,
     comments: (
@@ -15,11 +15,5 @@ export function ViewContainerRow({ item, role, onCommentsClick, onAnnouncementsC
         </button>
       </div>
     ),
-    announcements:
-      role === 'Admin' ? (
-        <button className='btn-class bg-blue-500 text-white p-2' onClick={() => onAnnouncementsClick(item)}>
-          Manage Announcements
-        </button>
-      ) : null,
   };
 }

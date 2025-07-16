@@ -34,7 +34,6 @@ export const useViewContainers = () => {
 	const [destinationOptions, setDestinationOptions] = useState([]);
 	const [isCommentsOpen, setIsCommentsOpen] = useState(false);
 	const [selectedIco, setSelectedIco] = useState(null);
-	const [isAnnouncementsOpen, setIsAnnouncementsOpen] = useState(false);
 	const [weightsTooltipVisible, setWeightsTooltipVisible] = useState({});
 	const [currentPage, setCurrentPage] = useState(1);
 	const itemsPerPage = 10;
@@ -45,7 +44,6 @@ export const useViewContainers = () => {
 				item,
 				role,
 				onCommentsClick: handleCommentsButtonClick,
-				onAnnouncementsClick: handleAnnouncementsButtonClick,
 				hasUnreadComments,
 			}),
 		);
@@ -112,18 +110,8 @@ export const useViewContainers = () => {
 		//console.log('📊 Estado actual de unread después:', hasUnreadComments(item.ico));
 	};
 
-	const handleAnnouncementsButtonClick = (item) => {
-		setSelectedIco(item.ico);
-		setIsAnnouncementsOpen(true);
-	};
-
 	const closeComments = () => {
 		setIsCommentsOpen(false);
-		setSelectedIco(null);
-	};
-
-	const closeAnnouncements = () => {
-		setIsAnnouncementsOpen(false);
 		setSelectedIco(null);
 	};
 
@@ -244,13 +232,9 @@ export const useViewContainers = () => {
 		destinationOptions,
 		isCommentsOpen,
 		selectedIco,
-		isAnnouncementsOpen,
 		handleCommentsButtonClick,
-		handleAnnouncementsButtonClick,
 		closeComments,
-		closeAnnouncements,
 		filteredData,
-		setIsAnnouncementsOpen,
 		mapDataWithButtons,
 		control,
 		paginatedData,
