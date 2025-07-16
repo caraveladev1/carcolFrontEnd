@@ -38,7 +38,7 @@ export function Banner() {
 			id: 'add-announcements',
 			label: 'addAnnouncements',
 			path: '/announcements',
-			permission: 'containers.view',
+			permission: 'announcements.view',
 			category: 'Contenedores',
 			colorClass: 'text-naranja hover:border-naranja'
 		},
