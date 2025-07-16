@@ -4,18 +4,24 @@ import { usePermissions } from '../Hooks/usePermissions';
 import { Loader } from './Loader';
 
 export function PermissionProtectedRoute({ requiredPermissions = [] }) {
-  const { hasPermission, loading } = usePermissions();
+  const { hasPermission, loading, permissions, role } = usePermissions();
 
   if (loading) {
     return <Loader />;
+  }
+
+  // If no permissions and no role, user is likely not authenticated
+  if (!permissions.length && !role) {
+    return <Navigate to="/" replace />;
   }
 
   // Check if user has at least one of the required permissions
   const hasAccess = requiredPermissions.length === 0 || 
     requiredPermissions.some(permission => hasPermission(permission));
 
+  // If authenticated but no permissions, redirect to home instead of unauthorized
   if (!hasAccess) {
-    return <Navigate to="/unauthorized" replace />;
+    return <Navigate to="/" replace />;
   }
 
   return <Outlet />;

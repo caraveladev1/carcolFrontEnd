@@ -13,7 +13,6 @@ import { ManageUsers } from './pages/ManageUsers';
 import { AnnouncementsPage } from './pages/AnnouncementsPage';
 import { LoginMS } from './pages/loginMS/LoginMS';
 import { PermissionProtectedRoute } from './components/PermissionProtectedRoute';
-import { Unauthorized } from './pages/loginMS/Unauthorized';
 createRoot(document.getElementById('root')).render(
 	<StrictMode>
 		<BrowserRouter>
@@ -45,10 +44,8 @@ createRoot(document.getElementById('root')).render(
 					{/* Rutas que requieren users.view */}
 					<Route element={<PermissionProtectedRoute requiredPermissions={['users.view']} />}>
 						<Route path='/admin/manage-users' element={<ManageUsers />} />
-				
+					</Route>
 
-					<Route path='/unauthorized' element={<Unauthorized />} />
-				</Route>
 				<Route path='*' element={<Navigate to='/' replace />} />
 			</Routes>
 		</BrowserRouter>
