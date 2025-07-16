@@ -26,3 +26,27 @@ export function PermissionProtectedRoute({ requiredPermissions = [] }) {
 
   return <Outlet />;
 }
+
+// PermissionGate component integrated here
+export function PermissionGate({ permission, children, fallback = null, showSkeleton = false }) {
+  const { hasPermission, loading } = usePermissions();
+
+  if (loading && showSkeleton) {
+    // Show skeleton/placeholder while loading
+    return (
+      <div className="animate-pulse">
+        <div className="w-full h-14 bg-beige/20 border-l-4 border-transparent"></div>
+      </div>
+    );
+  }
+
+  if (loading && !showSkeleton) {
+    return null;
+  }
+
+  if (!hasPermission(permission)) {
+    return fallback;
+  }
+
+  return children;
+}

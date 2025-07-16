@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { useRole } from '../Hooks/RoleContext.js';
 import { useAuth } from '../Hooks';
 import { usePermissions } from '../Hooks/usePermissions';
-import { PermissionGate } from './PermissionGate';
+import { PermissionGate } from './PermissionProtectedRoute';
 
 export function Banner() {
 	const { t } = useTranslation();
@@ -116,7 +116,7 @@ export function Banner() {
 											</Link>
 										</PermissionGate>
 										
-										<PermissionGate permission="containers.view">
+										<PermissionGate permission="containers.create">
 											<Link to='/announcements' onClick={closeMenu}>
 												<button className='w-full text-left px-6 py-4 text-naranja hover:bg-beige/10 uppercase font-bold transition-colors border-l-4 border-transparent hover:border-naranja'>
 													{t('addAnnouncements')}
