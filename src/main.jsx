@@ -19,8 +19,7 @@ createRoot(document.getElementById('root')).render(
 		<BrowserRouter>
 			<Routes>
 				{/* Ruta pública */}
-				<Route path='/login' element={<LoginMS />} />
-				<Route path='/' element={<Navigate to='/login' replace />} />
+				<Route path='/' element={<LoginMS />} />
 
 				{/* Rutas protegidas basadas en permisos */}
 				<Route element={<ProtectedRouteMS allowedRoles={['Admin', 'Viewer']} />}>
