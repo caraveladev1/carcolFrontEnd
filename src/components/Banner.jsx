@@ -116,7 +116,7 @@ export function Banner() {
 											</Link>
 										</PermissionGate>
 										
-										<PermissionGate permission="containers.create">
+										<PermissionGate permission="containers.view">
 											<Link to='/announcements' onClick={closeMenu}>
 												<button className='w-full text-left px-6 py-4 text-naranja hover:bg-beige/10 uppercase font-bold transition-colors border-l-4 border-transparent hover:border-naranja'>
 													{t('addAnnouncements')}
