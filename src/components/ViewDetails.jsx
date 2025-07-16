@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { API_BASE_URL } from '../utils/consts';
+import { API_BASE_URL } from '../constants/api.js';
 
 export function ViewDetails({ onClose, exp_id }) {
 	const [data, setData] = useState(null); // Estado para los datos filtrados

@@ -1,5 +1,5 @@
 import React from 'react';
-import { filtersEditContainer } from '../utils/consts';
+import { filtersEditContainer } from '../constants/filters.js';
 import { LabelGeneric } from './LabelGeneric';
 import { TextInput } from './TextInput';
 import { SelectInput } from './SelectInput';

@@ -2,7 +2,7 @@ import React, { memo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SubmitButton } from './SubmitButton';
 import { Popup } from './Popup';
-import { labelsBoogkindAndDates } from '../utils/consts';
+import { labelsBoogkindAndDates } from '../constants/filters.js';
 import { useBookingForm } from '../Hooks';
 import { bookingService } from '../services';
 import { dateUtils } from '../utils';

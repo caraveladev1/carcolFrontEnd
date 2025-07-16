@@ -41,3 +41,17 @@ export const BOOKING_AND_DATES_LABELS = [
   'estimatedArrival',
   'exportDate'
 ];
+
+export const PLACEHOLDER_FILTERS = ['office', 'exportMonth', 'packaging', 'contract', 'destinationPort'];
+
+// Legacy exports for backward compatibility
+export const placeholderFilter = PLACEHOLDER_FILTERS;
+
+// Individual filter names for backward compatibility
+export const nameFilters = FILTER_NAMES.CREATE_CONTAINER;
+export const viewContainerFilters = FILTER_NAMES.VIEW_CONTAINER;
+export const filtersEditContainer = FILTER_NAMES.EDIT_CONTAINER;
+
+// Other constants for backward compatibility
+export const containerCapacity = CONTAINER_CAPACITY;
+export const labelsBoogkindAndDates = BOOKING_AND_DATES_LABELS;

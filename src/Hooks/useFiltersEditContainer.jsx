@@ -1,7 +1,8 @@
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { containerCapacity, API_BASE_URL } from '../utils/consts';
+import { containerCapacity } from '../constants/filters.js';
+import { API_BASE_URL } from '../constants/api.js';
 
 export const useFiltersEditContainer = (filterValues, selectedIcos, oldExportId) => {
 	const navigate = useNavigate();

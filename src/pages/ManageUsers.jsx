@@ -3,7 +3,7 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { TableGeneric, Loader, TextInput, SelectInput, SubmitButton, Pagination } from '../components';
 import { useUserManagement } from '../Hooks/useUserManagement';
 import { Banner } from '../components/Banner';
-import { headersTableManageUsers } from '../utils/consts';
+import { headersTableManageUsers } from '../constants/tableHeaders.js';
 
 export function ManageUsers() {
 	const { users, roles, loading, error, createUser, updateUserRole } = useUserManagement();

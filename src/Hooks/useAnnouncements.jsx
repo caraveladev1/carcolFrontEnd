@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
-import { API_BASE_URL } from '../utils/consts';
+import { API_BASE_URL } from '../constants/api.js';
 
 export const useAnnouncements = (onClose) => {
 	const [data, setData] = useState([]);

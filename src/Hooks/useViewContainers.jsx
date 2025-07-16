@@ -4,7 +4,7 @@ import { containerService } from '../services/index.js';
 import { dataTransformers, filterUtils } from '../utils/index.js';
 import { ViewContainerRow } from '../components/ViewContainerRow.jsx';
 import { useCommentNotifications } from './useCommentNotifications.jsx';
-import { API_BASE_URL } from '../utils/consts.js';
+import { API_BASE_URL } from '../constants/api.js';
 
 export const useViewContainers = () => {
 	const [organizedData, setOrganizedData] = useState(null);
