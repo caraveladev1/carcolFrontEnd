@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { useRole } from '../Hooks/RoleContext.js';
 import { useAuth } from '../Hooks';
 import { usePermissions } from '../Hooks/usePermissions';
+import { PermissionGate } from './PermissionGate';
 
 export function Banner() {
 	const { t } = useTranslation();
@@ -97,35 +98,47 @@ export function Banner() {
 
 								<div className='flex-1 py-6 overflow-y-auto'>
 									<h3 className='text-beige/70 text-sm uppercase font-bold px-6 mb-3'>Contenedores</h3>
-									{/* Botones para Admin */}
-										<div className='mb-6'>
-											
+									
+									<div className='mb-6'>
+										<PermissionGate permission="tasks.view">
 											<Link to='/pending-task' onClick={closeMenu}>
 												<button className='w-full text-left px-6 py-4 text-celeste hover:bg-beige/10 uppercase font-bold transition-colors border-l-4 border-transparent hover:border-celeste'>
 													{t('pendingTasks')}
 												</button>
 											</Link>
+										</PermissionGate>
+										
+										<PermissionGate permission="containers.create">
 											<Link to='/create' onClick={closeMenu}>
 												<button className='w-full text-left px-6 py-4 text-pink hover:bg-beige/10 uppercase font-bold transition-colors border-l-4 border-transparent hover:border-pink'>
 													{t('createContainers')}
 												</button>
 											</Link>
+										</PermissionGate>
+										
+										<PermissionGate permission="containers.view">
 											<Link to='/announcements' onClick={closeMenu}>
 												<button className='w-full text-left px-6 py-4 text-naranja hover:bg-beige/10 uppercase font-bold transition-colors border-l-4 border-transparent hover:border-naranja'>
 													{t('addAnnouncements')}
 												</button>
 											</Link>
-											<div className='mb-6'>
-										<Link to='/view-containers' onClick={closeMenu}>
-											<button className='w-full text-left px-6 py-4 text-yellow hover:bg-beige/10 uppercase font-bold transition-colors border-l-4 border-transparent hover:border-yellow'>
-												{t('viewContainers')}
-											</button>
-										</Link>
-										<Link to='/exported-containers' onClick={closeMenu}>
-											<button className='w-full text-left px-6 py-4 text-beige hover:bg-beige/10 uppercase font-bold transition-colors border-l-4 border-transparent hover:border-beige'>
-												{t('exportedContainers')}
-											</button>
-										</Link>
+										</PermissionGate>
+										
+										<PermissionGate permission="containers.view">
+											<Link to='/view-containers' onClick={closeMenu}>
+												<button className='w-full text-left px-6 py-4 text-yellow hover:bg-beige/10 uppercase font-bold transition-colors border-l-4 border-transparent hover:border-yellow'>
+													{t('viewContainers')}
+												</button>
+											</Link>
+										</PermissionGate>
+										
+										<PermissionGate permission="containers.view">
+											<Link to='/exported-containers' onClick={closeMenu}>
+												<button className='w-full text-left px-6 py-4 text-beige hover:bg-beige/10 uppercase font-bold transition-colors border-l-4 border-transparent hover:border-beige'>
+													{t('exportedContainers')}
+												</button>
+											</Link>
+										</PermissionGate>
 									</div>
 
 									{/* Botón para gestión de usuarios (solo si tiene permisos) */}
@@ -139,10 +152,6 @@ export function Banner() {
 											</Link>
 										</div>
 									)}
-										</div>
-			
-									{/* Botones para todos los usuarios */}
-									
 								</div>
 
 								{/* Botón de logout al final - siempre visible */}
