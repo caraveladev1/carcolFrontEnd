@@ -1,6 +1,6 @@
-export const API_BASE_URL = 'https://bckcarcoltest.caravela.coffee/';
+//export const API_BASE_URL = 'https://bckcarcoltest.caravela.coffee/';
 //export const API_BASE_URL = 'https://bckcarcol.caravela.coffee/';
-//export const API_BASE_URL = 'http://localhost:8080/';
+export const API_BASE_URL = 'http://localhost:8080/';
 
 export const API_ENDPOINTS = {
 	PENDING_CONTAINERS: 'api/exports/getPendingContainers',
@@ -21,6 +21,7 @@ export const API_ENDPOINTS = {
 	GET_COMMENTS_BY_ICO: 'api/exports/getCommentsByIco',
 	ADD_COMMENT: 'api/exports/comment/add',
 	GET_UNREAD_COMMENTS: 'api/exports/comments/unread',
+	GET_ICOS_WITH_COMMENTS: 'api/exports/comments/icosWithComments',
 	MARK_COMMENTS_AS_VIEWED: 'api/exports/comments/markAsViewed',
 	// User management endpoints
 	USERS: 'api/users',

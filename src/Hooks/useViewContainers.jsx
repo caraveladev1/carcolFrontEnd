@@ -11,7 +11,15 @@ export const useViewContainers = () => {
 	const [loading, setLoading] = useState(true);
 	const [user, setUser] = useState('');
 
-	const { unreadComments, markAsRead, hasUnreadComments, refreshNotifications } = useCommentNotifications(user);
+	const { 
+		unreadComments, 
+		icosWithComments, 
+		markAsRead, 
+		hasUnreadComments, 
+		hasComments, 
+		getNotificationStatus, 
+		refreshNotifications 
+	} = useCommentNotifications(user);
 
 	const { control, watch, reset } = useForm({
 		defaultValues: {
@@ -44,7 +52,7 @@ export const useViewContainers = () => {
 				item,
 				role,
 				onCommentsClick: handleCommentsButtonClick,
-				hasUnreadComments,
+				getNotificationStatus,
 			}),
 		);
 	};
@@ -203,10 +211,14 @@ export const useViewContainers = () => {
 		// Calculate 60kg bags (rounded down)
 		const total60kgBags = Math.floor(totalWeight / 60);
 
+		// Calculate total units from all packaging breakdown
+		const totalUnits = packagingArray.reduce((sum, item) => sum + Number(item.units || 0), 0);
+
 		return {
 			packagingBreakdown: packagingArray,
 			totalBags,
 			total60kgBags,
+			totalUnits,
 			totalWeight: totalWeight.toFixed(2),
 			totalPendingWeightsToMill: totalPendingWeightsToMill.toFixed(2),
 			weightsInProgress: weightsInProgress.toFixed(2),
@@ -221,6 +233,10 @@ export const useViewContainers = () => {
 
 	const hideWeightsTooltip = (expId) => {
 		setWeightsTooltipVisible((prev) => ({ ...prev, [expId]: false }));
+	};
+
+	const toggleWeightsTooltip = (expId) => {
+		setWeightsTooltipVisible((prev) => ({ ...prev, [expId]: !prev[expId] }));
 	};
 
 	return {
@@ -247,6 +263,10 @@ export const useViewContainers = () => {
 		calculateWeightsData,
 		showWeightsTooltip,
 		hideWeightsTooltip,
+		toggleWeightsTooltip,
 		refreshNotifications,
+		hasUnreadComments,
+		hasComments,
+		getNotificationStatus,
 	};
 };

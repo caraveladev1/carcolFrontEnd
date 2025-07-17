@@ -2,13 +2,15 @@ import { useState, useEffect } from 'react';
 import { API_BASE_URL, API_ENDPOINTS } from '../constants/api';
 
 export const useCommentNotifications = (user) => {
-	const [unreadComments, setUnreadComments] = useState(new Set());
+	const [unreadComments, setUnreadComments] = useState(new Set()); // Comentarios no leídos (verde)
+	const [icosWithComments, setIcosWithComments] = useState(new Set()); // ICOs que tienen comentarios (rojo)
 	const [loading, setLoading] = useState(false);
 
 	// Obtener ICOs con comentarios no leídos al cargar
 	useEffect(() => {
 		if (user) {
 			fetchUnreadComments();
+			fetchIcosWithComments();
 		}
 	}, [user]);
 
@@ -32,6 +34,26 @@ export const useCommentNotifications = (user) => {
 			console.error('❌ Error obteniendo comentarios no leídos:', error);
 		} finally {
 			setLoading(false);
+		}
+	};
+
+	const fetchIcosWithComments = async () => {
+		try {
+			//console.log('🔄 Obteniendo ICOs con comentarios para usuario:', user);
+
+			const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.GET_ICOS_WITH_COMMENTS}`, {
+				credentials: 'include',
+			});
+
+			if (response.ok) {
+				const icosWithCommentsData = await response.json();
+				//console.log('📋 ICOs con comentarios recibidos:', icosWithCommentsData);
+				setIcosWithComments(new Set(icosWithCommentsData));
+			} else {
+				console.error('❌ Error al obtener ICOs con comentarios:', response.status);
+			}
+		} catch (error) {
+			console.error('❌ Error obteniendo ICOs con comentarios:', error);
 		}
 	};
 
@@ -67,23 +89,43 @@ export const useCommentNotifications = (user) => {
 
 	const addUnreadComment = (ico) => {
 		setUnreadComments((prev) => new Set([...prev, ico]));
+		// También agregamos el ICO a la lista de ICOs con comentarios
+		setIcosWithComments((prev) => new Set([...prev, ico]));
 	};
 
 	const hasUnreadComments = (ico) => {
 		return unreadComments.has(ico);
 	};
 
+	const hasComments = (ico) => {
+		return icosWithComments.has(ico);
+	};
+
+	const getNotificationStatus = (ico) => {
+		if (!icosWithComments.has(ico)) {
+			return 'none'; // Sin notificación
+		}
+		if (unreadComments.has(ico)) {
+			return 'unread'; // Verde - comentarios no leídos
+		}
+		return 'read'; // Rojo - tiene comentarios pero todos están leídos
+	};
+
 	const refreshNotifications = () => {
 		if (user) {
 			fetchUnreadComments();
+			fetchIcosWithComments();
 		}
 	};
 
 	return {
 		unreadComments,
+		icosWithComments,
 		markAsRead,
 		addUnreadComment,
 		hasUnreadComments,
+		hasComments,
+		getNotificationStatus,
 		refreshNotifications,
 		loading,
 	};

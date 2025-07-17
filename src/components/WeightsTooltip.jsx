@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-export function WeightsTooltip({ isVisible, weightsData, position = 'top' }) {
+export function WeightsTooltip({ isVisible, weightsData, position = 'top', onClose }) {
 	const { t } = useTranslation();
 	const tooltipRef = useRef(null);
 	const [tooltipPosition, setTooltipPosition] = useState({
@@ -16,6 +16,14 @@ export function WeightsTooltip({ isVisible, weightsData, position = 'top' }) {
 		const tooltip = tooltipRef.current;
 		const parent = tooltip.parentElement;
 		if (!parent) return;
+
+		const handleClickOutside = (event) => {
+			if (tooltip && !tooltip.contains(event.target) && !parent.contains(event.target)) {
+				onClose?.();
+			}
+		};
+
+		document.addEventListener('mousedown', handleClickOutside);
 
 		const tooltipRect = tooltip.getBoundingClientRect();
 		const parentRect = parent.getBoundingClientRect();
@@ -95,11 +103,15 @@ export function WeightsTooltip({ isVisible, weightsData, position = 'top' }) {
 		};
 
 		setTooltipPosition(newPosition);
-	}, [isVisible, position, weightsData]);
+
+		return () => {
+			document.removeEventListener('mousedown', handleClickOutside);
+		};
+	}, [isVisible, position, weightsData, onClose]);
 	
 	if (!isVisible || !weightsData) return null;
 
-	const { packagingBreakdown, totalBags, total60kgBags, totalWeight, totalPendingWeightsToMill, weightsInProgress, weightsFinished } = weightsData;
+	const { packagingBreakdown, totalBags, total60kgBags, totalUnits, totalWeight, totalPendingWeightsToMill, weightsInProgress, weightsFinished } = weightsData;
 
 	const getTooltipClasses = () => {
 		const baseClasses = "fixed z-50 bg-cafe text-beige p-4 shadow-lg border border-pink min-w-[350px] max-w-[450px]";
@@ -162,6 +174,12 @@ export function WeightsTooltip({ isVisible, weightsData, position = 'top' }) {
 
 			{/* Totals section - without separator between them */}
 			<div className="border-t border-beige pt-3 space-y-2">
+				{/* Total units */}
+				<div className="flex justify-between items-center">
+					<span className="font-itf text-sm text-beige">{t('totalUnits')}:</span>
+					<span className="font-itf font-bold text-beige">{totalUnits} units</span>
+				</div>
+				
 				{/* Total 60kg bags */}
 				<div className="flex justify-between items-center">
 					<span className="font-itf text-sm text-beige">{t('totalWeight60kgBags')}:</span>

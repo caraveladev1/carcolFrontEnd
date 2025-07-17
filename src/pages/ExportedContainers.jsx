@@ -36,6 +36,7 @@ export function ExportedContainers() {
 		calculateWeightsData,
 		showWeightsTooltip,
 		hideWeightsTooltip,
+		toggleWeightsTooltip,
 	} = useExportedContainers();
 
 	if (loading) {
@@ -86,8 +87,7 @@ export function ExportedContainers() {
 									</button>
 									<div
 										className='relative'
-										onMouseEnter={() => showWeightsTooltip(exp_id)}
-										onMouseLeave={() => hideWeightsTooltip(exp_id)}
+										onClick={() => toggleWeightsTooltip(exp_id)}
 									>
 										<button className='text-lg font-bold text-cafe font-itf uppercase cursor-pointer hover:text-pink-400 transition-colors duration-200 bg-beige px-2 py-1'>
 											{t('weightDetails')}
@@ -96,6 +96,7 @@ export function ExportedContainers() {
 											isVisible={weightsTooltipVisible[exp_id] || false}
 											weightsData={weightsData}
 											position='top'
+											onClose={() => hideWeightsTooltip(exp_id)}
 										/>
 									</div>
 								</div>

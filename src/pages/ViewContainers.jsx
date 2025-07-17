@@ -44,6 +44,7 @@ export function ViewContainers() {
 		calculateWeightsData,
 		showWeightsTooltip,
 		hideWeightsTooltip,
+		toggleWeightsTooltip,
 		refreshNotifications,
 	} = useViewContainers();
 	if (loading) {
@@ -98,8 +99,7 @@ export function ViewContainers() {
 									<p className='text-lg font-bold text-celeste font-itf uppercase'>{`Loading to Port: ${dataWithButtons[0]?.date_landing || 'No available'}`}</p>
 									<div
 										className='relative'
-										onMouseEnter={() => showWeightsTooltip(exp_id)}
-										onMouseLeave={() => hideWeightsTooltip(exp_id)}
+										onClick={() => toggleWeightsTooltip(exp_id)}
 									>
 										<button className='text-lg font-bold text-cafe font-itf uppercase cursor-pointer hover:text-pink-400 transition-colors duration-200 bg-beige px-2 py-1'>
 											{t('weightDetails')}
@@ -108,6 +108,7 @@ export function ViewContainers() {
 											isVisible={weightsTooltipVisible[exp_id] || false}
 											weightsData={weightsData}
 											position='top'
+											onClose={() => hideWeightsTooltip(exp_id)}
 										/>
 									</div>
 								</div>

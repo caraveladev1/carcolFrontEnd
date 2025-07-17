@@ -1,7 +1,12 @@
 import React from 'react';
 import commentsButton from '../assets/img/commentsButton.webp';
 
-export function ViewContainerRow({ item, role, onCommentsClick, hasUnreadComments }) {
+export function ViewContainerRow({ item, role, onCommentsClick, getNotificationStatus }) {
+  const notificationStatus = getNotificationStatus ? getNotificationStatus(item.ico) : 'none';
+  let notificationColor = '';
+  if (notificationStatus === 'unread') notificationColor = 'bg-green-500';
+  if (notificationStatus === 'read') notificationColor = 'bg-red-500';
+
   return {
     ...item,
     comments: (
@@ -9,8 +14,8 @@ export function ViewContainerRow({ item, role, onCommentsClick, hasUnreadComment
         {item.comments}
         <button className='btn-class max-w-[20%] relative' onClick={() => onCommentsClick(item)}>
           <img src={commentsButton} alt='Comments' />
-          {hasUnreadComments && hasUnreadComments(item.ico) && (
-            <div className='absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white'></div>
+          {notificationStatus !== 'none' && (
+            <div className={`absolute -top-1 -right-1 w-3 h-3 ${notificationColor} rounded-full border-2 border-white`}></div>
           )}
         </button>
       </div>
