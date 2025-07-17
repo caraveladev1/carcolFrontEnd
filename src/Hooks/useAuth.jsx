@@ -1,24 +1,47 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { authService } from '../services/index.js';
+import { authService, userService } from '../services/index.js';
+import { DEFAULT_AUTHENTICATED_ROUTE, DEFAULT_UNAUTHENTICATED_ROUTE } from '../config/routes.js';
 
 export const useAuth = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [checking, setChecking] = useState(true);
+  const [user, setUser] = useState(null);
+  const [permissions, setPermissions] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const isAuthenticated = !!user;
 
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        await authService.checkProtectedRoute();
-        // Only redirect to view-containers if we're on the login page
+        const authData = await authService.checkProtectedRoute();
+        setUser(authData.user);
+        
+        // Obtener permisos del usuario desde el backend
+        try {
+          const permissionsData = await userService.getUserPermissions();
+          setPermissions(permissionsData.permissions || []);
+        } catch (permError) {
+          console.error('Error fetching permissions:', permError);
+          setPermissions([]);
+        }
+        
+        // Solo redirigir si estamos en la página de login
         if (location.pathname === '/') {
-          navigate('/view-containers', { replace: true });
+          navigate(DEFAULT_AUTHENTICATED_ROUTE, { replace: true });
         }
       } catch (error) {
-        // User is not authenticated, stay on login page
+        // Usuario no autenticado
+        setUser(null);
+        setPermissions([]);
+        
+        // Solo redirigir a login si no estamos ya en una ruta pública
+        if (location.pathname !== '/' && location.pathname !== '/unauthorized') {
+          navigate(DEFAULT_UNAUTHENTICATED_ROUTE, { replace: true });
+        }
       } finally {
-        setChecking(false);
+        setLoading(false);
       }
     };
 
@@ -26,7 +49,7 @@ export const useAuth = () => {
   }, [navigate, location.pathname]);
 
   useEffect(() => {
-    if (!checking) {
+    if (!loading) {
       const params = new URLSearchParams(window.location.search);
       const code = params.get('code');
       if (code) {
@@ -34,7 +57,7 @@ export const useAuth = () => {
         authService.redirect(code);
       }
     }
-  }, [checking]);
+  }, [loading]);
 
   const login = () => {
     authService.login();
@@ -43,14 +66,19 @@ export const useAuth = () => {
   const logout = async () => {
     try {
       await authService.logout();
-      navigate('/');
+      setUser(null);
+      setPermissions([]);
+      navigate(DEFAULT_UNAUTHENTICATED_ROUTE);
     } catch (error) {
       console.error('Logout error:', error);
     }
   };
 
   return {
-    checking,
+    user,
+    permissions,
+    isAuthenticated,
+    loading,
     login,
     logout,
   };

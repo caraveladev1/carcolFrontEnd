@@ -15,12 +15,11 @@ import { Pagination } from '../components/Pagination';
 import commentsButton from '../assets/img/commentsButton.webp';
 import { Comments } from '../components/Comments';
 import { WeightsTooltip } from '../components/WeightsTooltip';
-import { useRole } from '../Hooks/RoleContext.js';
 import { useViewContainers } from '../Hooks';
+import { PermissionGuard } from '../components/PermissionGuard.jsx';
 
 export function ViewContainers() {
 	const { t } = useTranslation();
-	const role = useRole();
 	const {
 		organizedData,
 		loading,
@@ -75,7 +74,7 @@ export function ViewContainers() {
 				</FilterSidebar>
 
 				{paginatedData.map(([exp_id, containerData]) => {
-					const dataWithButtons = mapDataWithButtons(containerData, role);
+					const dataWithButtons = mapDataWithButtons(containerData);
 					const totalWeight = dataWithButtons.reduce((sum, item) => {
 						const weight = parseFloat(item.weight) || 0;
 						return sum + weight;
@@ -88,11 +87,11 @@ export function ViewContainers() {
 							<div className='titleContainer flex flex-row justify-between gap-10 items-center'>
 								<div className='flex flex-row justify-between items-center gap-6'>
 									<h2 className='text-2xl font-bold text-white font-itf uppercase'>{exp_id}</h2>
-									{role === 'Admin' && (
+									<PermissionGuard permissions={['containers.edit']}>
 										<Link to={`/edit-container/${dataWithButtons[0].container_id}`}>
 											<img className='max-w-[50%]' src={editContainer} alt='Edit Container' />
 										</Link>
-									)}
+									</PermissionGuard>
 								</div>
 								<div className='containerData flex flex-row gap-4 items-center'>
 									<p className='text-lg font-bold text-pink font-itf uppercase'>{`Booking: ${dataWithButtons[0]?.booking || 'No available'}`}</p>

@@ -2,99 +2,34 @@ import React, { useState, useEffect, useRef } from 'react';
 import logoCaravela from '../assets/img/logoCaravela.png';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { useRole } from '../Hooks/RoleContext.js';
-import { useAuth } from '../Hooks';
-import { usePermissions } from '../Hooks/usePermissions';
-import { PermissionGate } from './PermissionProtectedRoute';
+import { useAuth } from '../Hooks/useAuth.jsx';
+import { useRouteAccess } from '../hooks/useRouteAccess.jsx';
 
 export function Banner() {
 	const { t } = useTranslation();
-	const role = useRole();
 	const { logout } = useAuth();
-	const { hasPermission } = usePermissions();
+	const { getMenuRoutes } = useRouteAccess();
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const menuRef = useRef(null);
 	const buttonRef = useRef(null);
 
-	// Configuración escalable del menú
-	const menuItems = [
-		{
-			id: 'pending-tasks',
-			label: 'pendingTasks',
-			path: '/pending-task',
-			permission: 'tasks.view',
-			category: 'Contenedores',
-			colorClass: 'text-celeste hover:border-celeste'
-		},
-		{
-			id: 'create-containers',
-			label: 'createContainers',
-			path: '/create',
-			permission: 'containers.create',
-			category: 'Contenedores',
-			colorClass: 'text-pink hover:border-pink'
-		},
-		{
-			id: 'add-announcements',
-			label: 'addAnnouncements',
-			path: '/announcements',
-			permission: 'announcements.view',
-			category: 'Contenedores',
-			colorClass: 'text-naranja hover:border-naranja'
-		},
-		{
-			id: 'view-containers',
-			label: 'viewContainers',
-			path: '/view-containers',
-			permission: 'containers.view',
-			category: 'Contenedores',
-			colorClass: 'text-yellow hover:border-yellow'
-		},
-		{
-			id: 'exported-containers',
-			label: 'exportedContainers',
-			path: '/exported-containers',
-			permission: 'containers.view',
-			category: 'Contenedores',
-			colorClass: 'text-beige hover:border-beige'
-		},
-		{
-			id: 'manage-users',
-			label: 'manageUsers',
-			path: '/admin/manage-users',
-			permission: 'users.view',
-			category: 'Usuarios',
-			colorClass: 'text-pink hover:border-pink'
-		}
-	];
-
-	// Agrupar elementos por categoría y filtrar por permisos
-	const groupedMenuItems = menuItems
-		.filter(item => hasPermission(item.permission))
-		.reduce((groups, item) => {
-			if (!groups[item.category]) {
-				groups[item.category] = [];
-			}
-			groups[item.category].push(item);
-			return groups;
-		}, {});
+	// Obtener rutas accesibles agrupadas por categoría
+	const groupedMenuItems = getMenuRoutes();
 
 	// Componente para renderizar cada elemento del menú
 	const MenuItem = ({ item }) => (
-		<PermissionGate key={item.id} permission={item.permission}>
-			<Link to={item.path} onClick={closeMenu}>
-				<button className={`w-full text-left px-6 py-4 ${item.colorClass} hover:bg-beige/10 uppercase font-bold transition-colors border-l-4 border-transparent`}>
-					{t(item.label)}
-				</button>
-			</Link>
-		</PermissionGate>
+		<Link key={item.path} to={item.path} onClick={closeMenu}>
+			<button className={`w-full text-left px-6 py-4 ${item.colorClass} hover:bg-beige/10 uppercase font-bold transition-colors border-l-4 border-transparent`}>
+				{t(item.label)}
+			</button>
+		</Link>
 	);
 
 	// Componente para renderizar cada categoría
 	const MenuCategory = ({ category, items }) => (
 		<div key={category} className='mb-6'>
 			<h3 className='text-beige/70 text-sm uppercase font-bold px-6 mb-3'>{category}</h3>
-			{items.map(item => <MenuItem key={item.id} item={item} />)}
+			{items.map(item => <MenuItem key={item.path} item={item} />)}
 		</div>
 	);
 
