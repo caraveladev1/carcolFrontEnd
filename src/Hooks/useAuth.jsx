@@ -1,9 +1,14 @@
-import { useState, useEffect } from 'react';
+
+import React, { useState, useEffect, useContext, createContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { authService, userService } from '../services/index.js';
 import { DEFAULT_AUTHENTICATED_ROUTE, DEFAULT_UNAUTHENTICATED_ROUTE } from '../config/routes.js';
 
-export const useAuth = () => {
+
+// CONTEXTO GLOBAL DE AUTH
+const AuthContext = createContext();
+
+export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [user, setUser] = useState(null);
@@ -13,40 +18,42 @@ export const useAuth = () => {
   const isAuthenticated = !!user;
 
   useEffect(() => {
+    let ignore = false;
     const checkAuth = async () => {
       try {
         const authData = await authService.checkProtectedRoute();
-        setUser(authData.user);
-        
+        if (!ignore) setUser(authData.user);
         // Obtener permisos del usuario desde el backend
         try {
           const permissionsData = await userService.getUserPermissions();
-          setPermissions(permissionsData.permissions || []);
+          if (!ignore) setPermissions(permissionsData.permissions || []);
         } catch (permError) {
           console.error('Error fetching permissions:', permError);
-          setPermissions([]);
+          if (!ignore) setPermissions([]);
         }
-        
         // Solo redirigir si estamos en la página de login
         if (location.pathname === '/') {
           navigate(DEFAULT_AUTHENTICATED_ROUTE, { replace: true });
         }
       } catch (error) {
         // Usuario no autenticado
-        setUser(null);
-        setPermissions([]);
-        
+        if (!ignore) {
+          setUser(null);
+          setPermissions([]);
+        }
         // Solo redirigir a login si no estamos ya en una ruta pública
         if (location.pathname !== '/' && location.pathname !== '/unauthorized') {
           navigate(DEFAULT_UNAUTHENTICATED_ROUTE, { replace: true });
         }
       } finally {
-        setLoading(false);
+        if (!ignore) setLoading(false);
       }
     };
-
     checkAuth();
-  }, [navigate, location.pathname]);
+    return () => { ignore = true; };
+    // Solo se ejecuta una vez al montar el provider
+    // eslint-disable-next-line
+  }, []);
 
   useEffect(() => {
     if (!loading) {
@@ -74,12 +81,25 @@ export const useAuth = () => {
     }
   };
 
-  return {
-    user,
-    permissions,
-    isAuthenticated,
-    loading,
-    login,
-    logout,
-  };
+  return (
+    <AuthContext.Provider value={{
+      user,
+      permissions,
+      isAuthenticated,
+      loading,
+      login,
+      logout,
+    }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+// HOOK PARA CONSUMIR EL CONTEXTO
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth debe usarse dentro de <AuthProvider>');
+  }
+  return context;
 };
