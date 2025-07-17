@@ -4,7 +4,7 @@ export * from './useCreateContainer.jsx';
 export * from './useExportedContainers.jsx';
 export * from './useEditContainer.jsx';
 export * from './useAuth.jsx';
-export * from '../hooks/useRouteAccess.jsx';
+export * from '../Hooks/useRouteAccess.jsx';
 export * from './useBookingForm.jsx';
 export * from './useCommentNotifications.jsx';
 export * from './useUserManagement.jsx';

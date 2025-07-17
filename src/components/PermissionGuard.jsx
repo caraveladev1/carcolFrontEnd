@@ -1,5 +1,5 @@
 import React from 'react';
-import { useRouteAccess } from '../hooks/useRouteAccess.jsx';
+import { useRouteAccess } from '../Hooks/useRouteAccess.jsx';
 
 /**
  * Componente para mostrar/ocultar elementos basado en permisos

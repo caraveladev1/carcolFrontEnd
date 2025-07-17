@@ -3,7 +3,7 @@ import logoCaravela from '../assets/img/logoCaravela.png';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../Hooks/useAuth.jsx';
-import { useRouteAccess } from '../hooks/useRouteAccess.jsx';
+import { useRouteAccess } from '../Hooks/useRouteAccess.jsx';
 
 export function Banner() {
 	const { t } = useTranslation();
