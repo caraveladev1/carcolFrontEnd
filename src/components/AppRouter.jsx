@@ -1,7 +1,7 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from '../Hooks/useAuth.jsx';
-import { useRouteAccess } from '../hooks/useRouteAccess.jsx';
+import { useRouteAccess } from '../Hooks/useRouteAccess.jsx';
 import { ROUTES_CONFIG, DEFAULT_AUTHENTICATED_ROUTE } from '../config/routes.js';
 import { Loader } from './Loader.jsx';
 
