@@ -1,31 +1,39 @@
 import React, { useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
-import { TableGeneric, Loader, TextInput, SelectInput, SubmitButton, Pagination } from '../components';
+import { TableGeneric, Loader, TextInput, SelectInput, SubmitButton, Pagination, Popup } from '../components';
 import { useUserManagement } from '../Hooks/useUserManagement';
 import { Banner } from '../components/Banner';
 import { headersTableManageUsers } from '../constants/tableHeaders.js';
+import { useTranslation } from 'react-i18next';
 
 export function ManageUsers() {
+	const { t } = useTranslation();
 	const { users, roles, loading, error, createUser, updateUserRole } = useUserManagement();
 	const [showCreateForm, setShowCreateForm] = useState(false);
 	const [formLoading, setFormLoading] = useState(false);
+const [popup, setPopup] = useState({ isOpen: false, title: '', message: '', type: 'info' });
 	const [currentPage, setCurrentPage] = useState(1);
 	const itemsPerPage = 20; // Número de usuarios por página
 	const methods = useForm({ defaultValues: { email: '', roleId: '' } });
 
-	const handleCreateUser = async (data) => {
-		if (!data.email || !data.roleId) return;
+const handleCreateUser = async (data) => {
+	if (!data.email || !data.roleId) return;
 
-		setFormLoading(true);
-		const result = await createUser(data.email, parseInt(data.roleId));
+	setFormLoading(true);
+	const result = await createUser(data.email, parseInt(data.roleId));
 
-		if (result.success) {
-			methods.reset();
-			setShowCreateForm(false);
-			setCurrentPage(1); // Resetear a la primera página cuando se añade un usuario
-		}
-		setFormLoading(false);
-	};
+	if (result.success) {
+		methods.reset();
+		setCurrentPage(1);
+		setPopup({ isOpen: true, title: 'success', message: 'User created successfully!', type: 'success' });
+	} else {
+		setPopup({ isOpen: true, title: 'error', message: 'Failed to create user. Please try again.', type: 'error' });
+	}
+	setFormLoading(false);
+};
+const closePopup = () => {
+	setPopup({ isOpen: false, title: '', message: '', type: 'info' });
+};
 
 	const handleRoleChange = async (userId, newRoleId) => {
 		await updateUserRole(userId, parseInt(newRoleId));
@@ -71,35 +79,45 @@ export function ManageUsers() {
 							onClick={() => setShowCreateForm(!showCreateForm)}
 							className='bg-naranja text-cafe px-4 py-1 uppercase font-itf hover:bg-yellow'
 						>
-							{showCreateForm ? 'Cancel' : 'Add User'}
+							{showCreateForm ? t('Cancel') : t('Add User')}
 						</button>
 					</div>
 
-					{error && <div className='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4'>{error}</div>}
+					<Popup
+						isOpen={popup.isOpen}
+						onClose={closePopup}
+						title={t(popup.title)}
+						message={t(popup.message)}
+						type={popup.type}
+					/>
 
 					{showCreateForm && (
 						<div className='bg-black/50 p-4  mb-6'>
-							<h2 className='text-lg font-semibold uppercase text-beige mb-4'>Add New User</h2>
+							<h2 className='text-lg font-itf font-semibold uppercase text-beige mb-4'>{t('Add New User')}</h2>
 							<FormProvider {...methods}>
 								<form onSubmit={methods.handleSubmit(handleCreateUser)} className='flex gap-4 items-end'>
 									<div className='flex-1 item-center flex-col'>
 										<TextInput
 											name='email'
-											label='Email'
-											placeholder='user@example.com'
-											className='border-cafe text-cafe focus:border-cafe'
-											rules={{ required: 'Email is required' }}
+											label={t('Email')}
+											placeholder='user@caravela.coffee'
+											rules={{ required: t('Email is required') }}
 										/>
 									</div>
 									<div className='flex-1 item-center flex-col'>
 										<SelectInput
 											name='roleId'
-											label='Role'
+											label={t('Role')}
 											options={roles?.map((role) => ({ value: role.id, label: role.name })) || []}
-											rules={{ required: 'Role is required' }}
+											rules={{ required: t('Role is required') }}
 										/>
 									</div>
-									<SubmitButton loading={formLoading} buttonText='Add User' loadingText='Adding...' color='naranja' />
+									<SubmitButton
+										loading={formLoading}
+										buttonText={t('Add User')}
+										loadingText={t('Adding...')}
+										color='naranja'
+									/>
 								</form>
 							</FormProvider>
 						</div>
