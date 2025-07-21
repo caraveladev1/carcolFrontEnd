@@ -15,7 +15,6 @@ export { TableGeneric } from './TableGeneric';
 export { Pagination } from './Pagination';
 export { LabelGeneric } from './LabelGeneric';
 export { Comments } from './Comments';
-export { Announcements } from './Announcements';
 export { FiltersEditContainer } from './FiltersEditContainer';
 export { FilterSidebar } from './FilterSidebar';
 export { ViewContainerRow } from './ViewContainerRow';

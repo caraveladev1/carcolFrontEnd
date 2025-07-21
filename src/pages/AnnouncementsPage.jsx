@@ -17,7 +17,7 @@ export function AnnouncementsPage() {
 	const { t } = useTranslation();
 	const { ico } = useParams();
 	const navigate = useNavigate();
-	
+
 	const {
 		data,
 		filteredData,
@@ -32,23 +32,7 @@ export function AnnouncementsPage() {
 		resetFilters,
 	} = useAnnouncements(() => navigate('/view-containers'));
 
-	const itemsPerPage = 50;
-	const [currentPage, setCurrentPage] = React.useState(1);
-
-	const paginatedData = useMemo(() => {
-		const startIndex = (currentPage - 1) * itemsPerPage;
-		const endIndex = startIndex + itemsPerPage;
-		return filteredData.slice(startIndex, endIndex);
-	}, [filteredData, currentPage]);
-
-	const totalItems = filteredData.length;
-
-	const goToPage = (page) => {
-		const totalPages = Math.ceil(totalItems / itemsPerPage);
-		if (page >= 1 && page <= totalPages) {
-			setCurrentPage(page);
-		}
-	};
+	// Pagination removed: use all filteredData directly
 
 	// Transform data for table display
 	const prepareDataForTable = (data) => {
@@ -69,13 +53,13 @@ export function AnnouncementsPage() {
 		}));
 	};
 
-	const tableData = prepareDataForTable(paginatedData);
+	const tableData = prepareDataForTable(filteredData);
 
 	return (
 		<div className='bg-dark-background bg-cover bg-fixed min-h-screen'>
 			<section className='max-w-[90%] m-auto'>
 				<Banner />
-				
+
 				<div className='flex justify-between items-center mb-6'>
 					<h1 className='text-3xl font-bold uppercase text-pink font-itf'>{t('addAnnouncements')}</h1>
 					<button
@@ -150,14 +134,9 @@ export function AnnouncementsPage() {
 					/>
 				</div>
 
-				<Pagination
-					currentPage={currentPage}
-					totalItems={totalItems}
-					itemsPerPage={itemsPerPage}
-					onPageChange={goToPage}
-				/>
+				{/* Pagination removed */}
 
-				<div className='flex justify-end mt-6'>
+				<div className='flex justify-end mt-6 pb-10'>
 					<SubmitButton
 						color='pink'
 						typeButton='button'
