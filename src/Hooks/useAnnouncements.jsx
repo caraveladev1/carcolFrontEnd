@@ -44,6 +44,7 @@ export const useAnnouncements = (onClose) => {
 		control: formControl,
 		handleSubmit,
 		setValue,
+		reset: resetForm,
 	} = useForm({
 		defaultValues: {},
 	});
@@ -188,6 +189,8 @@ export const useAnnouncements = (onClose) => {
 		totals,
 		filterControl,
 		formControl,
+		setValue,
+		resetForm,
 		submitAnnouncements,
 		filterOptions,
 		popup,

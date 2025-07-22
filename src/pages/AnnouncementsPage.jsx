@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Banner } from '../components/Banner';
@@ -7,7 +7,7 @@ import { SelectInput } from '../components/SelectInput';
 import { TextInput } from '../components/TextInput';
 import { FilterSidebar } from '../components/FilterSidebar';
 import { SubmitButton } from '../components/SubmitButton';
-import { Pagination } from '../components/Pagination';
+
 import { TableGeneric } from '../components/TableGeneric';
 import { Popup } from '../components/Popup';
 import { TABLE_HEADERS } from '../constants';
@@ -24,6 +24,8 @@ export function AnnouncementsPage() {
 		totals,
 		filterControl,
 		formControl,
+		setValue,
+		resetForm,
 		submitAnnouncements,
 		filterOptions,
 		popup,
@@ -32,28 +34,49 @@ export function AnnouncementsPage() {
 		resetFilters,
 	} = useAnnouncements(() => navigate('/view-containers'));
 
-	// Pagination removed: use all filteredData directly
+// Limpiar y reinicializar los valores del formulario solo cuando cambie la lista de ICOs filtrados (no al cambiar de página)
+const prevIcosStrRef = useRef('');
+useEffect(() => {
+	const currentIcos = filteredData.map(item => item.ico).sort();
+	const currentIcosStr = currentIcos.join(',');
+	if (prevIcosStrRef.current !== currentIcosStr && resetForm) {
+		const newValues = {};
+		filteredData.forEach((item) => {
+			newValues[item.ico] = {
+				announcement: item.announcement || '',
+				allocation: item.allocation || '',
+				sales_code: item.sales_code || '',
+				revision_number: item.revision_number || '',
+			};
+		});
+		resetForm(newValues);
+		prevIcosStrRef.current = currentIcosStr;
+	}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+}, [filteredData]);
 
-	// Transform data for table display
-	const prepareDataForTable = (data) => {
-		return data.map((item) => ({
-			ico: item.ico,
-			date_landing: item.date_landing,
-			packaging_capacity: item.contract_atlas?.packaging_type || 'N/A',
-			lot_type: item.contract_atlas?.lot_type || 'N/A',
-			origin_port: item.origin_port,
-			estimated_kg: item.contract_atlas?.estimated_kg || 0,
-			units: item.contract_atlas?.units || 0,
-			announcement: <TextInput name={`${item.ico}.announcement`} control={formControl} placeholder='Announcement' />,
-			allocation: <TextInput name={`${item.ico}.allocation`} control={formControl} placeholder='Allocation' />,
-			sales_code: <TextInput name={`${item.ico}.sales_code`} control={formControl} placeholder='Sales Code' />,
-			revision_number: (
-				<TextInput name={`${item.ico}.revision_number`} control={formControl} placeholder='Revision number' />
-			),
-		}));
-	};
 
-	const tableData = prepareDataForTable(filteredData);
+
+// Transform data for table display
+const prepareDataForTable = (data) => {
+	return data.map((item) => ({
+		ico: item.ico,
+		date_landing: item.date_landing,
+		packaging_capacity: item.contract_atlas?.packaging_type || 'N/A',
+		lot_type: item.contract_atlas?.lot_type || 'N/A',
+		origin_port: item.origin_port,
+		estimated_kg: item.contract_atlas?.estimated_kg || 0,
+		units: item.contract_atlas?.units || 0,
+		announcement: <TextInput name={`${item.ico}.announcement`} control={formControl} placeholder='Announcement' />,
+		allocation: <TextInput name={`${item.ico}.allocation`} control={formControl} placeholder='Allocation' />,
+		sales_code: <TextInput name={`${item.ico}.sales_code`} control={formControl} placeholder='Sales Code' />,
+		revision_number: (
+			<TextInput name={`${item.ico}.revision_number`} control={formControl} placeholder='Revision number' />
+		),
+	}));
+};
+
+const tableData = prepareDataForTable(filteredData);
 
 	return (
 		<div className='bg-dark-background bg-cover bg-fixed min-h-screen'>
@@ -127,11 +150,11 @@ export function AnnouncementsPage() {
 
 				{/* Data Table */}
 				<div className='my-4'>
-					<TableGeneric
-						headersTable={TABLE_HEADERS.ANNOUNCEMENTS}
-						dataTable={tableData}
-						renderRowContent={(row) => row}
-					/>
+			<TableGeneric
+				headersTable={TABLE_HEADERS.ANNOUNCEMENTS}
+				dataTable={tableData}
+				renderRowContent={(row) => row}
+			/>
 				</div>
 
 				{/* Pagination removed */}
