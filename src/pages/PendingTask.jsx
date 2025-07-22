@@ -7,9 +7,7 @@ import { Loader } from '../components/Loader';
 import { BookingAndDates } from '../components/BookingAndDates';
 import { DateInput } from '../components/DateInput';
 import { SelectInput } from '../components/SelectInput';
-import { FilterContainer } from '../components/FilterContainer';
 import { FilterSidebar } from '../components/FilterSidebar';
-import { Pagination } from '../components/Pagination';
 import { usePendingTasks } from '../Hooks';
 
 export function PendingTask() {
@@ -25,11 +23,6 @@ export function PendingTask() {
 		toggleBookingAndDates,
 		filteredData,
 		control,
-		paginatedData,
-		currentPage,
-		totalItems,
-		goToPage,
-		itemsPerPage,
 		resetFilters,
 	} = usePendingTasks();
 
@@ -56,36 +49,34 @@ export function PendingTask() {
 					</button>
 				</FilterSidebar>
 
-				{paginatedData.map(([exp_id, taskData]) => (
-					<div key={exp_id} className='my-4'>
-						<div className='titleContainer flex flex-row justify-between items-center'>
-							<h2 className='text-2xl font-bold text-white mb-4 font-itf uppercase'>{exp_id}</h2>
-							<button
-								className='bg-yellow-500 text-cafe font-itf uppercase text-xl font-bold px-2 py-1 bg-pink'
-								onClick={() => toggleBookingAndDates(exp_id)}
-							>
-								{showBookingAndDates[exp_id] ? t('addBookingAndDates') : t('addBookingAndDates')}
-							</button>
+				{/* Pagination removed: show all filteredData */}
+				{Object.entries(typeof filteredData === 'function' ? filteredData() : filteredData || {}).map(
+					([exp_id, taskData]) => (
+						<div key={exp_id} className='my-4'>
+							<div className='titleContainer flex flex-row justify-between items-center'>
+								<h2 className='text-2xl font-bold text-white mb-4 font-itf uppercase'>{exp_id}</h2>
+								<button
+									className='bg-yellow-500 text-cafe font-itf uppercase text-xl font-bold px-2 py-1 bg-pink'
+									onClick={() => toggleBookingAndDates(exp_id)}
+								>
+									{t('addBookingAndDates')}
+								</button>
+							</div>
+							{showBookingAndDates[exp_id] && (
+								<BookingAndDates
+									exportNumber={exp_id}
+									selectOptions={expId}
+									required={'required'}
+									initialFormData={initialFormData[exp_id]}
+									relatedData={organizedData[exp_id]}
+								/>
+							)}
+							<TableGeneric headersTable={TABLE_HEADERS.PENDING} dataTable={taskData} renderRowContent={(row) => row} />
 						</div>
-						{showBookingAndDates[exp_id] && (
-							<BookingAndDates
-								exportNumber={exp_id}
-								selectOptions={expId}
-								required={'required'}
-								initialFormData={initialFormData[exp_id]}
-								relatedData={organizedData[exp_id]}
-							/>
-						)}
-						<TableGeneric headersTable={TABLE_HEADERS.PENDING} dataTable={taskData} renderRowContent={(row) => row} />
-					</div>
-				))}
+					),
+				)}
 
-				<Pagination
-					currentPage={currentPage}
-					totalItems={totalItems}
-					itemsPerPage={itemsPerPage}
-					onPageChange={goToPage}
-				/>
+				{/* Pagination removed */}
 			</section>
 		</div>
 	);

@@ -7,7 +7,6 @@ import { TextInput } from '../components/TextInput';
 import { SelectInput } from '../components/SelectInput';
 import { DateInput } from '../components/DateInput';
 import { FilterContainer } from '../components/FilterContainer';
-import { Pagination } from '../components/Pagination';
 import { Loader } from '../components/Loader';
 import { SubmitButton } from '../components/SubmitButton';
 import { TableGeneric } from '../components/TableGeneric';
@@ -23,11 +22,7 @@ export function CreateContainer() {
 		preparedDataTable,
 		handleSubmit,
 		control,
-		paginatedData,
-		currentPage,
-		totalItems,
-		goToPage,
-		itemsPerPage,
+
 		popup,
 		closePopup,
 		resetFilters,
@@ -100,13 +95,7 @@ export function CreateContainer() {
 						</button>
 					</FilterContainer>
 				</form>
-				<TableGeneric headersTable={TABLE_HEADERS.CREATE_CONTAINER} dataTable={paginatedData} />
-				<Pagination
-					currentPage={currentPage}
-					totalItems={totalItems}
-					itemsPerPage={itemsPerPage}
-					onPageChange={goToPage}
-				/>
+				<TableGeneric headersTable={TABLE_HEADERS.CREATE_CONTAINER} dataTable={preparedDataTable} />
 			</section>
 			<Popup
 				isOpen={popup.isOpen}

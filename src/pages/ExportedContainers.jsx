@@ -7,16 +7,13 @@ import { TABLE_HEADERS } from '../constants';
 import { Loader } from '../components/Loader';
 import { DateInput } from '../components/DateInput';
 import { SelectInput } from '../components/SelectInput';
-import { FilterContainer } from '../components/FilterContainer';
 import { FilterSidebar } from '../components/FilterSidebar';
-import { Pagination } from '../components/Pagination';
 import { WeightsTooltip } from '../components/WeightsTooltip';
 import { useExportedContainers } from '../Hooks';
 
 export function ExportedContainers() {
 	const { t } = useTranslation();
 	const {
-		organizedData,
 		loading,
 		showDetails,
 		selectedExpId,
@@ -26,15 +23,9 @@ export function ExportedContainers() {
 		closeDetails,
 		filteredData,
 		control,
-		paginatedData,
-		currentPage,
-		totalItems,
-		goToPage,
-		itemsPerPage,
 		resetFilters,
 		weightsTooltipVisible,
 		calculateWeightsData,
-		showWeightsTooltip,
 		hideWeightsTooltip,
 		toggleWeightsTooltip,
 	} = useExportedContainers();
@@ -64,58 +55,53 @@ export function ExportedContainers() {
 					</button>
 				</FilterSidebar>
 
-				{paginatedData.map(([exp_id, containerData]) => {
-					const totalWeight = containerData.reduce((sum, item) => {
-						const weight = parseFloat(item.weight) || 0;
-						return sum + weight;
-					}, 0);
+				{/* Pagination removed: show all filteredData */}
+				{Object.entries(typeof filteredData === 'function' ? filteredData() : filteredData || {}).map(
+					([exp_id, containerData]) => {
+						const totalWeight = containerData.reduce((sum, item) => {
+							const weight = parseFloat(item.weight) || 0;
+							return sum + weight;
+						}, 0);
 
-					const weightsData = calculateWeightsData(containerData);
+						const weightsData = calculateWeightsData(containerData);
 
-					return (
-						<div key={exp_id} className='my-4'>
-							<div className='titleContainer flex flex-row justify-between items-center'>
-								<div className='flex flex-row justify-between items-center gap-6'>
-									<h2 className='text-2xl font-bold text-white mb-4 font-itf uppercase'>{exp_id}</h2>
-								</div>
-								<div className='containerData flex flex-row gap-4'>
-									<button
-										className='text-lg font-bold text-cafe font-itf uppercase hover:text-celeste-400 transition-colors duration-200 bg-beige px-2 py-1'
-										onClick={() => handleViewDetails(exp_id)}
-									>
-										{t('viewDetails')}
-									</button>
-									<div
-										className='relative'
-										onClick={() => toggleWeightsTooltip(exp_id)}
-									>
-										<button className='text-lg font-bold text-cafe font-itf uppercase cursor-pointer hover:text-pink-400 transition-colors duration-200 bg-beige px-2 py-1'>
-											{t('weightDetails')}
+						return (
+							<div key={exp_id} className='my-4'>
+								<div className='titleContainer flex flex-row justify-between items-center'>
+									<div className='flex flex-row justify-between items-center gap-6'>
+										<h2 className='text-2xl font-bold text-white mb-4 font-itf uppercase'>{exp_id}</h2>
+									</div>
+									<div className='containerData flex flex-row gap-4'>
+										<button
+											className='text-lg font-bold text-cafe font-itf uppercase hover:text-celeste-400 transition-colors duration-200 bg-beige px-2 py-1'
+											onClick={() => handleViewDetails(exp_id)}
+										>
+											{t('viewDetails')}
 										</button>
-										<WeightsTooltip
-											isVisible={weightsTooltipVisible[exp_id] || false}
-											weightsData={weightsData}
-											position='top'
-											onClose={() => hideWeightsTooltip(exp_id)}
-										/>
+										<div className='relative' onClick={() => toggleWeightsTooltip(exp_id)}>
+											<button className='text-lg font-bold text-cafe font-itf uppercase cursor-pointer hover:text-pink-400 transition-colors duration-200 bg-beige px-2 py-1'>
+												{t('weightDetails')}
+											</button>
+											<WeightsTooltip
+												isVisible={weightsTooltipVisible[exp_id] || false}
+												weightsData={weightsData}
+												position='top'
+												onClose={() => hideWeightsTooltip(exp_id)}
+											/>
+										</div>
 									</div>
 								</div>
+								<TableGeneric
+									headersTable={TABLE_HEADERS.EXPORTED}
+									dataTable={containerData}
+									renderRowContent={(row) => row}
+								/>
 							</div>
-							<TableGeneric
-								headersTable={TABLE_HEADERS.EXPORTED}
-								dataTable={containerData}
-								renderRowContent={(row) => row}
-							/>
-						</div>
-					);
-				})}
+						);
+					},
+				)}
 
-				<Pagination
-					currentPage={currentPage}
-					totalItems={totalItems}
-					itemsPerPage={itemsPerPage}
-					onPageChange={goToPage}
-				/>
+				{/* Pagination removed */}
 
 				{/* Mostrar ViewDetails si showDetails es true */}
 				{showDetails && <ViewDetails onClose={closeDetails} exp_id={selectedExpId} />}

@@ -9,10 +9,7 @@ import { Link } from 'react-router-dom';
 import { DateInput } from '../components/DateInput';
 import { SelectInput } from '../components/SelectInput';
 import { TextInput } from '../components/TextInput';
-import { FilterContainer } from '../components/FilterContainer';
 import { FilterSidebar } from '../components/FilterSidebar';
-import { Pagination } from '../components/Pagination';
-import commentsButton from '../assets/img/commentsButton.webp';
 import { Comments } from '../components/Comments';
 import { WeightsTooltip } from '../components/WeightsTooltip';
 import { useViewContainers } from '../Hooks';
@@ -21,7 +18,6 @@ import { PermissionGuard } from '../components/PermissionGuard.jsx';
 export function ViewContainers() {
 	const { t } = useTranslation();
 	const {
-		organizedData,
 		loading,
 		officeOptions,
 		packagingOptions,
@@ -29,20 +25,13 @@ export function ViewContainers() {
 		destinationOptions,
 		isCommentsOpen,
 		selectedIco,
-		handleCommentsButtonClick,
 		closeComments,
 		filteredData,
 		mapDataWithButtons,
 		control,
-		paginatedData,
-		currentPage,
-		totalItems,
-		goToPage,
-		itemsPerPage,
 		resetFilters,
 		weightsTooltipVisible,
 		calculateWeightsData,
-		showWeightsTooltip,
 		hideWeightsTooltip,
 		toggleWeightsTooltip,
 		refreshNotifications,
@@ -74,62 +63,57 @@ export function ViewContainers() {
 					</button>
 				</FilterSidebar>
 
-				{paginatedData.map(([exp_id, containerData]) => {
-					const dataWithButtons = mapDataWithButtons(containerData);
-					const totalWeight = dataWithButtons.reduce((sum, item) => {
-						const weight = parseFloat(item.weight) || 0;
-						return sum + weight;
-					}, 0);
+				{/* Pagination removed: show all filteredData */}
+				{Object.entries(typeof filteredData === 'function' ? filteredData() : filteredData || {}).map(
+					([exp_id, containerData]) => {
+						const dataWithButtons = mapDataWithButtons(containerData);
+						const totalWeight = dataWithButtons.reduce((sum, item) => {
+							const weight = parseFloat(item.weight) || 0;
+							return sum + weight;
+						}, 0);
 
-					const weightsData = calculateWeightsData(dataWithButtons);
+						const weightsData = calculateWeightsData(dataWithButtons);
 
-					return (
-						<div key={exp_id} className='my-4 gap-6'>
-							<div className='titleContainer flex flex-row justify-between gap-10 items-center'>
-								<div className='flex flex-row justify-between items-center gap-6'>
-									<h2 className='text-2xl font-bold text-white font-itf uppercase'>{exp_id}</h2>
-									<PermissionGuard permissions={['containers.edit']}>
-										<Link to={`/edit-container/${dataWithButtons[0].container_id}`}>
-											<img className='max-w-[50%]' src={editContainer} alt='Edit Container' />
-										</Link>
-									</PermissionGuard>
-								</div>
-								<div className='containerData flex flex-row gap-4 items-center'>
-									<p className='text-lg font-bold text-pink font-itf uppercase'>{`Booking: ${dataWithButtons[0]?.booking || 'No available'}`}</p>
-									<p className='text-lg font-bold text-celeste font-itf uppercase'>{`Loading to Port: ${dataWithButtons[0]?.date_landing || 'No available'}`}</p>
-									<div
-										className='relative'
-										onClick={() => toggleWeightsTooltip(exp_id)}
-									>
-										<button className='text-lg font-bold text-cafe font-itf uppercase cursor-pointer hover:text-pink-400 transition-colors duration-200 bg-beige px-2 py-1'>
-											{t('weightDetails')}
-										</button>
-										<WeightsTooltip
-											isVisible={weightsTooltipVisible[exp_id] || false}
-											weightsData={weightsData}
-											position='top'
-											onClose={() => hideWeightsTooltip(exp_id)}
-										/>
+						return (
+							<div key={exp_id} className='my-4 gap-6'>
+								<div className='titleContainer flex flex-row justify-between gap-10 items-center'>
+									<div className='flex flex-row justify-between items-center gap-6'>
+										<h2 className='text-2xl font-bold text-white font-itf uppercase'>{exp_id}</h2>
+										<PermissionGuard permissions={['containers.edit']}>
+											<Link to={`/edit-container/${dataWithButtons[0].container_id}`}>
+												<img className='max-w-[50%]' src={editContainer} alt='Edit Container' />
+											</Link>
+										</PermissionGuard>
+									</div>
+									<div className='containerData flex flex-row gap-4 items-center'>
+										<p className='text-lg font-bold text-pink font-itf uppercase'>{`Booking: ${dataWithButtons[0]?.booking || 'No available'}`}</p>
+										<p className='text-lg font-bold text-celeste font-itf uppercase'>{`Loading to Port: ${dataWithButtons[0]?.date_landing || 'No available'}`}</p>
+										<div className='relative' onClick={() => toggleWeightsTooltip(exp_id)}>
+											<button className='text-lg font-bold text-cafe font-itf uppercase cursor-pointer hover:text-pink-400 transition-colors duration-200 bg-beige px-2 py-1'>
+												{t('weightDetails')}
+											</button>
+											<WeightsTooltip
+												isVisible={weightsTooltipVisible[exp_id] || false}
+												weightsData={weightsData}
+												position='top'
+												onClose={() => hideWeightsTooltip(exp_id)}
+											/>
+										</div>
 									</div>
 								</div>
+								<div className='my-4'>
+									<TableGeneric
+										headersTable={TABLE_HEADERS.VIEW}
+										dataTable={dataWithButtons}
+										renderRowContent={(row) => row}
+									/>
+								</div>
 							</div>
-							<div className='my-4'>
-								<TableGeneric
-									headersTable={TABLE_HEADERS.VIEW}
-									dataTable={dataWithButtons}
-									renderRowContent={(row) => row}
-								/>
-							</div>
-						</div>
-					);
-				})}
+						);
+					},
+				)}
 
-				<Pagination
-					currentPage={currentPage}
-					totalItems={totalItems}
-					itemsPerPage={itemsPerPage}
-					onPageChange={goToPage}
-				/>
+				{/* Pagination removed */}
 
 				{isCommentsOpen && <Comments ico={selectedIco} onClose={closeComments} onCommentAdded={refreshNotifications} />}
 			</section>

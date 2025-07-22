@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
-import { TableGeneric, Loader, TextInput, SelectInput, SubmitButton, Pagination, Popup } from '../components';
+import { TableGeneric, Loader, TextInput, SelectInput, SubmitButton, Popup } from '../components';
 import { useUserManagement } from '../Hooks/useUserManagement';
 import { Banner } from '../components/Banner';
 import { headersTableManageUsers } from '../constants/tableHeaders.js';
@@ -11,29 +11,28 @@ export function ManageUsers() {
 	const { users, roles, loading, error, createUser, updateUserRole } = useUserManagement();
 	const [showCreateForm, setShowCreateForm] = useState(false);
 	const [formLoading, setFormLoading] = useState(false);
-const [popup, setPopup] = useState({ isOpen: false, title: '', message: '', type: 'info' });
-	const [currentPage, setCurrentPage] = useState(1);
-	const itemsPerPage = 20; // Número de usuarios por página
+	const [popup, setPopup] = useState({ isOpen: false, title: '', message: '', type: 'info' });
+	// ...
 	const methods = useForm({ defaultValues: { email: '', roleId: '' } });
 
-const handleCreateUser = async (data) => {
-	if (!data.email || !data.roleId) return;
+	const handleCreateUser = async (data) => {
+		if (!data.email || !data.roleId) return;
 
-	setFormLoading(true);
-	const result = await createUser(data.email, parseInt(data.roleId));
+		setFormLoading(true);
+		const result = await createUser(data.email, parseInt(data.roleId));
 
-	if (result.success) {
-		methods.reset();
-		setCurrentPage(1);
-		setPopup({ isOpen: true, title: 'success', message: 'User created successfully!', type: 'success' });
-	} else {
-		setPopup({ isOpen: true, title: 'error', message: 'Failed to create user. Please try again.', type: 'error' });
-	}
-	setFormLoading(false);
-};
-const closePopup = () => {
-	setPopup({ isOpen: false, title: '', message: '', type: 'info' });
-};
+		if (result.success) {
+			methods.reset();
+			setCurrentPage(1);
+			setPopup({ isOpen: true, title: 'success', message: 'User created successfully!', type: 'success' });
+		} else {
+			setPopup({ isOpen: true, title: 'error', message: 'Failed to create user. Please try again.', type: 'error' });
+		}
+		setFormLoading(false);
+	};
+	const closePopup = () => {
+		setPopup({ isOpen: false, title: '', message: '', type: 'info' });
+	};
 
 	const handleRoleChange = async (userId, newRoleId) => {
 		await updateUserRole(userId, parseInt(newRoleId));
@@ -41,14 +40,8 @@ const closePopup = () => {
 
 	const tableHeaders = headersTableManageUsers;
 
-	// Calcular datos paginados
-	const totalUsers = users?.length || 0;
-	const startIndex = (currentPage - 1) * itemsPerPage;
-	const endIndex = startIndex + itemsPerPage;
-	const paginatedUsers = users?.slice(startIndex, endIndex) || [];
-
 	const tableData =
-		paginatedUsers?.map((user) => ({
+		users?.map((user) => ({
 			username: user.username,
 			'role.name': user.role?.name || 'No Role',
 			actions: (
@@ -125,13 +118,7 @@ const closePopup = () => {
 
 					<TableGeneric headersTable={tableHeaders} dataTable={tableData} />
 
-					{/* Componente de paginación */}
-					<Pagination
-						currentPage={currentPage}
-						totalItems={totalUsers}
-						itemsPerPage={itemsPerPage}
-						onPageChange={setCurrentPage}
-					/>
+					{/* Pagination removed */}
 				</div>
 			</section>
 		</div>

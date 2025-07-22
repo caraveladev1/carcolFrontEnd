@@ -114,9 +114,9 @@ export const useExportedContainers = () => {
 			const units = parseFloat(item.units) || 0;
 			const packaging = item.packaging || 'Unknown';
 			const millingState = item.milling_state || '';
-			
+
 			totalWeight += weight;
-			
+
 			// Sum units by packaging instead of weight
 			if (!packagingBreakdown[packaging]) {
 				packagingBreakdown[packaging] = 0;
@@ -138,12 +138,12 @@ export const useExportedContainers = () => {
 		// Convert to array format for display (now showing units)
 		const packagingArray = Object.entries(packagingBreakdown).map(([packaging, units]) => ({
 			packaging,
-			units: units.toFixed(0) // Show units as whole numbers
+			units: units.toFixed(0), // Show units as whole numbers
 		}));
 
 		// Calculate 69kg bags (rounded down)
 		const totalBags = Math.floor(totalWeight / 69);
-		
+
 		// Calculate 60kg bags (rounded down)
 		const total60kgBags = Math.floor(totalWeight / 60);
 
@@ -154,17 +154,21 @@ export const useExportedContainers = () => {
 			totalWeight: totalWeight.toFixed(2),
 			totalPendingWeightsToMill: totalPendingWeightsToMill.toFixed(2),
 			weightsInProgress: weightsInProgress.toFixed(2),
-			weightsFinished: weightsFinished.toFixed(2)
+			weightsFinished: weightsFinished.toFixed(2),
 		};
 	};
 
 	// Handle tooltip visibility
 	const showWeightsTooltip = (expId) => {
-		setWeightsTooltipVisible(prev => ({ ...prev, [expId]: true }));
+		setWeightsTooltipVisible((prev) => ({ ...prev, [expId]: true }));
 	};
 
 	const hideWeightsTooltip = (expId) => {
-		setWeightsTooltipVisible(prev => ({ ...prev, [expId]: false }));
+		setWeightsTooltipVisible((prev) => ({ ...prev, [expId]: false }));
+	};
+
+	const toggleWeightsTooltip = (expId) => {
+		setWeightsTooltipVisible((prev) => ({ ...prev, [expId]: !prev[expId] }));
 	};
 
 	return {
@@ -188,5 +192,6 @@ export const useExportedContainers = () => {
 		calculateWeightsData,
 		showWeightsTooltip,
 		hideWeightsTooltip,
+		toggleWeightsTooltip,
 	};
 };

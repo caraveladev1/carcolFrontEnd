@@ -9,9 +9,7 @@ import { TABLE_HEADERS } from '../constants';
 import { SelectInput } from '../components/SelectInput';
 import { DateInput } from '../components/DateInput';
 import { FilterContainer } from '../components/FilterContainer';
-import { Pagination } from '../components/Pagination';
 import { useEditContainer } from '../Hooks';
-import { usePagination } from '../Hooks/usePagination';
 
 export const EditContainer = () => {
 	const { t } = useTranslation();
@@ -29,7 +27,7 @@ export const EditContainer = () => {
 		),
 	}));
 
-	const { currentPage, paginatedData, totalItems, goToPage } = usePagination(tableData, 100);
+	// Removed pagination logic
 
 	if (state.loading) return <Loader />;
 
@@ -66,8 +64,8 @@ export const EditContainer = () => {
 				</FilterContainer>
 				<h2 className='text-3xl font-bold uppercase text-pink font-itf mb-6'>{t('containerData')}</h2>
 				<FiltersEditContainer filterValues={state.filtersData} selectedIcos={state.selectedIcos} oldExportId={id} />
-				<TableGeneric headersTable={TABLE_HEADERS.EDIT_CONTAINER} dataTable={paginatedData} />
-				<Pagination currentPage={currentPage} totalItems={totalItems} itemsPerPage={100} onPageChange={goToPage} />
+				<TableGeneric headersTable={TABLE_HEADERS.EDIT_CONTAINER} dataTable={tableData} />
+				{/* Removed Pagination component */}
 			</section>
 		</div>
 	);
