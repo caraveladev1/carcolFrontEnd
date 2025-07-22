@@ -1,5 +1,5 @@
-//export const API_BASE_URL = 'https://bckcarcoltest.caravela.coffee/';
-export const API_BASE_URL = 'https://bckcarcol.caravela.coffee/';
+export const API_BASE_URL = 'https://bckcarcoltest.caravela.coffee/';
+//export const API_BASE_URL = 'https://bckcarcol.caravela.coffee/';
 //export const API_BASE_URL = 'http://localhost:8080/';
 
 export const API_ENDPOINTS = {
