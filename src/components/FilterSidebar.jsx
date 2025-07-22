@@ -10,12 +10,40 @@ export function FilterSidebar({ children, title = 'filters' }) {
 	// Cerrar filtros al hacer clic fuera
 	useEffect(() => {
 		const handleClickOutside = (event) => {
+			// No cerrar si el foco está en un input, select o react-select dentro del sidebar
+			const sidebar = filterRef.current;
+			const active = document.activeElement;
+			const isFocusInsideSidebar = sidebar && active && sidebar.contains(active);
+
+			// No cerrar si el click fue en un select, option, o menú de react-select
+			const isSelectOrOptionOrReactSelect = (el) => {
+				if (!el) return false;
+				// Nativo
+				if (el.tagName === 'SELECT' || el.tagName === 'OPTION') return true;
+				// react-select menú y controles
+				if (el.classList && (
+					el.classList.contains('react-select__menu') ||
+					el.classList.contains('react-select__control') ||
+					el.classList.contains('react-select__multi-value__remove') ||
+					el.classList.contains('react-select__multi-value') ||
+					el.classList.contains('react-select__option')
+				)) return true;
+				// Buscar hacia arriba en el DOM
+				return el.closest && (
+					el.closest('select') ||
+					el.closest('.react-select__menu') ||
+					el.closest('.react-select__control') ||
+					el.closest('.react-select__multi-value')
+				);
+			};
 			if (
 				isFilterOpen &&
 				filterRef.current &&
 				!filterRef.current.contains(event.target) &&
 				buttonRef.current &&
-				!buttonRef.current.contains(event.target)
+				!buttonRef.current.contains(event.target) &&
+				!isSelectOrOptionOrReactSelect(event.target) &&
+				!isFocusInsideSidebar
 			) {
 				setIsFilterOpen(false);
 			}
