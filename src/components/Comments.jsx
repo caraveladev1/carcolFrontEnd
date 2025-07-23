@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { TextInput } from './TextInput';
 import { useComments } from '../Hooks/useComments';
 
-export function Comments({ ico, onClose, onCommentAdded }) {
+export function Comments({ ico, onClose, onCommentAdded, readOnly = false }) {
 	const { t } = useTranslation();
 	const { comments, control, addComment } = useComments(ico, onCommentAdded);
 
@@ -30,21 +30,23 @@ export function Comments({ ico, onClose, onCommentAdded }) {
 							</li>
 						))}
 					</ul>
-					<form onSubmit={addComment}>
-						<div className='flex flex-row justify-end mt-4 gap-6'>
-							<TextInput
-								name='comment'
-								control={control}
-								placeholder={t('typeComment')}
-								className='h-30 bg-transparent text-lg border-2 border-cafe font-itf p-5 w-full text-cafe focus:outline-none focus:border-cafe resize-none overflow-y-auto'
-								as='textarea'
-								caseSensitive={true}
-							/>
-							<button type='submit' className='bg-cafe font-itf text-lg text-white p-4 h-30'>
-								{t('submit')}
-							</button>
-						</div>
-					</form>
+					{!readOnly && (
+						<form onSubmit={addComment}>
+							<div className='flex flex-row justify-end mt-4 gap-6'>
+								<TextInput
+									name='comment'
+									control={control}
+									placeholder={t('typeComment')}
+									className='h-30 bg-transparent text-lg border-2 border-cafe font-itf p-5 w-full text-cafe focus:outline-none focus:border-cafe resize-none overflow-y-auto'
+									as='textarea'
+									caseSensitive={true}
+								/>
+								<button type='submit' className='bg-cafe font-itf text-lg text-white p-4 h-30'>
+									{t('submit')}
+								</button>
+							</div>
+						</form>
+					)}
 				</div>
 			</div>
 		</div>

@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ViewDetails } from '../components/ViewDetails';
 import { Banner } from '../components/Banner';
 import { useTranslation } from 'react-i18next';
 import { TableGeneric } from '../components/TableGeneric';
+import { ViewContainerRow } from '../components/ViewContainerRow';
+import { Comments } from '../components/Comments';
 import { TABLE_HEADERS } from '../constants';
 import { Loader } from '../components/Loader';
 import { DateInput } from '../components/DateInput';
@@ -29,6 +31,19 @@ export function ExportedContainers() {
 		hideWeightsTooltip,
 		toggleWeightsTooltip,
 	} = useExportedContainers();
+
+	const [isCommentsOpen, setIsCommentsOpen] = useState(false);
+	const [selectedIco, setSelectedIco] = useState(null);
+
+	const handleCommentsClick = (item) => {
+		setSelectedIco(item.ico);
+		setIsCommentsOpen(true);
+	};
+
+	const handleCloseComments = () => {
+		setIsCommentsOpen(false);
+		setSelectedIco(null);
+	};
 
 	if (loading) {
 		return <Loader />;
@@ -65,6 +80,16 @@ export function ExportedContainers() {
 
 						const weightsData = calculateWeightsData(containerData);
 
+						// Inyectar botón de comentarios igual que en ViewContainers
+						const dataWithButtons = containerData.map((item) =>
+							ViewContainerRow({
+								item,
+								onCommentsClick: handleCommentsClick,
+								getNotificationStatus: null,
+								readOnly: true,
+							}),
+						);
+
 						return (
 							<div key={exp_id} className='my-4'>
 								<div className='titleContainer flex flex-row justify-between items-center'>
@@ -93,7 +118,7 @@ export function ExportedContainers() {
 								</div>
 								<TableGeneric
 									headersTable={TABLE_HEADERS.EXPORTED}
-									dataTable={containerData}
+									dataTable={dataWithButtons}
 									renderRowContent={(row) => row}
 								/>
 							</div>
@@ -101,7 +126,8 @@ export function ExportedContainers() {
 					},
 				)}
 
-				{/* Pagination removed */}
+				{/* Mostrar Comments si isCommentsOpen es true */}
+				{isCommentsOpen && <Comments ico={selectedIco} onClose={handleCloseComments} readOnly={true} />}
 
 				{/* Mostrar ViewDetails si showDetails es true */}
 				{showDetails && <ViewDetails onClose={closeDetails} exp_id={selectedExpId} />}
