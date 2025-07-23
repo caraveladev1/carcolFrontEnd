@@ -43,7 +43,6 @@ export const TABLE_HEADERS = {
 	VIEW: [
 		'contract',
 		'shipmentMonth',
-		'originPort',
 		'ico',
 		'secondary_ico_id',
 		'mark',
