@@ -1,17 +1,21 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { formatHeader } from '../utils/formatHeader';
 
 export function TableGeneric({ headersTable, dataTable }) {
 	const { t } = useTranslation();
 
 	return (
 		<div className='overflow-x-auto mt-6 pb-6'>
-			<table className='min-w-full border-[2px] border-cafe table-auto' >
+			<table className='min-w-full border-[2px] border-cafe table-auto'>
 				<thead>
 					<tr className='bg-beige uppercase font-itf text-lg border-[2px] border-cafe h-[3rem]'>
 						{headersTable.map((header, index) => (
-							<th className='h-[3rem] text-center text-verdeTexto border-[2px] border-cafe px-4 whitespace-nowrap' key={index}>
-								{t(header)}
+							<th
+								className='h-[3rem] text-center text-verdeTexto border-[2px] border-cafe px-4 whitespace-nowrap'
+								key={index}
+							>
+								{formatHeader(t(header))}
 							</th>
 						))}
 					</tr>
@@ -32,7 +36,10 @@ export function TableGeneric({ headersTable, dataTable }) {
 						))
 					) : (
 						<tr>
-							<td colSpan={headersTable.length} className='text-center py-4 bg-verdeClaro/[.5] font-itf text-beige px-4'>
+							<td
+								colSpan={headersTable.length}
+								className='text-center py-4 bg-verdeClaro/[.5] font-itf text-beige px-4'
+							>
 								No Data
 							</td>
 						</tr>
