@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../Hooks/useAuth.jsx';
 import { useRouteAccess } from '../Hooks/useRouteAccess.jsx';
+import { DEFAULT_AUTHENTICATED_ROUTE } from '../config/routes.js';
 
 export function Banner() {
 	const { t } = useTranslation();
@@ -19,7 +20,9 @@ export function Banner() {
 	// Componente para renderizar cada elemento del menú
 	const MenuItem = ({ item }) => (
 		<Link key={item.path} to={item.path} onClick={closeMenu}>
-			<button className={`w-full text-left px-6 py-4 ${item.colorClass} hover:bg-beige/10 uppercase font-bold transition-colors border-l-4 border-transparent`}>
+			<button
+				className={`w-full text-left px-6 py-4 ${item.colorClass} hover:bg-beige/10 uppercase font-bold transition-colors border-l-4 border-transparent`}
+			>
 				{t(item.label)}
 			</button>
 		</Link>
@@ -29,7 +32,9 @@ export function Banner() {
 	const MenuCategory = ({ category, items }) => (
 		<div key={category} className='mb-6'>
 			<h3 className='text-beige/70 text-sm uppercase font-bold px-6 mb-3'>{category}</h3>
-			{items.map(item => <MenuItem key={item.path} item={item} />)}
+			{items.map((item) => (
+				<MenuItem key={item.path} item={item} />
+			))}
 		</div>
 	);
 
@@ -64,8 +69,8 @@ export function Banner() {
 		<section className='bannerSection w-full m-auto relative'>
 			<div className='flex flex-row items-center justify-between py-2 gap-6 font-itf'>
 				<div>
-					<Link to='/'>
-					<img className='cursor-pointer max-w-[50%]' src={logoCaravela} alt='Logo de caravela' />
+					<Link to={DEFAULT_AUTHENTICATED_ROUTE}>
+						<img className='cursor-pointer max-w-[50%]' src={logoCaravela} alt='Logo de caravela' />
 					</Link>
 				</div>
 
