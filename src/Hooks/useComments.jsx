@@ -6,6 +6,9 @@ export const useComments = (ico, onCommentAdded) => {
 	const [comments, setComments] = useState([]);
 	const [commentId, setCommentId] = useState(null);
 	const [user, setUser] = useState('');
+	const [popup, setPopup] = useState({ isOpen: false, title: '', message: '', type: '' });
+
+	const closePopup = () => setPopup((prev) => ({ ...prev, isOpen: false }));
 
 	const { control, handleSubmit, reset } = useForm({
 		defaultValues: { comment: '' },
@@ -70,11 +73,21 @@ export const useComments = (ico, onCommentAdded) => {
 					onCommentAdded(ico);
 				}
 
-				alert('Comment added successfully');
+				setPopup({
+					isOpen: true,
+					title: 'success',
+					message: 'Comment added successfully',
+					type: 'success',
+				});
 			})
 			.catch((error) => {
 				console.error('Error al agregar el comentario:', error);
-				alert('Error al agregar el comentario');
+				setPopup({
+					isOpen: true,
+					title: 'error',
+					message: 'Error al agregar el comentario',
+					type: 'error',
+				});
 			});
 	});
 
@@ -82,5 +95,7 @@ export const useComments = (ico, onCommentAdded) => {
 		comments,
 		control,
 		addComment,
+		popup,
+		closePopup,
 	};
 };
