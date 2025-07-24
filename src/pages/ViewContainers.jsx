@@ -85,10 +85,12 @@ export function ViewContainers() {
 											</Link>
 										</PermissionGuard>
 									</div>
-<div className='containerData flex flex-row gap-4 items-center'>
-  <p className='text-lg font-bold text-pink font-itf uppercase'>{`Booking: ${dataWithButtons[0]?.booking || 'No available'}`}</p>
-  <p className='text-lg font-bold text-green-400 font-itf uppercase'>{`Origin Port: ${dataWithButtons[0]?.origin_port || 'No available'}`}</p>
-  <p className='text-lg font-bold text-celeste font-itf uppercase'>{`Loading to Port: ${dataWithButtons[0]?.date_landing || 'No available'}`}</p>
+									<div className='containerData flex flex-row gap-4 items-center'>
+										<p className='text-lg font-bold text-pink font-itf uppercase'>{`Booking: ${dataWithButtons[0]?.booking || 'No available'}`}</p>
+										<p className='text-lg font-bold text-celeste font-itf uppercase'>{`Origin Port: ${dataWithButtons[0]?.origin_port || 'No available'}`}</p>
+										<p
+											className={`text-lg font-bold font-itf uppercase ${dataWithButtons[0]?.date_landing_color}`}
+										>{`Loading to Port: ${dataWithButtons[0]?.date_landing || 'No available'}`}</p>
 										<div className='relative' onClick={() => toggleWeightsTooltip(exp_id)}>
 											<button className='text-lg font-bold text-cafe font-itf uppercase cursor-pointer hover:text-pink-400 transition-colors duration-200 bg-beige px-2 py-1'>
 												{t('weightDetails')}
