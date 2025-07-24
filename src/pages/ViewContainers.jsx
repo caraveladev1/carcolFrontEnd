@@ -86,6 +86,7 @@ export function ViewContainers() {
 										</PermissionGuard>
 									</div>
 									<div className='containerData flex flex-row gap-4 items-center'>
+										<p className='text-lg font-bold text-morado font-itf uppercase'>{`ETD: ${dataWithButtons[0]?.export_date || 'Please, fill in Atlas'}`}</p>
 										<p className='text-lg font-bold text-pink font-itf uppercase'>{`Booking: ${dataWithButtons[0]?.booking || 'No available'}`}</p>
 										<p className='text-lg font-bold text-celeste font-itf uppercase'>{`Origin Port: ${dataWithButtons[0]?.origin_port || 'No available'}`}</p>
 										<p
