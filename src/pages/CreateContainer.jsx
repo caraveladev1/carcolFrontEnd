@@ -12,6 +12,7 @@ import { SubmitButton } from '../components/SubmitButton';
 import { TableGeneric } from '../components/TableGeneric';
 import { Popup } from '../components/Popup';
 import { useCreateContainer } from '../Hooks';
+import { FloatingScrollButton } from '../components/general/FloatingScrollButton';
 
 export function CreateContainer() {
 	const { t } = useTranslation();
@@ -34,6 +35,7 @@ export function CreateContainer() {
 
 	return (
 		<div className='bg-dark-background bg-cover bg-fixed min-h-screen'>
+			<FloatingScrollButton />
 			<section className='max-w-[90%] m-auto'>
 				<Banner />
 				<h1 className='text-3xl font-bold uppercase text-pink font-itf mb-4'>{t('createContainer')}</h1>

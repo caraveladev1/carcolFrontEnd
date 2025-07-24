@@ -11,14 +11,14 @@ export const useViewContainers = () => {
 	const [loading, setLoading] = useState(true);
 	const [user, setUser] = useState('');
 
-	const { 
-		unreadComments, 
-		icosWithComments, 
-		markAsRead, 
-		hasUnreadComments, 
-		hasComments, 
-		getNotificationStatus, 
-		refreshNotifications 
+	const {
+		unreadComments,
+		icosWithComments,
+		markAsRead,
+		hasUnreadComments,
+		hasComments,
+		getNotificationStatus,
+		refreshNotifications,
 	} = useCommentNotifications(user);
 
 	const { control, watch, reset } = useForm({
@@ -47,14 +47,38 @@ export const useViewContainers = () => {
 	const itemsPerPage = 10;
 
 	const mapDataWithButtons = (data, role) => {
-		return dataTransformers.mapViewContainerData(data).map((item) =>
-			ViewContainerRow({
-				item,
+		const getDateLandingColor = (dateLanding) => {
+			if (!dateLanding) return 'text-celeste';
+			const today = new Date();
+			// Parse dateLanding as YYYY-MM-DD
+			const [year, month, day] = dateLanding.split('-');
+			const landingDate = new Date(Number(year), Number(month) - 1, Number(day));
+			today.setHours(0, 0, 0, 0);
+			landingDate.setHours(0, 0, 0, 0);
+			const diffDays = Math.ceil((landingDate - today) / (1000 * 60 * 60 * 24));
+			if (diffDays < 0) return 'text-naranja'; // vencido
+			if (diffDays <= 7) return 'text-yellow'; // menos de una semana
+			return 'text-verde2'; // más de una semana
+		};
+
+		const formatDateShort = (dateLanding) => {
+			if (!dateLanding) return '';
+			const [year, month, day] = dateLanding.split('-');
+			return `${day}/${month}/${year}`;
+		};
+
+		return dataTransformers.mapViewContainerData(data).map((item) => {
+			return ViewContainerRow({
+				item: {
+					...item,
+					date_landing_color: getDateLandingColor(item.date_landing),
+					date_landing_short: formatDateShort(item.date_landing),
+				},
 				role,
 				onCommentsClick: handleCommentsButtonClick,
 				getNotificationStatus,
-			}),
-		);
+			});
+		});
 	};
 
 	// Obtener usuario al cargar el componente

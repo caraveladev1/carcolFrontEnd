@@ -8,6 +8,7 @@ export default {
 				naranja: '#DB8358',
 				grisClaro: '#D9D9D9',
 				verde: '#4F4E24',
+				verde2: '#73db6e',
 				verdeClaro: '#B0D8D1',
 				verdeTexto: '#4D4C22',
 				cafe: '#482E20',

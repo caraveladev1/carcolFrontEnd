@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
-import { TableGeneric, Loader, TextInput, SelectInput, SubmitButton, Popup } from '../components';
+import { TableGeneric, Loader, TextInput, SelectInput, SubmitButton, Popup, FloatingScrollButton } from '../components';
 import { useUserManagement } from '../Hooks/useUserManagement';
 import { Banner } from '../components/Banner';
 import { headersTableManageUsers } from '../constants/tableHeaders.js';
@@ -63,6 +63,7 @@ export function ManageUsers() {
 
 	return (
 		<div className='bg-dark-background bg-cover bg-fixed min-h-screen'>
+			<FloatingScrollButton />
 			<section className='max-w-[90%] m-auto'>
 				<Banner />
 				<div className='p-6'>

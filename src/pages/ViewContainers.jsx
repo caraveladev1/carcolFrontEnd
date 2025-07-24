@@ -14,6 +14,7 @@ import { Comments } from '../components/Comments';
 import { WeightsTooltip } from '../components/WeightsTooltip';
 import { useViewContainers } from '../Hooks';
 import { PermissionGuard } from '../components/PermissionGuard.jsx';
+import { FloatingScrollButton } from '../components/general/FloatingScrollButton.jsx';
 
 export function ViewContainers() {
 	const { t } = useTranslation();
@@ -42,6 +43,7 @@ export function ViewContainers() {
 
 	return (
 		<div className='bg-dark-background bg-cover bg-fixed min-h-screen'>
+			<FloatingScrollButton />
 			<section className='homeContainer max-w-[90%] m-auto pb-5'>
 				<Banner />
 				<h1 className='text-3xl font-bold my-8 uppercase text-yellow font-itf'>{t('viewContainers')}</h1>
@@ -85,10 +87,13 @@ export function ViewContainers() {
 											</Link>
 										</PermissionGuard>
 									</div>
-<div className='containerData flex flex-row gap-4 items-center'>
-  <p className='text-lg font-bold text-pink font-itf uppercase'>{`Booking: ${dataWithButtons[0]?.booking || 'No available'}`}</p>
-  <p className='text-lg font-bold text-green-400 font-itf uppercase'>{`Origin Port: ${dataWithButtons[0]?.origin_port || 'No available'}`}</p>
-  <p className='text-lg font-bold text-celeste font-itf uppercase'>{`Loading to Port: ${dataWithButtons[0]?.date_landing || 'No available'}`}</p>
+									<div className='containerData flex flex-row gap-4 items-center'>
+										<p className='text-lg font-bold text-morado font-itf uppercase'>{`ETD: ${dataWithButtons[0]?.export_date || 'Please, fill in Atlas'}`}</p>
+										<p className='text-lg font-bold text-pink font-itf uppercase'>{`Booking: ${dataWithButtons[0]?.booking || 'No available'}`}</p>
+										<p className='text-lg font-bold text-celeste font-itf uppercase'>{`Origin Port: ${dataWithButtons[0]?.origin_port || 'No available'}`}</p>
+										<p
+											className={`text-lg font-bold font-itf uppercase ${dataWithButtons[0]?.date_landing_color}`}
+										>{`Loading to Port: ${dataWithButtons[0]?.date_landing || 'No available'}`}</p>
 										<div className='relative' onClick={() => toggleWeightsTooltip(exp_id)}>
 											<button className='text-lg font-bold text-cafe font-itf uppercase cursor-pointer hover:text-pink-400 transition-colors duration-200 bg-beige px-2 py-1'>
 												{t('weightDetails')}

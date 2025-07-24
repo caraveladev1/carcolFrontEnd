@@ -10,6 +10,7 @@ import { SelectInput } from '../components/SelectInput';
 import { DateInput } from '../components/DateInput';
 import { FilterContainer } from '../components/FilterContainer';
 import { useEditContainer } from '../Hooks';
+import { FloatingScrollButton } from '../components/general/FloatingScrollButton';
 
 export const EditContainer = () => {
 	const { t } = useTranslation();
@@ -33,6 +34,7 @@ export const EditContainer = () => {
 
 	return (
 		<div className='bg-dark-background bg-cover bg-fixed min-h-screen'>
+			<FloatingScrollButton />
 			<section className='max-w-[90%] m-auto'>
 				<Banner />
 				<h1 className='text-3xl font-bold uppercase text-pink font-itf mb-6'>{t('editContainer')}</h1>

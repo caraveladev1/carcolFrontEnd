@@ -9,6 +9,7 @@ import { DateInput } from '../components/DateInput';
 import { SelectInput } from '../components/SelectInput';
 import { FilterSidebar } from '../components/FilterSidebar';
 import { usePendingTasks } from '../Hooks';
+import { FloatingScrollButton } from '../components/general/FloatingScrollButton';
 
 export function PendingTask() {
 	const { t } = useTranslation();
@@ -31,6 +32,7 @@ export function PendingTask() {
 	}
 	return (
 		<div className='bg-dark-background bg-cover bg-fixed min-h-screen'>
+			<FloatingScrollButton />
 			<section className='homeContainer max-w-[90%] m-auto pb-5'>
 				<Banner />
 				<h1 className='text-3xl font-bold my-8 uppercase text-celeste font-itf'>{t('pendingTasks')}</h1>
