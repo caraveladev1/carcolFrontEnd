@@ -14,6 +14,7 @@ import { Comments } from '../components/Comments';
 import { WeightsTooltip } from '../components/WeightsTooltip';
 import { useViewContainers } from '../Hooks';
 import { PermissionGuard } from '../components/PermissionGuard.jsx';
+import { FloatingScrollButton } from '../components/general/FloatingScrollButton.jsx';
 
 export function ViewContainers() {
 	const { t } = useTranslation();
@@ -42,6 +43,7 @@ export function ViewContainers() {
 
 	return (
 		<div className='bg-dark-background bg-cover bg-fixed min-h-screen'>
+			<FloatingScrollButton />
 			<section className='homeContainer max-w-[90%] m-auto pb-5'>
 				<Banner />
 				<h1 className='text-3xl font-bold my-8 uppercase text-yellow font-itf'>{t('viewContainers')}</h1>

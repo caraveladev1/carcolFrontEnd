@@ -24,3 +24,4 @@ export { IcoSelectionTable } from './IcoSelectionTable';
 
 export { Popup } from './Popup';
 export { WeightsTooltip } from './WeightsTooltip';
+export { FloatingScrollButton } from './general/FloatingScrollButton.jsx';
