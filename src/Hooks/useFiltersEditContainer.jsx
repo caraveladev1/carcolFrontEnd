@@ -58,6 +58,7 @@ export const useFiltersEditContainer = (filterValues, selectedIcos, oldExportId)
 					filters: {
 						exportDate: data.exportDate,
 						estimatedArrival: data.estimatedArrival,
+						exportId: data.exportId,
 					},
 				};
 
@@ -67,7 +68,7 @@ export const useFiltersEditContainer = (filterValues, selectedIcos, oldExportId)
 					body: JSON.stringify(limitedPayload),
 				});
 
-				if (!response.ok || !limitedPayload.filters.exportDate || !limitedPayload.filters.estimatedArrival) {
+				if (!response.ok || (!limitedPayload.filters.exportDate && !limitedPayload.filters.estimatedArrival)) {
 					setPopup({
 						isOpen: true,
 						title: 'validationError',
