@@ -34,17 +34,7 @@ export function FiltersEditContainer({ filterValues, selectedIcos, oldExportId }
 		}
 	};
 
-	const orderedFilters = [
-		'booking',
-		'dateLandingPort',
-		'estimatedArrival',
-		'exportDate',
-		'capacityContainer',
-		'port',
-		'originPort',
-		'incoterm',
-		'exportId',
-	];
+	const orderedFilters = filtersEditContainer;
 
 	return (
 		<>

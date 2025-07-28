@@ -18,6 +18,7 @@ export const TABLE_HEADERS = {
 		'milling_order',
 		'milling_state',
 		'weight',
+		'process_type',
 	],
 	EXPORTED: [
 		'contract',
@@ -38,6 +39,7 @@ export const TABLE_HEADERS = {
 		'milling_order',
 		'milling_state',
 		'weight',
+		'process_type',
 		'comments',
 	],
 	VIEW: [
@@ -58,6 +60,7 @@ export const TABLE_HEADERS = {
 		'milling_order',
 		'milling_state',
 		'weight',
+		'process_type',
 		'comments',
 	],
 	CREATE_CONTAINER: [
@@ -78,6 +81,7 @@ export const TABLE_HEADERS = {
 		'milling_order',
 		'milling_state',
 		'weight',
+		'process_type',
 		'select',
 	],
 	EDIT_CONTAINER: [
@@ -95,6 +99,7 @@ export const TABLE_HEADERS = {
 		'production_order',
 		'milling_order',
 		'milling_state',
+		'process_type',
 		'weight',
 		'select',
 	],

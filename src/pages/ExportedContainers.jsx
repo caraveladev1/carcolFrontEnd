@@ -98,7 +98,8 @@ export function ExportedContainers() {
 									<div className='flex flex-row justify-between items-center gap-6'>
 										<h2 className='text-2xl font-bold text-white mb-4 font-itf uppercase'>{exp_id}</h2>
 									</div>
-									<div className='containerData flex flex-row gap-4'>
+									<div className='containerData flex flex-row gap-4 items-center'>
+										<p className='text-lg font-bold text-celeste font-itf uppercase'>{`Origin Port: ${containerData[0]?.origin_port || 'No available'}`}</p>
 										<button
 											className='text-lg font-bold text-cafe font-itf uppercase hover:text-celeste-400 transition-colors duration-200 bg-beige px-2 py-1'
 											onClick={() => handleViewDetails(exp_id)}

@@ -35,6 +35,7 @@ export const dataTransformers = {
 			originPort: item.origin_port,
 			units: item.contract_atlas.units,
 			secondary_ico_id: item.contract_atlas.secondary_ico,
+			process_type: item.contract_atlas.process_type || '-',
 		}));
 	},
 
@@ -62,6 +63,7 @@ export const dataTransformers = {
 			office: item.export_country,
 			destination: item.destination_port,
 			originPort: item.origin_port,
+			process_type: item.contract_atlas.process_type || '-',
 		}));
 	},
 
@@ -86,6 +88,7 @@ export const dataTransformers = {
 			milling_state: item.milling_state || '-',
 			weight: item.estimated_kg,
 			originPort: item.origin_port,
+			process_type: item.process_type || '-',
 		}));
 	},
 
@@ -110,6 +113,7 @@ export const dataTransformers = {
 				production_order: atlasData.production_order || '-',
 				milling_order: atlasData.milling_order || '-',
 				milling_state: atlasData.milling_state || '-',
+				process_type: atlasData.process_type || '-',
 			};
 		});
 	},
