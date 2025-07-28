@@ -88,7 +88,7 @@ export const dataTransformers = {
 			milling_state: item.milling_state || '-',
 			weight: item.estimated_kg,
 			originPort: item.origin_port,
-			process_type: item.contract_atlas.process_type || '-',
+			process_type: item.process_type || '-',
 		}));
 	},
 
