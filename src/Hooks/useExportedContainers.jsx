@@ -3,7 +3,9 @@ import { useForm } from 'react-hook-form';
 import { containerService } from '../services/index.js';
 import { dataTransformers, filterUtils } from '../utils/index.js';
 import { TABLE_HEADERS } from '../constants/tableHeaders.js';
-
+import { useCommentNotifications } from './useCommentNotifications.jsx';
+import { API_BASE_URL } from '../constants/api.js';
+import { API_ENDPOINTS } from '../constants/api.js';
 export const useExportedContainers = () => {
 	const [organizedData, setOrganizedData] = useState(null);
 	const [loading, setLoading] = useState(true);
@@ -14,6 +16,7 @@ export const useExportedContainers = () => {
 	const [weightsTooltipVisible, setWeightsTooltipVisible] = useState({});
 	const [currentPage, setCurrentPage] = useState(1);
 	const itemsPerPage = 10;
+	const [user, setUser] = useState('');
 
 	const { control, watch, reset } = useForm({
 		defaultValues: {
@@ -176,6 +179,19 @@ export const useExportedContainers = () => {
 		setWeightsTooltipVisible((prev) => ({ ...prev, [expId]: !prev[expId] }));
 	};
 
+	const { getNotificationStatus, refreshNotifications } = useCommentNotifications(user);
+
+	useEffect(() => {
+		fetch(`${API_BASE_URL}${API_ENDPOINTS.GET_USERNAME_FROM_TOKEN}`, {
+			credentials: 'include',
+		})
+			.then((res) => res.json())
+			.then((data) => {
+				setUser(data.username);
+			})
+			.catch((err) => console.error('Error obteniendo el usuario:', err));
+	}, []);
+
 	return {
 		organizedData,
 		loading,
@@ -199,5 +215,7 @@ export const useExportedContainers = () => {
 		hideWeightsTooltip,
 		toggleWeightsTooltip,
 		selectedHeaders,
+		getNotificationStatus,
+		refreshNotifications,
 	};
 };

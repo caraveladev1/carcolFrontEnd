@@ -33,6 +33,7 @@ export function ExportedContainers() {
 		hideWeightsTooltip,
 		toggleWeightsTooltip,
 		selectedHeaders,
+		getNotificationStatus, // <-- ahora disponible
 	} = useExportedContainers();
 
 	const [isCommentsOpen, setIsCommentsOpen] = useState(false);
@@ -97,7 +98,7 @@ export function ExportedContainers() {
 							ViewContainerRow({
 								item,
 								onCommentsClick: handleCommentsClick,
-								getNotificationStatus: null,
+								getNotificationStatus, // <-- pasa la función
 								readOnly: true,
 							}),
 						);
