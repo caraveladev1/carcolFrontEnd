@@ -29,18 +29,20 @@ export function PendingTask() {
 		selectedHeaders,
 	} = usePendingTasks();
 
+	const [isFilterSidebarOpen, setIsFilterSidebarOpen] = React.useState(false);
+
 	if (loading) {
 		return <Loader />;
 	}
 
 	return (
 		<div className='bg-dark-background bg-cover bg-fixed min-h-screen'>
-			<FloatingScrollButton />
+			{!isFilterSidebarOpen && <FloatingScrollButton />}
 			<section className='homeContainer max-w-[90%] m-auto pb-5'>
 				<Banner />
 				<h1 className='text-3xl font-bold my-8 uppercase text-celeste font-itf'>{t('pendingTasks')}</h1>
 
-				<FilterSidebar title='filters'>
+				<FilterSidebar title='filters' onSidebarOpen={setIsFilterSidebarOpen}>
 					<DateInput name='initialDate' control={control} />
 					<DateInput name='finalDate' control={control} />
 					<SelectInput name='exportCountry' control={control} options={countryOptions} isMulti={true} />
