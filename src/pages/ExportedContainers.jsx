@@ -33,10 +33,12 @@ export function ExportedContainers() {
 		hideWeightsTooltip,
 		toggleWeightsTooltip,
 		selectedHeaders,
+		getNotificationStatus, // <-- ahora disponible
 	} = useExportedContainers();
 
 	const [isCommentsOpen, setIsCommentsOpen] = useState(false);
 	const [selectedIco, setSelectedIco] = useState(null);
+	const [isFilterSidebarOpen, setIsFilterSidebarOpen] = useState(false);
 
 	const handleCommentsClick = (item) => {
 		setSelectedIco(item.ico);
@@ -54,13 +56,13 @@ export function ExportedContainers() {
 
 	return (
 		<div className='bg-dark-background bg-cover bg-fixed min-h-screen'>
-			<FloatingScrollButton />
+			{!isFilterSidebarOpen && <FloatingScrollButton />}
 			<section className='homeContainer max-w-[90%] m-auto pb-5'>
 				<Banner />
 				<h1 className='text-3xl font-bold my-8 uppercase text-beige font-itf'>{t('exportedContainers')}</h1>
 
 				{/* Filtros */}
-				<FilterSidebar title='filters'>
+				<FilterSidebar title='filters' onSidebarOpen={setIsFilterSidebarOpen}>
 					<DateInput name='initialDate' control={control} />
 					<DateInput name='finalDate' control={control} />
 					<SelectInput name='exportCountry' control={control} options={countryOptions} isMulti={true} />
@@ -97,7 +99,7 @@ export function ExportedContainers() {
 							ViewContainerRow({
 								item,
 								onCommentsClick: handleCommentsClick,
-								getNotificationStatus: null,
+								getNotificationStatus, // <-- pasa la función
 								readOnly: true,
 							}),
 						);

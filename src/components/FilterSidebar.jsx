@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
-export function FilterSidebar({ children, title = 'filters' }) {
+export function FilterSidebar({ children, title = 'filters', onSidebarOpen }) {
 	const { t } = useTranslation();
 	const [isFilterOpen, setIsFilterOpen] = useState(false);
 	const filterRef = useRef(null);
@@ -21,19 +21,22 @@ export function FilterSidebar({ children, title = 'filters' }) {
 				// Nativo
 				if (el.tagName === 'SELECT' || el.tagName === 'OPTION') return true;
 				// react-select menú y controles
-				if (el.classList && (
-					el.classList.contains('react-select__menu') ||
-					el.classList.contains('react-select__control') ||
-					el.classList.contains('react-select__multi-value__remove') ||
-					el.classList.contains('react-select__multi-value') ||
-					el.classList.contains('react-select__option')
-				)) return true;
+				if (
+					el.classList &&
+					(el.classList.contains('react-select__menu') ||
+						el.classList.contains('react-select__control') ||
+						el.classList.contains('react-select__multi-value__remove') ||
+						el.classList.contains('react-select__multi-value') ||
+						el.classList.contains('react-select__option'))
+				)
+					return true;
 				// Buscar hacia arriba en el DOM
-				return el.closest && (
-					el.closest('select') ||
-					el.closest('.react-select__menu') ||
-					el.closest('.react-select__control') ||
-					el.closest('.react-select__multi-value')
+				return (
+					el.closest &&
+					(el.closest('select') ||
+						el.closest('.react-select__menu') ||
+						el.closest('.react-select__control') ||
+						el.closest('.react-select__multi-value'))
 				);
 			};
 			if (
@@ -54,6 +57,10 @@ export function FilterSidebar({ children, title = 'filters' }) {
 			document.removeEventListener('mousedown', handleClickOutside);
 		};
 	}, [isFilterOpen]);
+
+	useEffect(() => {
+		if (onSidebarOpen) onSidebarOpen(isFilterOpen);
+	}, [isFilterOpen, onSidebarOpen]);
 
 	const toggleFilter = () => {
 		setIsFilterOpen(!isFilterOpen);
