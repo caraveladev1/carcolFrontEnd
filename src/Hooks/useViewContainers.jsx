@@ -50,15 +50,26 @@ export const useViewContainers = () => {
 		const getDateLandingColor = (dateLanding) => {
 			if (!dateLanding) return 'text-celeste';
 			const today = new Date();
-			// Parse dateLanding as YYYY-MM-DD
 			const [year, month, day] = dateLanding.split('-');
 			const landingDate = new Date(Number(year), Number(month) - 1, Number(day));
 			today.setHours(0, 0, 0, 0);
 			landingDate.setHours(0, 0, 0, 0);
 			const diffDays = Math.ceil((landingDate - today) / (1000 * 60 * 60 * 24));
-			if (diffDays < 0) return 'text-naranja'; // vencido
-			if (diffDays <= 7) return 'text-yellow'; // menos de una semana
-			return 'text-verde2'; // más de una semana
+
+			// Cuando falten 2 días o menos para la fecha de cargue
+			if (diffDays <= 2 && diffDays >= 0) return 'text-naranja';
+
+			// Cuando falten entre 3 y 8 días para la fecha de cargue
+			if (diffDays >= 3 && diffDays <= 8) return 'text-yellow';
+
+			// Cuando la fecha de cargue sea superior a 8 días
+			if (diffDays > 8) return 'text-verde2';
+
+			// Si la fecha ya pasó
+			if (diffDays < 0) return 'text-celeste';
+
+			// Por defecto
+			return 'text-celeste';
 		};
 
 		const formatDateShort = (dateLanding) => {
