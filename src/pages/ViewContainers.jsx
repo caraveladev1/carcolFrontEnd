@@ -3,6 +3,7 @@ import { Banner } from '../components/Banner';
 import { useTranslation } from 'react-i18next';
 import { TableGeneric } from '../components/TableGeneric';
 import { TABLE_HEADERS } from '../constants';
+import { formatHeader } from '../utils/formatHeader';
 import { Loader } from '../components/Loader';
 import editContainer from '../assets/img/editContainer.webp';
 import { Link } from 'react-router-dom';
@@ -36,7 +37,10 @@ export function ViewContainers() {
 		hideWeightsTooltip,
 		toggleWeightsTooltip,
 		refreshNotifications,
+		selectedHeaders,
+		setValue,
 	} = useViewContainers();
+
 	if (loading) {
 		return <Loader />;
 	}
@@ -56,6 +60,14 @@ export function ViewContainers() {
 					<SelectInput name='contract' control={control} options={contractOptions} isMulti={true} />
 					<SelectInput name='destination' control={control} options={destinationOptions} isMulti={true} />
 					<TextInput name='ico' control={control} placeholder={t('ico_id')} />
+					{/* Filtro de columnas */}
+					<SelectInput
+						name='selectedHeaders'
+						control={control}
+						options={TABLE_HEADERS.VIEW.map((header) => ({ value: header, label: formatHeader(header) }))}
+						isMulti={true}
+						placeholder={t('Selecciona columnas')}
+					/>
 					<button
 						type='button'
 						onClick={resetFilters}
@@ -109,7 +121,7 @@ export function ViewContainers() {
 								</div>
 								<div className='my-4'>
 									<TableGeneric
-										headersTable={TABLE_HEADERS.VIEW}
+										headersTable={selectedHeaders}
 										dataTable={dataWithButtons}
 										renderRowContent={(row) => row}
 									/>

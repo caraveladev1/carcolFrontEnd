@@ -93,5 +93,7 @@
 	"weightsInProgress": "Weights in Progress",
 	"weightsFinished": "Weights Finished",
 	"manageUsers": "Manage Users",
-	"menu": "Menu"
+	"menu": "Menu",
+	"process_type": "Process Type",
+	"Selecciona columnas": "Select Columns"
 }
