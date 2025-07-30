@@ -2,7 +2,8 @@ import React from 'react';
 import { Banner } from '../components/Banner';
 import { useTranslation } from 'react-i18next';
 import { TableGeneric } from '../components/TableGeneric';
-import { TABLE_HEADERS } from '../constants';
+import { TABLE_HEADERS } from '../constants/tableHeaders.js';
+import { formatHeader } from '../utils/formatHeader';
 import { Loader } from '../components/Loader';
 import { BookingAndDates } from '../components/BookingAndDates';
 import { DateInput } from '../components/DateInput';
@@ -25,11 +26,13 @@ export function PendingTask() {
 		filteredData,
 		control,
 		resetFilters,
+		selectedHeaders,
 	} = usePendingTasks();
 
 	if (loading) {
 		return <Loader />;
 	}
+
 	return (
 		<div className='bg-dark-background bg-cover bg-fixed min-h-screen'>
 			<FloatingScrollButton />
@@ -42,6 +45,14 @@ export function PendingTask() {
 					<DateInput name='finalDate' control={control} />
 					<SelectInput name='exportCountry' control={control} options={countryOptions} isMulti={true} />
 					<SelectInput name='destinationPort' control={control} options={portOptions} isMulti={true} />
+					{/* Filtro de columnas */}
+					<SelectInput
+						name='selectedHeaders'
+						control={control}
+						options={TABLE_HEADERS.PENDING.map((header) => ({ value: header, label: formatHeader(header) }))}
+						isMulti={true}
+						placeholder={t('Selecciona columnas')}
+					/>
 					<button
 						type='button'
 						onClick={resetFilters}
@@ -73,7 +84,7 @@ export function PendingTask() {
 									relatedData={organizedData[exp_id]}
 								/>
 							)}
-							<TableGeneric headersTable={TABLE_HEADERS.PENDING} dataTable={taskData} renderRowContent={(row) => row} />
+							<TableGeneric headersTable={selectedHeaders} dataTable={taskData} renderRowContent={(row) => row} />
 						</div>
 					),
 				)}
