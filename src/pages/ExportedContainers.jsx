@@ -5,7 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { TableGeneric } from '../components/TableGeneric';
 import { ViewContainerRow } from '../components/ViewContainerRow';
 import { Comments } from '../components/Comments';
-import { TABLE_HEADERS } from '../constants';
+import { TABLE_HEADERS } from '../constants/tableHeaders.js';
+import { formatHeader } from '../utils/formatHeader';
 import { Loader } from '../components/Loader';
 import { DateInput } from '../components/DateInput';
 import { SelectInput } from '../components/SelectInput';
@@ -31,6 +32,7 @@ export function ExportedContainers() {
 		calculateWeightsData,
 		hideWeightsTooltip,
 		toggleWeightsTooltip,
+		selectedHeaders,
 	} = useExportedContainers();
 
 	const [isCommentsOpen, setIsCommentsOpen] = useState(false);
@@ -63,6 +65,14 @@ export function ExportedContainers() {
 					<DateInput name='finalDate' control={control} />
 					<SelectInput name='exportCountry' control={control} options={countryOptions} isMulti={true} />
 					<SelectInput name='destinationPort' control={control} options={portOptions} isMulti={true} />
+					{/* Filtro de columnas */}
+					<SelectInput
+						name='selectedHeaders'
+						control={control}
+						options={TABLE_HEADERS.EXPORTED.map((header) => ({ value: header, label: formatHeader(header) }))}
+						isMulti={true}
+						placeholder={t('Selecciona columnas')}
+					/>
 					<button
 						type='button'
 						onClick={resetFilters}
@@ -120,7 +130,7 @@ export function ExportedContainers() {
 									</div>
 								</div>
 								<TableGeneric
-									headersTable={TABLE_HEADERS.EXPORTED}
+									headersTable={selectedHeaders}
 									dataTable={dataWithButtons}
 									renderRowContent={(row) => row}
 								/>

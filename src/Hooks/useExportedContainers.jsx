@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { containerService } from '../services/index.js';
 import { dataTransformers, filterUtils } from '../utils/index.js';
+import { TABLE_HEADERS } from '../constants/tableHeaders.js';
 
 export const useExportedContainers = () => {
 	const [organizedData, setOrganizedData] = useState(null);
@@ -20,10 +21,14 @@ export const useExportedContainers = () => {
 			finalDate: '',
 			exportCountry: [],
 			destinationPort: [],
+			selectedHeaders: [], // Por defecto deseleccionado
 		},
 	});
 
 	const filters = watch();
+	// Headers seleccionados para mostrar en la tabla
+	const selectedHeaders =
+		filters.selectedHeaders && filters.selectedHeaders.length > 0 ? filters.selectedHeaders : TABLE_HEADERS.EXPORTED;
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -193,5 +198,6 @@ export const useExportedContainers = () => {
 		showWeightsTooltip,
 		hideWeightsTooltip,
 		toggleWeightsTooltip,
+		selectedHeaders,
 	};
 };
