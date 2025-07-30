@@ -6,6 +6,8 @@ import { ViewContainerRow } from '../components/ViewContainerRow.jsx';
 import { useCommentNotifications } from './useCommentNotifications.jsx';
 import { API_BASE_URL } from '../constants/api.js';
 
+import { TABLE_HEADERS } from '../constants/tableHeaders.js';
+
 export const useViewContainers = () => {
 	const [organizedData, setOrganizedData] = useState(null);
 	const [loading, setLoading] = useState(true);
@@ -21,7 +23,7 @@ export const useViewContainers = () => {
 		refreshNotifications,
 	} = useCommentNotifications(user);
 
-	const { control, watch, reset } = useForm({
+	const { control, watch, reset, setValue } = useForm({
 		defaultValues: {
 			office: [],
 			exportMonth: [],
@@ -31,6 +33,7 @@ export const useViewContainers = () => {
 			initialDate: '',
 			finalDate: '',
 			ico: '',
+			selectedHeaders: [], // Por defecto deseleccionado
 		},
 	});
 
@@ -162,6 +165,10 @@ export const useViewContainers = () => {
 		if (!organizedData) return {};
 		return filterUtils.filterViewContainerData(organizedData, filters);
 	};
+
+	// Headers seleccionados para mostrar en la tabla
+	const selectedHeaders =
+		filters.selectedHeaders && filters.selectedHeaders.length > 0 ? filters.selectedHeaders : TABLE_HEADERS.VIEW;
 
 	const paginatedData = useMemo(() => {
 		if (!organizedData) return [];
@@ -303,5 +310,7 @@ export const useViewContainers = () => {
 		hasUnreadComments,
 		hasComments,
 		getNotificationStatus,
+		selectedHeaders,
+		setValue,
 	};
 };
