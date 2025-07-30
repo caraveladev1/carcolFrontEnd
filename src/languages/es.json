@@ -28,5 +28,6 @@
 	"weightsInProgress": "Pesos en Progreso",
 	"weightsFinished": "Pesos Terminados",
 	"manageUsers": "Gestionar Usuarios",
-	"menu": "Menú"
+	"menu": "Menú",
+	"process_type": "Tipo de Proceso"
 }
