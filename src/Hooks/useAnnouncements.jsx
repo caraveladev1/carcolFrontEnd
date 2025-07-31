@@ -202,6 +202,7 @@ export const useAnnouncements = (onClose) => {
 			.finally(() => {
 				setSubmitLoading(false);
 			});
+		console.log(formData);
 	});
 
 	const closePopup = () => {
