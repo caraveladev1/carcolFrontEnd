@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
+import { usePersistedFilters } from './usePersistedFilters.jsx';
 import { API_BASE_URL } from '../constants/api.js';
 
 export const useAnnouncements = (onClose) => {
@@ -25,19 +26,28 @@ export const useAnnouncements = (onClose) => {
 		totalUnits: 0,
 	});
 
+	// Implementación de usePersistedFilters para filtros persistentes
+	const FILTERS_KEY = 'announcementsFilters';
+	const defaultFilterValues = {
+		startDate: '',
+		endDate: '',
+		packaging: [],
+		originPort: [],
+		ico: [],
+		lotType: [],
+	};
+	const { filters: persistedFilters, setFilters: setPersistedFilters } = usePersistedFilters({
+		defaultValues: defaultFilterValues,
+		storageKey: FILTERS_KEY,
+	});
+
 	const {
 		control: filterControl,
 		watch: watchFilters,
 		reset: resetFilters,
+		setValue: setFilterValue,
 	} = useForm({
-		defaultValues: {
-			startDate: '',
-			endDate: '',
-			packaging: [],
-			originPort: [],
-			ico: [],
-			lotType: [],
-		},
+		defaultValues: persistedFilters,
 	});
 
 	const {
@@ -49,7 +59,14 @@ export const useAnnouncements = (onClose) => {
 		defaultValues: {},
 	});
 
+	// Sincronizar los cambios del formulario con el hook de filtros persistentes
 	const filters = watchFilters();
+	useEffect(() => {
+		const subscription = watchFilters((values) => {
+			setPersistedFilters(values);
+		});
+		return () => subscription.unsubscribe();
+	}, [watchFilters, setPersistedFilters]);
 
 	const memoizedFilters = useMemo(
 		() => filters,
