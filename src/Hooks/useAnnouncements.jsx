@@ -1,8 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
-import { usePersistedFilters } from './usePersistedFilters.jsx';
 import { API_BASE_URL } from '../constants/api.js';
-import { formatThousands } from '../utils/formatHeader.js';
+
 export const useAnnouncements = (onClose) => {
 	const [data, setData] = useState([]);
 	const [filteredData, setFilteredData] = useState([]);
@@ -25,54 +24,37 @@ export const useAnnouncements = (onClose) => {
 		filteredUnits: 0,
 		totalUnits: 0,
 	});
-	// Formulario para los campos editables de anuncios
-	const { control: formControl, reset: resetForm, setValue: setFormValue } = useForm({ defaultValues: {} });
-	const FILTERS_KEY = 'announcementsFilters';
-	const defaultValues = {
-		startDate: '',
-		endDate: '',
-		packaging: [],
-		originPort: [],
-		ico: [],
-		lotType: [],
-	};
-	const { filters, setFilters } = usePersistedFilters({ defaultValues, storageKey: FILTERS_KEY });
 
-	const { control: filterControl, watch, reset, handleSubmit, setValue } = useForm({ defaultValues: filters });
-	// Memoizar los filtros para evitar renders innecesarios y mantener compatibilidad
+	const {
+		control: filterControl,
+		watch: watchFilters,
+		reset: resetFilters,
+	} = useForm({
+		defaultValues: {
+			startDate: '',
+			endDate: '',
+			packaging: [],
+			originPort: [],
+			ico: [],
+			lotType: [],
+		},
+	});
+
+	const {
+		control: formControl,
+		handleSubmit,
+		setValue,
+		reset: resetForm,
+	} = useForm({
+		defaultValues: {},
+	});
+
+	const filters = watchFilters();
+
 	const memoizedFilters = useMemo(
 		() => filters,
 		[filters.startDate, filters.endDate, filters.packaging, filters.originPort, filters.ico, filters.lotType],
 	);
-	// Sincronizar los cambios del formulario con el hook de filtros
-	useEffect(() => {
-		const subscription = watch((values) => {
-			setFilters(values);
-		});
-		return () => subscription.unsubscribe();
-	}, [watch, setFilters]);
-
-	// Guardar los filtros en sessionStorage y URL como parámetros individuales
-	useEffect(() => {
-		sessionStorage.setItem(FILTERS_KEY, JSON.stringify(filters));
-		const params = new URLSearchParams();
-		Object.entries(filters).forEach(([key, value]) => {
-			if (Array.isArray(value) && value.length > 0) {
-				params.set(key, value.join(','));
-			} else if (typeof value === 'string' && value) {
-				params.set(key, value);
-			}
-		});
-		window.history.replaceState(
-			{},
-			'',
-			`${window.location.pathname}${params.toString() ? '?' + params.toString() : ''}`,
-		);
-	}, [filters]);
-
-	const resetFilters = () => {
-		reset(defaultValues);
-	};
 
 	const calculateTotals = useCallback(() => {
 		const totalKg = data.reduce((sum, item) => sum + (parseFloat(item.contract_atlas.estimated_kg) || 0), 0);
@@ -81,10 +63,10 @@ export const useAnnouncements = (onClose) => {
 		const filteredUnitsSum = filteredData.reduce((sum, item) => sum + (parseInt(item.contract_atlas.units) || 0), 0);
 
 		setTotals({
-			totalEstimatedKg: formatThousands(totalKg),
-			filteredEstimatedKg: formatThousands(filteredKg),
-			totalUnits: formatThousands(totalUnitsSum),
-			filteredUnits: formatThousands(filteredUnitsSum),
+			totalEstimatedKg: totalKg,
+			filteredEstimatedKg: filteredKg,
+			totalUnits: totalUnitsSum,
+			filteredUnits: filteredUnitsSum,
 		});
 	}, [data, filteredData]);
 
@@ -109,24 +91,12 @@ export const useAnnouncements = (onClose) => {
 				});
 
 				data.forEach((item) => {
-					setValue(`${item.ico}.announcement`, item.announcement ?? '');
-					setValue(`${item.ico}.orders`, item.orders ?? '');
-					setValue(`${item.ico}.revision_number`, item.revision_number ?? '');
-					setValue(`${item.ico}.allocation`, item.allocation ?? '');
-					setValue(`${item.ico}.sales_code`, item.sales_code ?? '');
+					setValue(`${item.ico}.announcement`, item.announcement || '');
+					setValue(`${item.ico}.orders`, item.orders || '');
+					setValue(`${item.ico}.revision_number`, item.revision_number || '');
+					setValue(`${item.ico}.allocation`, item.allocation || '');
+					setValue(`${item.ico}.sales_code`, item.sales_code || '');
 				});
-
-				// También aseguro que los datos para la tabla nunca sean undefined
-				setFilteredData(
-					data.map((item) => ({
-						...item,
-						announcement: item.announcement ?? '',
-						orders: item.orders ?? '',
-						revision_number: item.revision_number ?? '',
-						allocation: item.allocation ?? '',
-						sales_code: item.sales_code ?? '',
-					})),
-				);
 			})
 			.catch((error) => {
 				console.error('Error:', error);
@@ -202,7 +172,6 @@ export const useAnnouncements = (onClose) => {
 			.finally(() => {
 				setSubmitLoading(false);
 			});
-		console.log(formData);
 	});
 
 	const closePopup = () => {
