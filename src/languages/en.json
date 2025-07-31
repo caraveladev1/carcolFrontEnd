@@ -96,5 +96,13 @@
 	"menu": "Menu",
 	"process_type": "Process Type",
 	"Selecciona columnas": "Select Columns",
-	"Select Milling State": "Select Milling State"
+	"Select Milling State": "Select Milling State",
+	"date_landing": "Date of Landing",
+	"lot_type": "Lot Type",
+	"origin_port": "Origin Port",
+	"estimated_kg": "Estimated Weight (kg)",
+	"allocation": "Allocation",
+	"sales_code": "Sales Code",
+	"revision_number": "Revision Number",
+	"Announcements added successfully": "Announcements added successfully"
 }

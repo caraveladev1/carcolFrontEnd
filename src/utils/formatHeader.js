@@ -12,3 +12,10 @@ export function formatHeader(header) {
 	formatted = formatted.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
 	return formatted;
 }
+
+// Formatea números con separador de miles
+export function formatThousands(value) {
+	const num = typeof value === 'number' ? value : Number(value);
+	if (Number.isNaN(num)) return '';
+	return num.toLocaleString('es-CO');
+}
