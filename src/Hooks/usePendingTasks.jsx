@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import { usePersistedFilters } from './usePersistedFilters.jsx';
 import { useForm } from 'react-hook-form';
 import { containerService } from '../services/index.js';
 import { dataTransformers, filterUtils } from '../utils/index.js';
@@ -15,17 +16,25 @@ export const usePendingTasks = () => {
 	const [currentPage, setCurrentPage] = useState(1);
 	const itemsPerPage = 10;
 
+	const defaultValues = {
+		initialDate: '',
+		finalDate: '',
+		exportCountry: [],
+		destinationPort: [],
+		selectedHeaders: [],
+	};
+	const { filters, setFilters } = usePersistedFilters({ defaultValues, storageKey: 'pendingTasksFilters' });
+
 	const { control, watch, reset } = useForm({
-		defaultValues: {
-			initialDate: '',
-			finalDate: '',
-			exportCountry: [],
-			destinationPort: [],
-			selectedHeaders: [], // Por defecto deseleccionado
-		},
+		defaultValues: filters,
 	});
 
-	const filters = watch();
+	useEffect(() => {
+		const subscription = watch((values) => {
+			setFilters(values);
+		});
+		return () => subscription.unsubscribe();
+	}, [watch, setFilters]);
 	// Headers seleccionados para mostrar en la tabla
 	const selectedHeaders =
 		filters.selectedHeaders && filters.selectedHeaders.length > 0 ? filters.selectedHeaders : TABLE_HEADERS.PENDING;

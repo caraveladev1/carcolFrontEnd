@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import { usePersistedFilters } from './usePersistedFilters.jsx';
 import { useForm } from 'react-hook-form';
 import { containerService } from '../services/index.js';
 import { dataTransformers, filterUtils } from '../utils/index.js';
@@ -8,7 +9,36 @@ import { API_BASE_URL } from '../constants/api.js';
 
 import { TABLE_HEADERS } from '../constants/tableHeaders.js';
 
+const FILTERS_KEY = 'viewContainersFilters';
+
+function serializeFilters(filters) {
+	return encodeURIComponent(JSON.stringify(filters));
+}
+
+function deserializeFilters(str) {
+	try {
+		return JSON.parse(decodeURIComponent(str));
+	} catch {
+		return {};
+	}
+}
+
 export const useViewContainers = () => {
+	// Obtener los valores iniciales de los filtros desde la URL o sessionStorage (parámetros individuales)
+	// Usar el hook centralizado para filtros persistentes
+	const defaultValues = {
+		office: [],
+		exportMonth: [],
+		packaging: [],
+		contract: [],
+		destination: [],
+		initialDate: '',
+		finalDate: '',
+		ico: '',
+		selectedHeaders: [],
+	};
+	const { filters, setFilters } = usePersistedFilters({ defaultValues, storageKey: FILTERS_KEY });
+
 	const [organizedData, setOrganizedData] = useState(null);
 	const [loading, setLoading] = useState(true);
 	const [user, setUser] = useState('');
@@ -23,21 +53,35 @@ export const useViewContainers = () => {
 		refreshNotifications,
 	} = useCommentNotifications(user);
 
-	const { control, watch, reset, setValue } = useForm({
-		defaultValues: {
-			office: [],
-			exportMonth: [],
-			packaging: [],
-			contract: [],
-			destination: [],
-			initialDate: '',
-			finalDate: '',
-			ico: '',
-			selectedHeaders: [], // Por defecto deseleccionado
-		},
+	const { control, watch, reset, setValue, getValues } = useForm({
+		defaultValues: filters,
 	});
 
-	const filters = watch();
+	// Sincronizar los cambios del formulario con el hook de filtros
+	useEffect(() => {
+		const subscription = watch((values) => {
+			setFilters(values);
+		});
+		return () => subscription.unsubscribe();
+	}, [watch, setFilters]);
+
+	// Guardar los filtros en sessionStorage y URL como parámetros individuales
+	useEffect(() => {
+		sessionStorage.setItem(FILTERS_KEY, JSON.stringify(filters));
+		const params = new URLSearchParams();
+		Object.entries(filters).forEach(([key, value]) => {
+			if (Array.isArray(value) && value.length > 0) {
+				params.set(key, value.join(','));
+			} else if (typeof value === 'string' && value) {
+				params.set(key, value);
+			}
+		});
+		window.history.replaceState(
+			{},
+			'',
+			`${window.location.pathname}${params.toString() ? '?' + params.toString() : ''}`,
+		);
+	}, [filters]);
 
 	const [officeOptions, setOfficeOptions] = useState([]);
 	const [packagingOptions, setPackagingOptions] = useState([]);
@@ -327,5 +371,6 @@ export const useViewContainers = () => {
 		getNotificationStatus,
 		selectedHeaders,
 		setValue,
+		getValues,
 	};
 };
