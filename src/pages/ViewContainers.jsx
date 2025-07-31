@@ -25,6 +25,7 @@ export function ViewContainers() {
 		packagingOptions,
 		contractOptions,
 		destinationOptions,
+		millingStateOptions,
 		isCommentsOpen,
 		selectedIco,
 		closeComments,
@@ -61,6 +62,14 @@ export function ViewContainers() {
 					<SelectInput name='packaging' control={control} options={packagingOptions} isMulti={true} />
 					<SelectInput name='contract' control={control} options={contractOptions} isMulti={true} />
 					<SelectInput name='destination' control={control} options={destinationOptions} isMulti={true} />
+					{/* Filtro de Milling State */}
+					<SelectInput
+						name='milling_state'
+						control={control}
+						options={millingStateOptions.map((opt) => ({ ...opt, label: formatHeader(opt.value) }))}
+						isMulti={true}
+						placeholder={t('Select Milling State')}
+					/>
 					<TextInput name='ico' control={control} placeholder={t('ico_id')} />
 					{/* Filtro de columnas */}
 					<SelectInput

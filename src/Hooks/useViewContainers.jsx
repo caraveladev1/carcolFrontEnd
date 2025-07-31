@@ -43,6 +43,7 @@ export const useViewContainers = () => {
 	const [packagingOptions, setPackagingOptions] = useState([]);
 	const [contractOptions, setContractOptions] = useState([]);
 	const [destinationOptions, setDestinationOptions] = useState([]);
+	const [millingStateOptions, setMillingStateOptions] = useState([]);
 	const [isCommentsOpen, setIsCommentsOpen] = useState(false);
 	const [selectedIco, setSelectedIco] = useState(null);
 	const [weightsTooltipVisible, setWeightsTooltipVisible] = useState({});
@@ -127,11 +128,13 @@ export const useViewContainers = () => {
 				const destination = dataTransformers.extractUniqueOptions(mappedData, 'destination');
 				const packaging = dataTransformers.extractUniqueOptions(mappedData, 'packaging');
 				const contract = dataTransformers.extractUniqueOptions(mappedData, 'contract');
+				const millingStates = dataTransformers.extractUniqueOptions(mappedData, 'milling_state');
 
 				setOfficeOptions(office);
 				setDestinationOptions(destination);
 				setPackagingOptions(packaging);
 				setContractOptions(contract);
+				setMillingStateOptions(millingStates.map((state) => ({ value: state, label: state })));
 				setOrganizedData(mappedData);
 				setLoading(false);
 			} catch (error) {
@@ -163,7 +166,18 @@ export const useViewContainers = () => {
 
 	const filteredData = () => {
 		if (!organizedData) return {};
-		return filterUtils.filterViewContainerData(organizedData, filters);
+		let filtered = filterUtils.filterViewContainerData(organizedData, filters);
+		if (filters.milling_state && filters.milling_state.length > 0) {
+			filtered = Object.fromEntries(
+				Object.entries(filtered)
+					.map(([exp_id, containerData]) => [
+						exp_id,
+						containerData.filter((item) => filters.milling_state.includes(item.milling_state)),
+					])
+					.filter(([_, containerData]) => containerData.length > 0),
+			);
+		}
+		return filtered;
 	};
 
 	// Headers seleccionados para mostrar en la tabla
@@ -288,6 +302,7 @@ export const useViewContainers = () => {
 		packagingOptions,
 		contractOptions,
 		destinationOptions,
+		millingStateOptions,
 		isCommentsOpen,
 		selectedIco,
 		handleCommentsButtonClick,

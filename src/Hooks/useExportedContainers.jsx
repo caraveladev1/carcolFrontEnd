@@ -13,6 +13,7 @@ export const useExportedContainers = () => {
 	const [selectedExpId, setSelectedExpId] = useState(null);
 	const [countryOptions, setCountryOptions] = useState([]);
 	const [portOptions, setPortOptions] = useState([]);
+	const [contractOptions, setContractOptions] = useState([]);
 	const [weightsTooltipVisible, setWeightsTooltipVisible] = useState({});
 	const [currentPage, setCurrentPage] = useState(1);
 	const itemsPerPage = 10;
@@ -24,6 +25,7 @@ export const useExportedContainers = () => {
 			finalDate: '',
 			exportCountry: [],
 			destinationPort: [],
+			contract: [],
 			selectedHeaders: [], // Por defecto deseleccionado
 		},
 	});
@@ -47,9 +49,11 @@ export const useExportedContainers = () => {
 				// Extract unique options
 				const countries = dataTransformers.extractUniqueOptions(mappedData, 'export_country');
 				const ports = dataTransformers.extractUniqueOptions(mappedData, 'destination_port');
+				const contracts = dataTransformers.extractUniqueOptions(mappedData, 'contract');
 
 				setCountryOptions(countries);
 				setPortOptions(ports);
+				setContractOptions(contracts);
 				setOrganizedData(mappedData);
 				setLoading(false);
 			} catch (error) {
@@ -73,7 +77,19 @@ export const useExportedContainers = () => {
 
 	const filteredData = () => {
 		if (!organizedData) return {};
-		return filterUtils.filterExportedContainerData(organizedData, filters);
+		// Filtrar por contrato igual que en ViewContainers: solo mostrar los items que coinciden
+		let filtered = filterUtils.filterExportedContainerData(organizedData, filters);
+		if (filters.contract && filters.contract.length > 0) {
+			filtered = Object.fromEntries(
+				Object.entries(filtered)
+					.map(([exp_id, containerData]) => [
+						exp_id,
+						containerData.filter((item) => filters.contract.includes(item.contract)),
+					])
+					.filter(([_, containerData]) => containerData.length > 0),
+			);
+		}
+		return filtered;
 	};
 
 	const paginatedData = useMemo(() => {
@@ -199,6 +215,7 @@ export const useExportedContainers = () => {
 		selectedExpId,
 		countryOptions,
 		portOptions,
+		contractOptions,
 		handleViewDetails,
 		closeDetails,
 		filteredData,
