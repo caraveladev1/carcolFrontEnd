@@ -33,7 +33,7 @@ export function AnnouncementsPage() {
 		closePopup,
 		submitLoading,
 		resetFilters,
-	} = useAnnouncements(() => navigate('/view-containers'));
+	} = useAnnouncements(() => navigate('/announcements'));
 
 	// Limpiar y reinicializar los valores del formulario solo cuando cambie la lista de ICOs filtrados (no al cambiar de página)
 	const prevIcosStrRef = useRef('');
@@ -173,8 +173,8 @@ export function AnnouncementsPage() {
 				<Popup
 					isOpen={popup.isOpen}
 					onClose={closePopup}
-					title={t(popup.title) || popup.title}
-					message={t(popup.message) || popup.message}
+					title={t(popup.title)}
+					message={t(popup.message)}
 					type={popup.type}
 				/>
 			</section>
