@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { formatThousands } from '../utils/formatHeader';
 
 export function WeightsTooltip({ isVisible, weightsData, position = 'top', onClose }) {
 	const { t } = useTranslation();
@@ -151,7 +152,7 @@ export function WeightsTooltip({ isVisible, weightsData, position = 'top', onClo
 				{packagingBreakdown.map((item, index) => (
 					<div key={index} className="flex justify-between items-center">
 						<span className="font-itf text-sm text-beige">{item.packaging}:</span>
-						<span className="font-itf font-bold text-beige">{item.units} units</span>
+						<span className="font-itf font-bold text-beige">{formatThousands(item.units)} units</span>
 					</div>
 				))}
 			</div>
@@ -160,15 +161,15 @@ export function WeightsTooltip({ isVisible, weightsData, position = 'top', onClo
 			<div className="border-t border-beige pt-3 mb-3 space-y-2">
 				<div className="flex justify-between items-center">
 					<span className="font-itf text-sm text-beige">{t('totalPendingWeightsToMill')}:</span>
-					<span className="font-itf font-bold text-orange-400">{totalPendingWeightsToMill} {t('kg')}</span>
+					<span className="font-itf font-bold text-orange-400">{formatThousands(totalPendingWeightsToMill)} {t('kg')}</span>
 				</div>
 				<div className="flex justify-between items-center">
 					<span className="font-itf text-sm text-beige">{t('weightsInProgress')}:</span>
-					<span className="font-itf font-bold text-yellow-400">{weightsInProgress} {t('kg')}</span>
+					<span className="font-itf font-bold text-yellow-400">{formatThousands(weightsInProgress)} {t('kg')}</span>
 				</div>
 				<div className="flex justify-between items-center">
 					<span className="font-itf text-sm text-beige">{t('weightsFinished')}:</span>
-					<span className="font-itf font-bold text-green-400">{weightsFinished} {t('kg')}</span>
+					<span className="font-itf font-bold text-green-400">{formatThousands(weightsFinished)} {t('kg')}</span>
 				</div>
 			</div>
 
@@ -177,19 +178,19 @@ export function WeightsTooltip({ isVisible, weightsData, position = 'top', onClo
 				{/* Total units */}
 				<div className="flex justify-between items-center">
 					<span className="font-itf text-sm text-beige">{t('totalUnits')}:</span>
-					<span className="font-itf font-bold text-beige">{totalUnits} units</span>
+					<span className="font-itf font-bold text-beige">{formatThousands(totalUnits)} units</span>
 				</div>
 				
 				{/* Total 60kg bags */}
 				<div className="flex justify-between items-center">
 					<span className="font-itf text-sm text-beige">{t('totalWeight60kgBags')}:</span>
-					<span className="font-itf font-bold text-beige">{total60kgBags}</span>
+					<span className="font-itf font-bold text-beige">{formatThousands(total60kgBags)}</span>
 				</div>
 				
 				{/* Total weight - no border separator */}
 				<div className="flex justify-between items-center">
 					<span className="font-itf text-sm text-beige">{t('totalWeight')}:</span>
-					<span className="font-itf font-bold text-beige">{totalWeight} {t('kg')}</span>
+					<span className="font-itf font-bold text-beige">{formatThousands(totalWeight)} {t('kg')}</span>
 				</div>
 			</div>
 		</div>

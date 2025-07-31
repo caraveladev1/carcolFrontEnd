@@ -66,11 +66,37 @@ export function AnnouncementsPage() {
 			origin_port: item.origin_port,
 			estimated_kg: item.contract_atlas?.estimated_kg || 0,
 			units: item.contract_atlas?.units || 0,
-			announcement: <TextInput name={`${item.ico}.announcement`} control={formControl} placeholder='Announcement' />,
-			allocation: <TextInput name={`${item.ico}.allocation`} control={formControl} placeholder='Allocation' />,
-			sales_code: <TextInput name={`${item.ico}.sales_code`} control={formControl} placeholder='Sales Code' />,
+			announcement: (
+				<TextInput
+					name={`${item.ico}.announcement`}
+					control={formControl}
+					placeholder='Announcement'
+					value={item.announcement ?? ''}
+				/>
+			),
+			allocation: (
+				<TextInput
+					name={`${item.ico}.allocation`}
+					control={formControl}
+					placeholder='Allocation'
+					value={item.allocation ?? ''}
+				/>
+			),
+			sales_code: (
+				<TextInput
+					name={`${item.ico}.sales_code`}
+					control={formControl}
+					placeholder='Sales Code'
+					value={item.sales_code ?? ''}
+				/>
+			),
 			revision_number: (
-				<TextInput name={`${item.ico}.revision_number`} control={formControl} placeholder='Revision number' />
+				<TextInput
+					name={`${item.ico}.revision_number`}
+					control={formControl}
+					placeholder='Revision number'
+					value={item.revision_number ?? ''}
+				/>
 			),
 		}));
 	};
@@ -173,8 +199,8 @@ export function AnnouncementsPage() {
 				<Popup
 					isOpen={popup.isOpen}
 					onClose={closePopup}
-					title={t(popup.title)}
-					message={t(popup.message)}
+					title={t(popup.title) || popup.title}
+					message={t(popup.message) || popup.message}
 					type={popup.type}
 				/>
 			</section>
