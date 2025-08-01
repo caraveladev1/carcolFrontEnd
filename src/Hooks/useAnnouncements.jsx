@@ -128,7 +128,6 @@ export const useAnnouncements = (onClose) => {
 
 				data.forEach((item) => {
 					setValue(`${item.ico}.announcement`, item.announcement || '');
-					setValue(`${item.ico}.orders`, item.orders || '');
 					setValue(`${item.ico}.revision_number`, item.revision_number || '');
 					setValue(`${item.ico}.allocation`, item.allocation || '');
 					setValue(`${item.ico}.sales_code`, item.sales_code || '');
@@ -208,6 +207,7 @@ export const useAnnouncements = (onClose) => {
 			.finally(() => {
 				setSubmitLoading(false);
 			});
+		console.log(formData);
 	});
 
 	const closePopup = () => {
