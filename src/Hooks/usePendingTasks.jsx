@@ -90,7 +90,6 @@ export const usePendingTasks = () => {
 				estimatedDelivery: organizedData[exp_id]?.[0].estimated_delivery || undefined,
 				estimatedArrival: organizedData[exp_id]?.[0].estimated_arrival || undefined,
 				announcement: organizedData[exp_id]?.[0].announcement || undefined,
-				order: organizedData[exp_id]?.[0].orders || undefined,
 				review: organizedData[exp_id]?.[0].review || undefined,
 				salesCode: organizedData[exp_id]?.[0].sales_code || undefined,
 				exportId: organizedData[exp_id]?.[0].exp_id || undefined,

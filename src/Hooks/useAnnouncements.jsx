@@ -1,8 +1,8 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { usePersistedFilters } from './usePersistedFilters.jsx';
 import { API_BASE_URL } from '../constants/api.js';
-import { formatThousands } from '../utils/formatHeader.js';
+
 export const useAnnouncements = (onClose) => {
 	const [data, setData] = useState([]);
 	const [filteredData, setFilteredData] = useState([]);
@@ -25,10 +25,10 @@ export const useAnnouncements = (onClose) => {
 		filteredUnits: 0,
 		totalUnits: 0,
 	});
-	// Formulario para los campos editables de anuncios
-	const { control: formControl, reset: resetForm, setValue: setFormValue } = useForm({ defaultValues: {} });
+
+	// --- Persistencia de filtros ---
 	const FILTERS_KEY = 'announcementsFilters';
-	const defaultValues = {
+	const defaultFilterValues = {
 		startDate: '',
 		endDate: '',
 		packaging: [],
@@ -36,43 +36,61 @@ export const useAnnouncements = (onClose) => {
 		ico: [],
 		lotType: [],
 	};
-	const { filters, setFilters } = usePersistedFilters({ defaultValues, storageKey: FILTERS_KEY });
+	const { filters: persistedFilters, setFilters: setPersistedFilters } = usePersistedFilters({
+		defaultValues: defaultFilterValues,
+		storageKey: FILTERS_KEY,
+	});
 
-	const { control: filterControl, watch, reset, handleSubmit, setValue } = useForm({ defaultValues: filters });
-	// Memoizar los filtros para evitar renders innecesarios y mantener compatibilidad
+	// Resetear filtros tanto en el storage como en el formulario
+	const resetAllFilters = () => {
+		setPersistedFilters(defaultFilterValues);
+		resetFilters(defaultFilterValues);
+	};
+
+	const {
+		control: filterControl,
+		watch: watchFilters,
+		reset: resetFilters,
+	} = useForm({
+		defaultValues: persistedFilters,
+	});
+
+	// Sincronizar los cambios del formulario con el hook de filtros persistentes SOLO si cambian realmente
+	const filters = watchFilters();
+	const lastSyncedFilters = useRef(persistedFilters);
+	useEffect(() => {
+		// Solo sincroniza si los filtros realmente cambiaron respecto al storage
+		const filtersStr = JSON.stringify(filters);
+		const lastStr = JSON.stringify(lastSyncedFilters.current);
+		if (filtersStr !== lastStr) {
+			setPersistedFilters(filters);
+			lastSyncedFilters.current = filters;
+		}
+	}, [filters, setPersistedFilters]);
+
+	// Al montar, inicializar los filtros desde el storage si existen SOLO una vez
+	const didInitFilters = useRef(false);
+	useEffect(() => {
+		if (!didInitFilters.current) {
+			resetFilters(persistedFilters);
+			didInitFilters.current = true;
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [persistedFilters]);
+
+	const {
+		control: formControl,
+		handleSubmit,
+		setValue,
+		reset: resetForm,
+	} = useForm({
+		defaultValues: {},
+	});
+
 	const memoizedFilters = useMemo(
 		() => filters,
 		[filters.startDate, filters.endDate, filters.packaging, filters.originPort, filters.ico, filters.lotType],
 	);
-	// Sincronizar los cambios del formulario con el hook de filtros
-	useEffect(() => {
-		const subscription = watch((values) => {
-			setFilters(values);
-		});
-		return () => subscription.unsubscribe();
-	}, [watch, setFilters]);
-
-	// Guardar los filtros en sessionStorage y URL como parámetros individuales
-	useEffect(() => {
-		sessionStorage.setItem(FILTERS_KEY, JSON.stringify(filters));
-		const params = new URLSearchParams();
-		Object.entries(filters).forEach(([key, value]) => {
-			if (Array.isArray(value) && value.length > 0) {
-				params.set(key, value.join(','));
-			} else if (typeof value === 'string' && value) {
-				params.set(key, value);
-			}
-		});
-		window.history.replaceState(
-			{},
-			'',
-			`${window.location.pathname}${params.toString() ? '?' + params.toString() : ''}`,
-		);
-	}, [filters]);
-
-	const resetFilters = () => {
-		reset(defaultValues);
-	};
 
 	const calculateTotals = useCallback(() => {
 		const totalKg = data.reduce((sum, item) => sum + (parseFloat(item.contract_atlas.estimated_kg) || 0), 0);
@@ -81,10 +99,10 @@ export const useAnnouncements = (onClose) => {
 		const filteredUnitsSum = filteredData.reduce((sum, item) => sum + (parseInt(item.contract_atlas.units) || 0), 0);
 
 		setTotals({
-			totalEstimatedKg: formatThousands(totalKg),
-			filteredEstimatedKg: formatThousands(filteredKg),
-			totalUnits: formatThousands(totalUnitsSum),
-			filteredUnits: formatThousands(filteredUnitsSum),
+			totalEstimatedKg: totalKg,
+			filteredEstimatedKg: filteredKg,
+			totalUnits: totalUnitsSum,
+			filteredUnits: filteredUnitsSum,
 		});
 	}, [data, filteredData]);
 
@@ -109,24 +127,11 @@ export const useAnnouncements = (onClose) => {
 				});
 
 				data.forEach((item) => {
-					setValue(`${item.ico}.announcement`, item.announcement ?? '');
-					setValue(`${item.ico}.orders`, item.orders ?? '');
-					setValue(`${item.ico}.revision_number`, item.revision_number ?? '');
-					setValue(`${item.ico}.allocation`, item.allocation ?? '');
-					setValue(`${item.ico}.sales_code`, item.sales_code ?? '');
+					setValue(`${item.ico}.announcement`, item.announcement || '');
+					setValue(`${item.ico}.revision_number`, item.revision_number || '');
+					setValue(`${item.ico}.allocation`, item.allocation || '');
+					setValue(`${item.ico}.sales_code`, item.sales_code || '');
 				});
-
-				// También aseguro que los datos para la tabla nunca sean undefined
-				setFilteredData(
-					data.map((item) => ({
-						...item,
-						announcement: item.announcement ?? '',
-						orders: item.orders ?? '',
-						revision_number: item.revision_number ?? '',
-						allocation: item.allocation ?? '',
-						sales_code: item.sales_code ?? '',
-					})),
-				);
 			})
 			.catch((error) => {
 				console.error('Error:', error);
@@ -202,6 +207,7 @@ export const useAnnouncements = (onClose) => {
 			.finally(() => {
 				setSubmitLoading(false);
 			});
+		console.log(formData);
 	});
 
 	const closePopup = () => {
@@ -226,6 +232,6 @@ export const useAnnouncements = (onClose) => {
 		popup,
 		closePopup,
 		submitLoading,
-		resetFilters,
+		resetFilters: resetAllFilters,
 	};
 };

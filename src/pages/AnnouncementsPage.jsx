@@ -33,7 +33,7 @@ export function AnnouncementsPage() {
 		closePopup,
 		submitLoading,
 		resetFilters,
-	} = useAnnouncements(() => navigate('/view-containers'));
+	} = useAnnouncements(() => navigate('/announcements'));
 
 	// Limpiar y reinicializar los valores del formulario solo cuando cambie la lista de ICOs filtrados (no al cambiar de página)
 	const prevIcosStrRef = useRef('');
@@ -66,37 +66,11 @@ export function AnnouncementsPage() {
 			origin_port: item.origin_port,
 			estimated_kg: item.contract_atlas?.estimated_kg || 0,
 			units: item.contract_atlas?.units || 0,
-			announcement: (
-				<TextInput
-					name={`${item.ico}.announcement`}
-					control={formControl}
-					placeholder='Announcement'
-					value={item.announcement ?? ''}
-				/>
-			),
-			allocation: (
-				<TextInput
-					name={`${item.ico}.allocation`}
-					control={formControl}
-					placeholder='Allocation'
-					value={item.allocation ?? ''}
-				/>
-			),
-			sales_code: (
-				<TextInput
-					name={`${item.ico}.sales_code`}
-					control={formControl}
-					placeholder='Sales Code'
-					value={item.sales_code ?? ''}
-				/>
-			),
+			announcement: <TextInput name={`${item.ico}.announcement`} control={formControl} placeholder='Announcement' />,
+			allocation: <TextInput name={`${item.ico}.allocation`} control={formControl} placeholder='Allocation' />,
+			sales_code: <TextInput name={`${item.ico}.sales_code`} control={formControl} placeholder='Sales Code' />,
 			revision_number: (
-				<TextInput
-					name={`${item.ico}.revision_number`}
-					control={formControl}
-					placeholder='Revision number'
-					value={item.revision_number ?? ''}
-				/>
+				<TextInput name={`${item.ico}.revision_number`} control={formControl} placeholder='Revision number' />
 			),
 		}));
 	};
@@ -199,8 +173,8 @@ export function AnnouncementsPage() {
 				<Popup
 					isOpen={popup.isOpen}
 					onClose={closePopup}
-					title={t(popup.title) || popup.title}
-					message={t(popup.message) || popup.message}
+					title={t(popup.title)}
+					message={t(popup.message)}
 					type={popup.type}
 				/>
 			</section>
