@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { usePersistedFilters } from './usePersistedFilters.jsx';
 import { API_BASE_URL } from '../constants/api.js';
@@ -26,7 +26,7 @@ export const useAnnouncements = (onClose) => {
 		totalUnits: 0,
 	});
 
-	// Implementación de usePersistedFilters para filtros persistentes
+	// --- Persistencia de filtros ---
 	const FILTERS_KEY = 'announcementsFilters';
 	const defaultFilterValues = {
 		startDate: '',
@@ -41,14 +41,42 @@ export const useAnnouncements = (onClose) => {
 		storageKey: FILTERS_KEY,
 	});
 
+	// Resetear filtros tanto en el storage como en el formulario
+	const resetAllFilters = () => {
+		setPersistedFilters(defaultFilterValues);
+		resetFilters(defaultFilterValues);
+	};
+
 	const {
 		control: filterControl,
 		watch: watchFilters,
 		reset: resetFilters,
-		setValue: setFilterValue,
 	} = useForm({
 		defaultValues: persistedFilters,
 	});
+
+	// Sincronizar los cambios del formulario con el hook de filtros persistentes SOLO si cambian realmente
+	const filters = watchFilters();
+	const lastSyncedFilters = useRef(persistedFilters);
+	useEffect(() => {
+		// Solo sincroniza si los filtros realmente cambiaron respecto al storage
+		const filtersStr = JSON.stringify(filters);
+		const lastStr = JSON.stringify(lastSyncedFilters.current);
+		if (filtersStr !== lastStr) {
+			setPersistedFilters(filters);
+			lastSyncedFilters.current = filters;
+		}
+	}, [filters, setPersistedFilters]);
+
+	// Al montar, inicializar los filtros desde el storage si existen SOLO una vez
+	const didInitFilters = useRef(false);
+	useEffect(() => {
+		if (!didInitFilters.current) {
+			resetFilters(persistedFilters);
+			didInitFilters.current = true;
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [persistedFilters]);
 
 	const {
 		control: formControl,
@@ -58,15 +86,6 @@ export const useAnnouncements = (onClose) => {
 	} = useForm({
 		defaultValues: {},
 	});
-
-	// Sincronizar los cambios del formulario con el hook de filtros persistentes
-	const filters = watchFilters();
-	useEffect(() => {
-		const subscription = watchFilters((values) => {
-			setPersistedFilters(values);
-		});
-		return () => subscription.unsubscribe();
-	}, [watchFilters, setPersistedFilters]);
 
 	const memoizedFilters = useMemo(
 		() => filters,
@@ -213,6 +232,6 @@ export const useAnnouncements = (onClose) => {
 		popup,
 		closePopup,
 		submitLoading,
-		resetFilters,
+		resetFilters: resetAllFilters,
 	};
 };
