@@ -174,14 +174,26 @@ export const useAnnouncements = (onClose) => {
 		setFilteredData(filtered);
 	}, [memoizedFilters, data]);
 
+	// Filtra los icos que tengan al menos un campo lleno
+	const filterIcosWithValues = (formData) => {
+		return Object.entries(formData).reduce((acc, [ico, fields]) => {
+			const hasValue = Object.values(fields).some((v) => v && v.trim() !== '');
+			if (hasValue) {
+				acc[ico] = fields;
+			}
+			return acc;
+		}, {});
+	};
+
 	const submitAnnouncements = handleSubmit((formData) => {
+		const filteredFormData = filterIcosWithValues(formData);
 		setSubmitLoading(true);
 		fetch(`${API_BASE_URL}api/exports/addAnnouncements`, {
 			method: 'PUT',
 			headers: {
 				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify(formData),
+			body: JSON.stringify(filteredFormData),
 		})
 			.then((response) => response.json())
 			.then(() => {
@@ -207,7 +219,7 @@ export const useAnnouncements = (onClose) => {
 			.finally(() => {
 				setSubmitLoading(false);
 			});
-		console.log(formData);
+		console.log(filteredFormData);
 	});
 
 	const closePopup = () => {
