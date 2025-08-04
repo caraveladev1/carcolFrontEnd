@@ -173,8 +173,8 @@ export function AnnouncementsPage() {
 				<Popup
 					isOpen={popup.isOpen}
 					onClose={closePopup}
-					title={t(popup.title)}
-					message={t(popup.message)}
+					title={popup.title ? t(popup.title) : ''}
+					message={popup.message ? t(popup.message) : ''}
 					type={popup.type}
 				/>
 			</section>
