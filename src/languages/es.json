@@ -40,5 +40,8 @@
 	"sales_code": "Código de Ventas",
 	"revision_number": "Número de Revisión",
 	"totalUnits": "Unidades Totales",
+	"save": "Guardar",
+	"reorderContainers": "Reordenar Contenedores",
+	"resetOrder": "Restablecer Orden",
 	"": ""
 }

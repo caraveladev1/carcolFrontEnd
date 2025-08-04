@@ -15,7 +15,7 @@ import { Comments } from '../components/Comments';
 import { WeightsTooltip } from '../components/WeightsTooltip';
 import { useViewContainers } from '../Hooks';
 import { PermissionGuard } from '../components/PermissionGuard.jsx';
-import { FloatingScrollButton } from '../components/general/FloatingScrollButton.jsx';
+import { FloatingScrollButton, ContainerReorderPopup } from '../components/general';
 
 export function ViewContainers() {
 	const { t } = useTranslation();
@@ -40,6 +40,11 @@ export function ViewContainers() {
 		refreshNotifications,
 		selectedHeaders,
 		setValue,
+		isReorderPopupOpen,
+		openReorderPopup,
+		closeReorderPopup,
+		handleReorderSave,
+		containersForReorder,
 	} = useViewContainers();
 
 	const [isFilterSidebarOpen, setIsFilterSidebarOpen] = React.useState(false);
@@ -53,7 +58,15 @@ export function ViewContainers() {
 			{!isFilterSidebarOpen && <FloatingScrollButton />}
 			<section className='homeContainer max-w-[90%] m-auto pb-5'>
 				<Banner />
-				<h1 className='text-3xl font-bold my-8 uppercase text-yellow font-itf'>{t('viewContainers')}</h1>
+				<div className="flex justify-between items-center my-8">
+					<h1 className='text-3xl font-bold uppercase text-yellow font-itf'>{t('viewContainers')}</h1>
+					<button
+						onClick={openReorderPopup}
+						className="bg-blue-600 hover:bg-blue-700 text-white font-itf text-lg px-6 py-3 transition-colors duration-200 rounded"
+					>
+						{t('reorderContainers')}
+					</button>
+				</div>
 
 				<FilterSidebar title='filters' onSidebarOpen={setIsFilterSidebarOpen}>
 					<DateInput name='initialDate' control={control} />
@@ -145,6 +158,14 @@ export function ViewContainers() {
 				{/* Pagination removed */}
 
 				{isCommentsOpen && <Comments ico={selectedIco} onClose={closeComments} onCommentAdded={refreshNotifications} />}
+				
+				{/* Container Reorder Popup */}
+				<ContainerReorderPopup
+					containers={containersForReorder}
+					isOpen={isReorderPopupOpen}
+					onClose={closeReorderPopup}
+					onSave={handleReorderSave}
+				/>
 			</section>
 		</div>
 	);
