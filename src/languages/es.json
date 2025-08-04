@@ -30,5 +30,18 @@
 	"manageUsers": "Gestionar Usuarios",
 	"menu": "Menú",
 	"process_type": "Tipo de Proceso",
-	"Selecciona columnas": "Selecciona columnas"
+	"Selecciona columnas": "Selecciona columnas",
+	"Select Milling State": "Selecciona Estado de Trilla",
+	"date_landing": "Fecha de Aterrizaje",
+	"lot_type": "Tipo de Lote",
+	"origin_port": "Puerto de Origen",
+	"estimated_kg": "Peso Estimado (kg)",
+	"allocation": "Asignación",
+	"sales_code": "Código de Ventas",
+	"revision_number": "Número de Revisión",
+	"totalUnits": "Unidades Totales",
+	"save": "Guardar",
+	"reorderContainers": "Reordenar Contenedores",
+	"resetOrder": "Restablecer Orden",
+	"": ""
 }

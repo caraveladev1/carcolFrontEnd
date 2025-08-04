@@ -1,14 +1,46 @@
 import { useState, useEffect, useMemo } from 'react';
+import { usePersistedFilters } from './usePersistedFilters.jsx';
 import { useForm } from 'react-hook-form';
 import { containerService } from '../services/index.js';
 import { dataTransformers, filterUtils } from '../utils/index.js';
 import { ViewContainerRow } from '../components/ViewContainerRow.jsx';
 import { useCommentNotifications } from './useCommentNotifications.jsx';
 import { API_BASE_URL } from '../constants/api.js';
+import { useCustomContainerOrder } from './useContainerReorder';
 
 import { TABLE_HEADERS } from '../constants/tableHeaders.js';
 
+const FILTERS_KEY = 'viewContainersFilters';
+
+function serializeFilters(filters) {
+	return encodeURIComponent(JSON.stringify(filters));
+}
+
+function deserializeFilters(str) {
+	try {
+		return JSON.parse(decodeURIComponent(str));
+	} catch {
+		return {};
+	}
+}
+
 export const useViewContainers = () => {
+	// Obtener los valores iniciales de los filtros desde la URL o sessionStorage (parámetros individuales)
+	// Usar el hook centralizado para filtros persistentes
+	const defaultValues = {
+		office: [],
+		exportMonth: [],
+		packaging: [],
+		contract: [],
+		destination: [],
+		initialDate: '',
+		finalDate: '',
+		ico: '',
+		selectedHeaders: [],
+	};
+	const { filters, setFilters } = usePersistedFilters({ defaultValues, storageKey: FILTERS_KEY });
+	const { applyCustomOrder } = useCustomContainerOrder();
+
 	const [organizedData, setOrganizedData] = useState(null);
 	const [loading, setLoading] = useState(true);
 	const [user, setUser] = useState('');
@@ -23,31 +55,47 @@ export const useViewContainers = () => {
 		refreshNotifications,
 	} = useCommentNotifications(user);
 
-	const { control, watch, reset, setValue } = useForm({
-		defaultValues: {
-			office: [],
-			exportMonth: [],
-			packaging: [],
-			contract: [],
-			destination: [],
-			initialDate: '',
-			finalDate: '',
-			ico: '',
-			selectedHeaders: [], // Por defecto deseleccionado
-		},
+	const { control, watch, reset, setValue, getValues } = useForm({
+		defaultValues: filters,
 	});
 
-	const filters = watch();
+	// Sincronizar los cambios del formulario con el hook de filtros
+	useEffect(() => {
+		const subscription = watch((values) => {
+			setFilters(values);
+		});
+		return () => subscription.unsubscribe();
+	}, [watch, setFilters]);
+
+	// Guardar los filtros en sessionStorage y URL como parámetros individuales
+	useEffect(() => {
+		sessionStorage.setItem(FILTERS_KEY, JSON.stringify(filters));
+		const params = new URLSearchParams();
+		Object.entries(filters).forEach(([key, value]) => {
+			if (Array.isArray(value) && value.length > 0) {
+				params.set(key, value.join(','));
+			} else if (typeof value === 'string' && value) {
+				params.set(key, value);
+			}
+		});
+		window.history.replaceState(
+			{},
+			'',
+			`${window.location.pathname}${params.toString() ? '?' + params.toString() : ''}`,
+		);
+	}, [filters]);
 
 	const [officeOptions, setOfficeOptions] = useState([]);
 	const [packagingOptions, setPackagingOptions] = useState([]);
 	const [contractOptions, setContractOptions] = useState([]);
 	const [destinationOptions, setDestinationOptions] = useState([]);
+	const [millingStateOptions, setMillingStateOptions] = useState([]);
 	const [isCommentsOpen, setIsCommentsOpen] = useState(false);
 	const [selectedIco, setSelectedIco] = useState(null);
 	const [weightsTooltipVisible, setWeightsTooltipVisible] = useState({});
 	const [currentPage, setCurrentPage] = useState(1);
 	const itemsPerPage = 10;
+	const [isReorderPopupOpen, setIsReorderPopupOpen] = useState(false);
 
 	const mapDataWithButtons = (data, role) => {
 		const getDateLandingColor = (dateLanding) => {
@@ -127,11 +175,13 @@ export const useViewContainers = () => {
 				const destination = dataTransformers.extractUniqueOptions(mappedData, 'destination');
 				const packaging = dataTransformers.extractUniqueOptions(mappedData, 'packaging');
 				const contract = dataTransformers.extractUniqueOptions(mappedData, 'contract');
+				const millingStates = dataTransformers.extractUniqueOptions(mappedData, 'milling_state');
 
 				setOfficeOptions(office);
 				setDestinationOptions(destination);
 				setPackagingOptions(packaging);
 				setContractOptions(contract);
+				setMillingStateOptions(millingStates.map((state) => ({ value: state, label: state })));
 				setOrganizedData(mappedData);
 				setLoading(false);
 			} catch (error) {
@@ -163,7 +213,30 @@ export const useViewContainers = () => {
 
 	const filteredData = () => {
 		if (!organizedData) return {};
-		return filterUtils.filterViewContainerData(organizedData, filters);
+		let filtered = filterUtils.filterViewContainerData(organizedData, filters);
+		if (filters.milling_state && filters.milling_state.length > 0) {
+			filtered = Object.fromEntries(
+				Object.entries(filtered)
+					.map(([exp_id, containerData]) => [
+						exp_id,
+						containerData.filter((item) => filters.milling_state.includes(item.milling_state)),
+					])
+					.filter(([_, containerData]) => containerData.length > 0),
+			);
+		}
+
+		// Add minDateLanding to each group for custom ordering
+		Object.keys(filtered).forEach((exp_id) => {
+			const minDateLanding =
+				filtered[exp_id]
+					.filter((item) => item.date_landing)
+					.map((item) => new Date(item.date_landing).getTime())
+					.sort((a, b) => a - b)[0] || null;
+			filtered[exp_id].minDateLanding = minDateLanding;
+		});
+
+		// Apply custom order to the filtered data
+		return applyCustomOrder(filtered);
 	};
 
 	// Headers seleccionados para mostrar en la tabla
@@ -281,6 +354,56 @@ export const useViewContainers = () => {
 		setWeightsTooltipVisible((prev) => ({ ...prev, [expId]: !prev[expId] }));
 	};
 
+	// Container reorder functions
+	const openReorderPopup = () => {
+		setIsReorderPopupOpen(true);
+	};
+
+	const closeReorderPopup = () => {
+		setIsReorderPopupOpen(false);
+	};
+
+	const handleReorderSave = (newOrder) => {
+		// Force a re-render by updating the organizedData
+		// The order is already saved in localStorage by the component
+		setOrganizedData((prev) => ({ ...prev }));
+	};
+
+	// Prepare containers data for reorder popup (use all data, not filtered)
+	const containersForReorder = useMemo(() => {
+		if (!organizedData) return [];
+
+		// Use organizedData directly instead of filteredData to show all containers
+		const allData = { ...organizedData };
+
+		// Add minDateLanding to each group
+		Object.keys(allData).forEach((exp_id) => {
+			const minDateLanding =
+				allData[exp_id]
+					.filter((item) => item.date_landing)
+					.map((item) => new Date(item.date_landing).getTime())
+					.sort((a, b) => a - b)[0] || null;
+			allData[exp_id].minDateLanding = minDateLanding;
+		});
+
+		const result = Object.entries(allData).map(([exp_id, containerData]) => ({
+			exp_id,
+			loading_to_port: containerData[0]?.date_landing || null,
+			// Add minDateLanding for sorting
+			minDateLanding: containerData.minDateLanding || null,
+		}));
+
+		// Show summary in console for debugging
+		const totalContainers = result.length;
+		const withDates = result.filter((c) => c.loading_to_port).length;
+		const pastDates = result.filter((c) => c.loading_to_port && new Date(c.loading_to_port) < new Date()).length;
+		const futureDates = result.filter((c) => c.loading_to_port && new Date(c.loading_to_port) >= new Date()).length;
+
+		/* console.log(`📊 Container Summary - Total: ${totalContainers}, With dates: ${withDates}, Past: ${pastDates}, Future: ${futureDates}`); */
+
+		return result;
+	}, [organizedData]);
+
 	return {
 		organizedData,
 		loading,
@@ -288,6 +411,7 @@ export const useViewContainers = () => {
 		packagingOptions,
 		contractOptions,
 		destinationOptions,
+		millingStateOptions,
 		isCommentsOpen,
 		selectedIco,
 		handleCommentsButtonClick,
@@ -312,5 +436,11 @@ export const useViewContainers = () => {
 		getNotificationStatus,
 		selectedHeaders,
 		setValue,
+		getValues,
+		isReorderPopupOpen,
+		openReorderPopup,
+		closeReorderPopup,
+		handleReorderSave,
+		containersForReorder,
 	};
 };

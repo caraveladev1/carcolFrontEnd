@@ -15,7 +15,7 @@ import { Comments } from '../components/Comments';
 import { WeightsTooltip } from '../components/WeightsTooltip';
 import { useViewContainers } from '../Hooks';
 import { PermissionGuard } from '../components/PermissionGuard.jsx';
-import { FloatingScrollButton } from '../components/general/FloatingScrollButton.jsx';
+import { FloatingScrollButton, ContainerReorderPopup } from '../components/general';
 
 export function ViewContainers() {
 	const { t } = useTranslation();
@@ -25,6 +25,7 @@ export function ViewContainers() {
 		packagingOptions,
 		contractOptions,
 		destinationOptions,
+		millingStateOptions,
 		isCommentsOpen,
 		selectedIco,
 		closeComments,
@@ -39,6 +40,11 @@ export function ViewContainers() {
 		refreshNotifications,
 		selectedHeaders,
 		setValue,
+		isReorderPopupOpen,
+		openReorderPopup,
+		closeReorderPopup,
+		handleReorderSave,
+		containersForReorder,
 	} = useViewContainers();
 
 	const [isFilterSidebarOpen, setIsFilterSidebarOpen] = React.useState(false);
@@ -52,7 +58,15 @@ export function ViewContainers() {
 			{!isFilterSidebarOpen && <FloatingScrollButton />}
 			<section className='homeContainer max-w-[90%] m-auto pb-5'>
 				<Banner />
-				<h1 className='text-3xl font-bold my-8 uppercase text-yellow font-itf'>{t('viewContainers')}</h1>
+				<div className='flex justify-between items-center my-8'>
+					<h1 className='text-3xl font-bold uppercase text-yellow font-itf'>{t('viewContainers')}</h1>
+					<button
+						onClick={openReorderPopup}
+						className='bg-naranja text-beige font-itf text-lg px-6 py-3 transition-colors duration-200 '
+					>
+						{t('reorderContainers')}
+					</button>
+				</div>
 
 				<FilterSidebar title='filters' onSidebarOpen={setIsFilterSidebarOpen}>
 					<DateInput name='initialDate' control={control} />
@@ -61,6 +75,14 @@ export function ViewContainers() {
 					<SelectInput name='packaging' control={control} options={packagingOptions} isMulti={true} />
 					<SelectInput name='contract' control={control} options={contractOptions} isMulti={true} />
 					<SelectInput name='destination' control={control} options={destinationOptions} isMulti={true} />
+					{/* Filtro de Milling State */}
+					<SelectInput
+						name='milling_state'
+						control={control}
+						options={millingStateOptions.map((opt) => ({ ...opt, label: formatHeader(opt.value) }))}
+						isMulti={true}
+						placeholder={t('Select Milling State')}
+					/>
 					<TextInput name='ico' control={control} placeholder={t('ico_id')} />
 					{/* Filtro de columnas */}
 					<SelectInput
@@ -136,6 +158,14 @@ export function ViewContainers() {
 				{/* Pagination removed */}
 
 				{isCommentsOpen && <Comments ico={selectedIco} onClose={closeComments} onCommentAdded={refreshNotifications} />}
+
+				{/* Container Reorder Popup */}
+				<ContainerReorderPopup
+					containers={containersForReorder}
+					isOpen={isReorderPopupOpen}
+					onClose={closeReorderPopup}
+					onSave={handleReorderSave}
+				/>
 			</section>
 		</div>
 	);

@@ -1,6 +1,9 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { formatHeader } from '../utils/formatHeader';
+import { formatHeader, formatThousands } from '../utils/formatHeader';
+
+// Campos que deben ser formateados con separador de miles
+const THOUSANDS_FIELDS = ['weight', 'totalWeight', 'weight_kg', 'estimated_kg'];
 
 export function TableGeneric({ headersTable, dataTable }) {
 	const { t } = useTranslation();
@@ -29,7 +32,13 @@ export function TableGeneric({ headersTable, dataTable }) {
 										className='h-[3rem] bg-verdeClaro/[.5] border-[2px] border-cafe font-itf text-beige px-4 whitespace-nowrap'
 										key={cellIndex}
 									>
-										{row[header] || ''}
+										{THOUSANDS_FIELDS.some((f) => header.toLowerCase() === f.toLowerCase()) &&
+										row[header] != null &&
+										row[header] !== ''
+											? formatThousands(row[header])
+											: row[header] === 0
+												? '0'
+												: row[header] || ''}
 									</td>
 								))}
 							</tr>

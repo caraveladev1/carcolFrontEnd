@@ -23,6 +23,7 @@ export function ExportedContainers() {
 		selectedExpId,
 		countryOptions,
 		portOptions,
+		contractOptions,
 		handleViewDetails,
 		closeDetails,
 		filteredData,
@@ -67,6 +68,14 @@ export function ExportedContainers() {
 					<DateInput name='finalDate' control={control} />
 					<SelectInput name='exportCountry' control={control} options={countryOptions} isMulti={true} />
 					<SelectInput name='destinationPort' control={control} options={portOptions} isMulti={true} />
+					{/* Filtro de contrato */}
+					<SelectInput
+						name='contract'
+						control={control}
+						options={contractOptions.map((contract) => ({ value: contract, label: contract }))}
+						isMulti={true}
+						placeholder={t('Selecciona contrato')}
+					/>
 					{/* Filtro de columnas */}
 					<SelectInput
 						name='selectedHeaders'

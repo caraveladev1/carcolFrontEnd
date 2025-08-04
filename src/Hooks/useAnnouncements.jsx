@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useForm } from 'react-hook-form';
+import { usePersistedFilters } from './usePersistedFilters.jsx';
 import { API_BASE_URL } from '../constants/api.js';
 
 export const useAnnouncements = (onClose) => {
@@ -25,20 +26,57 @@ export const useAnnouncements = (onClose) => {
 		totalUnits: 0,
 	});
 
+	// --- Persistencia de filtros ---
+	const FILTERS_KEY = 'announcementsFilters';
+	const defaultFilterValues = {
+		startDate: '',
+		endDate: '',
+		packaging: [],
+		originPort: [],
+		ico: [],
+		lotType: [],
+	};
+	const { filters: persistedFilters, setFilters: setPersistedFilters } = usePersistedFilters({
+		defaultValues: defaultFilterValues,
+		storageKey: FILTERS_KEY,
+	});
+
+	// Resetear filtros tanto en el storage como en el formulario
+	const resetAllFilters = () => {
+		setPersistedFilters(defaultFilterValues);
+		resetFilters(defaultFilterValues);
+	};
+
 	const {
 		control: filterControl,
 		watch: watchFilters,
 		reset: resetFilters,
 	} = useForm({
-		defaultValues: {
-			startDate: '',
-			endDate: '',
-			packaging: [],
-			originPort: [],
-			ico: [],
-			lotType: [],
-		},
+		defaultValues: persistedFilters,
 	});
+
+	// Sincronizar los cambios del formulario con el hook de filtros persistentes SOLO si cambian realmente
+	const filters = watchFilters();
+	const lastSyncedFilters = useRef(persistedFilters);
+	useEffect(() => {
+		// Solo sincroniza si los filtros realmente cambiaron respecto al storage
+		const filtersStr = JSON.stringify(filters);
+		const lastStr = JSON.stringify(lastSyncedFilters.current);
+		if (filtersStr !== lastStr) {
+			setPersistedFilters(filters);
+			lastSyncedFilters.current = filters;
+		}
+	}, [filters, setPersistedFilters]);
+
+	// Al montar, inicializar los filtros desde el storage si existen SOLO una vez
+	const didInitFilters = useRef(false);
+	useEffect(() => {
+		if (!didInitFilters.current) {
+			resetFilters(persistedFilters);
+			didInitFilters.current = true;
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [persistedFilters]);
 
 	const {
 		control: formControl,
@@ -48,8 +86,6 @@ export const useAnnouncements = (onClose) => {
 	} = useForm({
 		defaultValues: {},
 	});
-
-	const filters = watchFilters();
 
 	const memoizedFilters = useMemo(
 		() => filters,
@@ -92,7 +128,6 @@ export const useAnnouncements = (onClose) => {
 
 				data.forEach((item) => {
 					setValue(`${item.ico}.announcement`, item.announcement || '');
-					setValue(`${item.ico}.orders`, item.orders || '');
 					setValue(`${item.ico}.revision_number`, item.revision_number || '');
 					setValue(`${item.ico}.allocation`, item.allocation || '');
 					setValue(`${item.ico}.sales_code`, item.sales_code || '');
@@ -139,14 +174,26 @@ export const useAnnouncements = (onClose) => {
 		setFilteredData(filtered);
 	}, [memoizedFilters, data]);
 
+	// Filtra los icos que tengan al menos un campo lleno
+	const filterIcosWithValues = (formData) => {
+		return Object.entries(formData).reduce((acc, [ico, fields]) => {
+			const hasValue = Object.values(fields).some((v) => v && v.trim() !== '');
+			if (hasValue) {
+				acc[ico] = fields;
+			}
+			return acc;
+		}, {});
+	};
+
 	const submitAnnouncements = handleSubmit((formData) => {
+		const filteredFormData = filterIcosWithValues(formData);
 		setSubmitLoading(true);
 		fetch(`${API_BASE_URL}api/exports/addAnnouncements`, {
 			method: 'PUT',
 			headers: {
 				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify(formData),
+			body: JSON.stringify(filteredFormData),
 		})
 			.then((response) => response.json())
 			.then(() => {
@@ -172,6 +219,7 @@ export const useAnnouncements = (onClose) => {
 			.finally(() => {
 				setSubmitLoading(false);
 			});
+		console.log(filteredFormData);
 	});
 
 	const closePopup = () => {
@@ -196,6 +244,6 @@ export const useAnnouncements = (onClose) => {
 		popup,
 		closePopup,
 		submitLoading,
-		resetFilters,
+		resetFilters: resetAllFilters,
 	};
 };
