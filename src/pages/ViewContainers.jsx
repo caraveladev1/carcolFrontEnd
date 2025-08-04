@@ -58,11 +58,11 @@ export function ViewContainers() {
 			{!isFilterSidebarOpen && <FloatingScrollButton />}
 			<section className='homeContainer max-w-[90%] m-auto pb-5'>
 				<Banner />
-				<div className="flex justify-between items-center my-8">
+				<div className='flex justify-between items-center my-8'>
 					<h1 className='text-3xl font-bold uppercase text-yellow font-itf'>{t('viewContainers')}</h1>
 					<button
 						onClick={openReorderPopup}
-						className="bg-blue-600 hover:bg-blue-700 text-white font-itf text-lg px-6 py-3 transition-colors duration-200 rounded"
+						className='bg-naranja text-beige font-itf text-lg px-6 py-3 transition-colors duration-200 '
 					>
 						{t('reorderContainers')}
 					</button>
@@ -158,7 +158,7 @@ export function ViewContainers() {
 				{/* Pagination removed */}
 
 				{isCommentsOpen && <Comments ico={selectedIco} onClose={closeComments} onCommentAdded={refreshNotifications} />}
-				
+
 				{/* Container Reorder Popup */}
 				<ContainerReorderPopup
 					containers={containersForReorder}
