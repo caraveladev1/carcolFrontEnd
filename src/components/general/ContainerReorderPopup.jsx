@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useContainerReorder } from '../../Hooks/useContainerReorder';
-import { PermissionGuard } from '../PermissionGuard';
+
 
 export function ContainerReorderPopup({ containers, isOpen, onClose, onSave }) {
 	const { t } = useTranslation();
@@ -19,8 +19,7 @@ export function ContainerReorderPopup({ containers, isOpen, onClose, onSave }) {
 	if (!isOpen) return null;
 
 	return (
-		<PermissionGuard permissions={['containers.edit']} fallback={null}>
-			<div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50'>
+		<div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50'>
 				<div className='bg-white  shadow-xl max-w-2xl w-full mx-4 max-h-[80vh] overflow-hidden'>
 					{/* Header */}
 					<div className='bg-naranja text-white px-6 py-4 flex justify-between items-center'>
@@ -112,8 +111,7 @@ export function ContainerReorderPopup({ containers, isOpen, onClose, onSave }) {
 							{t('save')}
 						</button>
 					</div>
-				</div>
 			</div>
-		</PermissionGuard>
+		</div>
 	);
 }

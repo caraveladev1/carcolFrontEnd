@@ -27,4 +27,6 @@ export const API_ENDPOINTS = {
 	USERS: 'api/users',
 	USER_PERMISSIONS: 'api/users/permissions',
 	USER_ROLES: 'api/users/roles',
+	// Container order endpoints
+	CONTAINER_ORDER: 'api/exports/container-order',
 };

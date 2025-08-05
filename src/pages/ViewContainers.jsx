@@ -162,12 +162,14 @@ export function ViewContainers() {
 				{isCommentsOpen && <Comments ico={selectedIco} onClose={closeComments} onCommentAdded={refreshNotifications} />}
 
 				{/* Container Reorder Popup */}
-				<ContainerReorderPopup
-					containers={containersForReorder}
-					isOpen={isReorderPopupOpen}
-					onClose={closeReorderPopup}
-					onSave={handleReorderSave}
-				/>
+				<PermissionGuard permissions={['containers.edit']}>
+					<ContainerReorderPopup
+						containers={containersForReorder}
+						isOpen={isReorderPopupOpen}
+						onClose={closeReorderPopup}
+						onSave={handleReorderSave}
+					/>
+				</PermissionGuard>
 			</section>
 		</div>
 	);
