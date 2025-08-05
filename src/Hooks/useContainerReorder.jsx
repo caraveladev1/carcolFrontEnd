@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-
-const STORAGE_KEY = 'containerCustomOrder';
+import { apiService } from '../services/apiService';
+import { API_ENDPOINTS } from '../constants/api';
 
 export const useContainerReorder = (containers) => {
 	const [orderedContainers, setOrderedContainers] = useState([]);
@@ -10,17 +10,17 @@ export const useContainerReorder = (containers) => {
 	useEffect(() => {
 		if (!containers || containers.length === 0) return;
 
-		// Get custom order from localStorage
-		const savedOrder = localStorage.getItem(STORAGE_KEY);
-		let customOrder = {};
-
-		if (savedOrder) {
+		const loadOrder = async () => {
+			// Get custom order from API
+			let customOrder = null;
 			try {
-				customOrder = JSON.parse(savedOrder);
+				const response = await apiService.get(API_ENDPOINTS.CONTAINER_ORDER);
+				if (response.success && response.data) {
+					customOrder = response.data;
+				}
 			} catch (error) {
-				console.error('Error parsing saved container order:', error);
+				console.error('Error fetching container order:', error);
 			}
-		}
 
 		// Sort containers by date_landing (oldest first) as base order
 		// Include ALL containers, regardless of date
@@ -30,29 +30,54 @@ export const useContainerReorder = (containers) => {
 			return dateA - dateB; // Ascending order (oldest first)
 		});
 
-		// Apply custom order if exists
-		const finalOrder = [];
-		const processedIds = new Set();
+			// Apply custom order if exists, otherwise use date order
+			let finalOrder;
 
-		// First, add containers in custom order if they exist
-		if (customOrder.order && Array.isArray(customOrder.order)) {
+			if (!customOrder || !customOrder.order || !Array.isArray(customOrder.order) || customOrder.order.length === 0) {
+				// No custom order exists, use pure date order
+				finalOrder = sortedByDate;
+			} else {
+			// Custom order exists, merge with new containers chronologically
+			finalOrder = [];
+			const customOrderedIds = new Set(customOrder.order);
+			const newContainers = sortedByDate.filter(c => !customOrderedIds.has(c.exp_id));
+			
+			let newContainerIndex = 0;
+			
 			for (const expId of customOrder.order) {
-				const container = sortedByDate.find((c) => c.exp_id === expId);
+				const container = sortedByDate.find(c => c.exp_id === expId);
 				if (container) {
+					const containerDate = container.loading_to_port ? new Date(container.loading_to_port).getTime() : Number.MAX_SAFE_INTEGER;
+					
+					// Insert new containers that should come before this one
+					while (newContainerIndex < newContainers.length) {
+						const newContainer = newContainers[newContainerIndex];
+						const newContainerDate = newContainer.loading_to_port ? new Date(newContainer.loading_to_port).getTime() : Number.MAX_SAFE_INTEGER;
+						
+						if (newContainerDate <= containerDate) {
+							finalOrder.push(newContainer);
+							newContainerIndex++;
+						} else {
+							break;
+						}
+					}
+					
+					// Add the custom-ordered container
 					finalOrder.push(container);
-					processedIds.add(expId);
 				}
 			}
-		}
-
-		// Then, add any new containers that aren't in custom order (maintain date order)
-		for (const container of sortedByDate) {
-			if (!processedIds.has(container.exp_id)) {
-				finalOrder.push(container);
+			
+			// Add any remaining new containers at the end
+			while (newContainerIndex < newContainers.length) {
+				finalOrder.push(newContainers[newContainerIndex]);
+				newContainerIndex++;
 			}
 		}
 
-		setOrderedContainers(finalOrder);
+			setOrderedContainers(finalOrder);
+		};
+
+		loadOrder();
 	}, [containers]);
 
 	const handleDragStart = (e, container) => {
@@ -86,34 +111,38 @@ export const useContainerReorder = (containers) => {
 		setDraggedItem(null);
 	};
 
-	const handleSave = () => {
-		// Save the new order to localStorage
-		const customOrder = {
-			order: orderedContainers.map((c) => c.exp_id),
-			lastUpdated: new Date().toISOString(),
-		};
+	const handleSave = async () => {
+		try {
+			const customOrder = {
+				order: orderedContainers.map((c) => c.exp_id),
+				lastUpdated: new Date().toISOString(),
+			};
 
-		localStorage.setItem(STORAGE_KEY, JSON.stringify(customOrder));
-
-		// Return the ordered containers so the component can handle the callbacks
-		return orderedContainers;
+			await apiService.post(API_ENDPOINTS.CONTAINER_ORDER, customOrder);
+			return orderedContainers;
+		} catch (error) {
+			console.error('Error saving container order:', error);
+			throw error;
+		}
 	};
 
-	const handleResetOrder = () => {
-		// Remove custom order from localStorage
-		localStorage.removeItem(STORAGE_KEY);
+	const handleResetOrder = async () => {
+		try {
+			await apiService.request(API_ENDPOINTS.CONTAINER_ORDER, { method: 'DELETE' });
 
-		// Reset to original date order
-		const sortedByDate = [...containers].sort((a, b) => {
-			const dateA = a.loading_to_port ? new Date(a.loading_to_port).getTime() : Number.MAX_SAFE_INTEGER;
-			const dateB = b.loading_to_port ? new Date(b.loading_to_port).getTime() : Number.MAX_SAFE_INTEGER;
-			return dateA - dateB; // Ascending order (oldest first)
-		});
+			// Reset to original date order
+			const sortedByDate = [...containers].sort((a, b) => {
+				const dateA = a.loading_to_port ? new Date(a.loading_to_port).getTime() : Number.MAX_SAFE_INTEGER;
+				const dateB = b.loading_to_port ? new Date(b.loading_to_port).getTime() : Number.MAX_SAFE_INTEGER;
+				return dateA - dateB;
+			});
 
-		setOrderedContainers(sortedByDate);
-
-		// Return the sorted containers so the component can handle the callback
-		return sortedByDate;
+			setOrderedContainers(sortedByDate);
+			return sortedByDate;
+		} catch (error) {
+			console.error('Error resetting container order:', error);
+			throw error;
+		}
 	};
 
 	const formatDate = (dateString) => {
@@ -156,24 +185,21 @@ export const useContainerReorder = (containers) => {
 
 // Hook to get custom container order
 export const useCustomContainerOrder = () => {
-	const getCustomOrder = () => {
-		const savedOrder = localStorage.getItem(STORAGE_KEY);
-		if (savedOrder) {
-			try {
-				return JSON.parse(savedOrder);
-			} catch (error) {
-				console.error('Error parsing saved container order:', error);
-				return null;
-			}
+	const getCustomOrder = async () => {
+		try {
+			const response = await apiService.get(API_ENDPOINTS.CONTAINER_ORDER);
+			return response.success ? response.data : null;
+		} catch (error) {
+			console.error('Error fetching container order:', error);
+			return null;
 		}
-		return null;
 	};
 
-	const applyCustomOrder = (containers) => {
+	const applyCustomOrder = async (containers) => {
 		if (!containers || containers.length === 0) return containers;
 
-		const customOrder = getCustomOrder();
-		if (!customOrder || !customOrder.order) {
+		const customOrder = await getCustomOrder();
+		if (!customOrder || !customOrder.order || !Array.isArray(customOrder.order) || customOrder.order.length === 0) {
 			// Return containers sorted by date_landing (oldest first)
 			return Object.fromEntries(
 				Object.entries(containers).sort(([, a], [, b]) => {

@@ -42,6 +42,7 @@ export const useViewContainers = () => {
 	const { applyCustomOrder } = useCustomContainerOrder();
 
 	const [organizedData, setOrganizedData] = useState(null);
+	const [orderedData, setOrderedData] = useState(null);
 	const [loading, setLoading] = useState(true);
 	const [user, setUser] = useState('');
 
@@ -211,32 +212,46 @@ export const useViewContainers = () => {
 		setSelectedIco(null);
 	};
 
+	// Apply custom order whenever organizedData or filters change
+	useEffect(() => {
+		const applyOrder = async () => {
+			if (!organizedData) {
+				setOrderedData(null);
+				return;
+			}
+
+			let filtered = filterUtils.filterViewContainerData(organizedData, filters);
+			if (filters.milling_state && filters.milling_state.length > 0) {
+				filtered = Object.fromEntries(
+					Object.entries(filtered)
+						.map(([exp_id, containerData]) => [
+							exp_id,
+							containerData.filter((item) => filters.milling_state.includes(item.milling_state)),
+						])
+						.filter(([_, containerData]) => containerData.length > 0),
+				);
+			}
+
+			// Add minDateLanding to each group for custom ordering
+			Object.keys(filtered).forEach((exp_id) => {
+				const minDateLanding =
+					filtered[exp_id]
+						.filter((item) => item.date_landing)
+						.map((item) => new Date(item.date_landing).getTime())
+						.sort((a, b) => a - b)[0] || null;
+				filtered[exp_id].minDateLanding = minDateLanding;
+			});
+
+			// Apply custom order to the filtered data
+			const ordered = await applyCustomOrder(filtered);
+			setOrderedData(ordered);
+		};
+
+		applyOrder();
+	}, [organizedData, filters, applyCustomOrder]);
+
 	const filteredData = () => {
-		if (!organizedData) return {};
-		let filtered = filterUtils.filterViewContainerData(organizedData, filters);
-		if (filters.milling_state && filters.milling_state.length > 0) {
-			filtered = Object.fromEntries(
-				Object.entries(filtered)
-					.map(([exp_id, containerData]) => [
-						exp_id,
-						containerData.filter((item) => filters.milling_state.includes(item.milling_state)),
-					])
-					.filter(([_, containerData]) => containerData.length > 0),
-			);
-		}
-
-		// Add minDateLanding to each group for custom ordering
-		Object.keys(filtered).forEach((exp_id) => {
-			const minDateLanding =
-				filtered[exp_id]
-					.filter((item) => item.date_landing)
-					.map((item) => new Date(item.date_landing).getTime())
-					.sort((a, b) => a - b)[0] || null;
-			filtered[exp_id].minDateLanding = minDateLanding;
-		});
-
-		// Apply custom order to the filtered data
-		return applyCustomOrder(filtered);
+		return orderedData || {};
 	};
 
 	// Headers seleccionados para mostrar en la tabla
@@ -244,19 +259,19 @@ export const useViewContainers = () => {
 		filters.selectedHeaders && filters.selectedHeaders.length > 0 ? filters.selectedHeaders : TABLE_HEADERS.VIEW;
 
 	const paginatedData = useMemo(() => {
-		if (!organizedData) return [];
+		if (!orderedData) return [];
 		const filtered = filteredData();
 		const entries = Object.entries(filtered || {});
 		const startIndex = (currentPage - 1) * itemsPerPage;
 		const endIndex = startIndex + itemsPerPage;
 		return entries.slice(startIndex, endIndex);
-	}, [organizedData, filters, currentPage]);
+	}, [orderedData, currentPage]);
 
 	const totalItems = useMemo(() => {
-		if (!organizedData) return 0;
+		if (!orderedData) return 0;
 		const filtered = filteredData();
 		return Object.keys(filtered || {}).length;
-	}, [organizedData, filters]);
+	}, [orderedData]);
 
 	const goToPage = (page) => {
 		const totalPages = Math.ceil(totalItems / itemsPerPage);
