@@ -60,12 +60,14 @@ export function ViewContainers() {
 				<Banner />
 				<div className='flex justify-between items-center my-8'>
 					<h1 className='text-3xl font-bold uppercase text-yellow font-itf'>{t('viewContainers')}</h1>
-					<button
-						onClick={openReorderPopup}
-						className='bg-naranja text-beige font-itf text-lg px-6 py-3 transition-colors duration-200 '
-					>
-						{t('reorderContainers')}
-					</button>
+					<PermissionGuard permissions={['containers.edit']}>
+						<button
+							onClick={openReorderPopup}
+							className='bg-naranja text-beige font-itf text-lg px-6 py-3 transition-colors duration-200 '
+						>
+							{t('reorderContainers')}
+						</button>
+					</PermissionGuard>
 				</div>
 
 				<FilterSidebar title='filters' onSidebarOpen={setIsFilterSidebarOpen}>
