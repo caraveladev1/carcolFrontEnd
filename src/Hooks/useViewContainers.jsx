@@ -39,7 +39,7 @@ export const useViewContainers = () => {
 		selectedHeaders: [],
 	};
 	const { filters, setFilters } = usePersistedFilters({ defaultValues, storageKey: FILTERS_KEY });
-	const { applyCustomOrder } = useCustomContainerOrder();
+	const { getCustomOrder, applyCustomOrder } = useCustomContainerOrder();
 
 	const [organizedData, setOrganizedData] = useState(null);
 	const [orderedData, setOrderedData] = useState(null);
@@ -212,43 +212,106 @@ export const useViewContainers = () => {
 		setSelectedIco(null);
 	};
 
-	// Apply custom order whenever organizedData or filters change
-	useEffect(() => {
-		const applyOrder = async () => {
-			if (!organizedData) {
-				setOrderedData(null);
-				return;
-			}
+	const [customOrder, setCustomOrder] = useState(null);
 
-			let filtered = filterUtils.filterViewContainerData(organizedData, filters);
-			if (filters.milling_state && filters.milling_state.length > 0) {
-				filtered = Object.fromEntries(
-					Object.entries(filtered)
-						.map(([exp_id, containerData]) => [
-							exp_id,
-							containerData.filter((item) => filters.milling_state.includes(item.milling_state)),
-						])
-						.filter(([_, containerData]) => containerData.length > 0),
+	// Load custom order only once on mount
+	useEffect(() => {
+		const loadCustomOrder = async () => {
+			try {
+				const order = await getCustomOrder();
+				setCustomOrder(order);
+			} catch (error) {
+				console.error('Error loading custom order:', error);
+				setCustomOrder(null);
+			}
+		};
+		loadCustomOrder();
+	}, []);
+
+	// Apply order whenever organizedData or filters change (using cached order)
+	useEffect(() => {
+		if (!organizedData) {
+			setOrderedData(null);
+			return;
+		}
+
+		let filtered = filterUtils.filterViewContainerData(organizedData, filters);
+		if (filters.milling_state && filters.milling_state.length > 0) {
+			filtered = Object.fromEntries(
+				Object.entries(filtered)
+					.map(([exp_id, containerData]) => [
+						exp_id,
+						containerData.filter((item) => filters.milling_state.includes(item.milling_state)),
+					])
+					.filter(([_, containerData]) => containerData.length > 0),
+			);
+		}
+
+		// Add minDateLanding to each group for custom ordering
+		Object.keys(filtered).forEach((exp_id) => {
+			const minDateLanding =
+				filtered[exp_id]
+					.filter((item) => item.date_landing)
+					.map((item) => new Date(item.date_landing).getTime())
+					.sort((a, b) => a - b)[0] || null;
+			filtered[exp_id].minDateLanding = minDateLanding;
+		});
+
+		// Apply cached custom order
+		const applyOrder = (containers, order) => {
+			if (!order || !order.order || !Array.isArray(order.order) || order.order.length === 0) {
+				return Object.fromEntries(
+					Object.entries(containers).sort(([, a], [, b]) => {
+						const dateA = a.minDateLanding || Number.MAX_SAFE_INTEGER;
+						const dateB = b.minDateLanding || Number.MAX_SAFE_INTEGER;
+						return dateA - dateB;
+					}),
 				);
 			}
 
-			// Add minDateLanding to each group for custom ordering
-			Object.keys(filtered).forEach((exp_id) => {
-				const minDateLanding =
-					filtered[exp_id]
-						.filter((item) => item.date_landing)
-						.map((item) => new Date(item.date_landing).getTime())
-						.sort((a, b) => a - b)[0] || null;
-				filtered[exp_id].minDateLanding = minDateLanding;
+			const allEntries = Object.entries(containers).sort(([, a], [, b]) => {
+				const dateA = a.minDateLanding || Number.MAX_SAFE_INTEGER;
+				const dateB = b.minDateLanding || Number.MAX_SAFE_INTEGER;
+				return dateA - dateB;
 			});
 
-			// Apply custom order to the filtered data
-			const ordered = await applyCustomOrder(filtered);
-			setOrderedData(ordered);
+			const customOrderedIds = new Set(order.order);
+			const newContainers = allEntries.filter(([expId]) => !customOrderedIds.has(expId));
+			const result = {};
+			let newContainerIndex = 0;
+
+			for (const expId of order.order) {
+				if (containers[expId]) {
+					const currentContainerDate = containers[expId].minDateLanding || Number.MAX_SAFE_INTEGER;
+
+					while (newContainerIndex < newContainers.length) {
+						const [newExpId, newData] = newContainers[newContainerIndex];
+						const newContainerDate = newData.minDateLanding || Number.MAX_SAFE_INTEGER;
+
+						if (newContainerDate <= currentContainerDate) {
+							result[newExpId] = newData;
+							newContainerIndex++;
+						} else {
+							break;
+						}
+					}
+
+					result[expId] = containers[expId];
+				}
+			}
+
+			while (newContainerIndex < newContainers.length) {
+				const [newExpId, newData] = newContainers[newContainerIndex];
+				result[newExpId] = newData;
+				newContainerIndex++;
+			}
+
+			return result;
 		};
 
-		applyOrder();
-	}, [organizedData, filters, applyCustomOrder]);
+		const ordered = applyOrder(filtered, customOrder);
+		setOrderedData(ordered);
+	}, [organizedData, filters, customOrder]);
 
 	const filteredData = () => {
 		return orderedData || {};
