@@ -63,6 +63,7 @@ export const useComments = (ico, onCommentAdded) => {
 				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify(postData),
+			credentials: 'include',
 		})
 			.then((response) => response.json())
 			.then(() => {
