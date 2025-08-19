@@ -194,6 +194,7 @@ export const useAnnouncements = (onClose) => {
 				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify(filteredFormData),
+			credentials: 'include',
 		})
 			.then((response) => response.json())
 			.then(() => {

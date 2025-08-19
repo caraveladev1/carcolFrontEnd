@@ -66,6 +66,7 @@ export const useFiltersEditContainer = (filterValues, selectedIcos, oldExportId)
 					method: 'PUT',
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify(limitedPayload),
+					credentials: 'include',
 				});
 
 				if (!response.ok || (!limitedPayload.filters.exportDate && !limitedPayload.filters.estimatedArrival)) {
@@ -121,6 +122,7 @@ export const useFiltersEditContainer = (filterValues, selectedIcos, oldExportId)
 				method: 'PUT',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify(payload),
+				credentials: 'include',
 			});
 
 			if (!response.ok) throw new Error('Network response was not ok');
@@ -164,6 +166,7 @@ export const useFiltersEditContainer = (filterValues, selectedIcos, oldExportId)
 				method: 'PUT',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ id: oldExportId, is_exported: '1' }),
+				credentials: 'include',
 			});
 
 			setPopup({

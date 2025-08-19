@@ -60,7 +60,7 @@ export function ViewContainers() {
 				<Banner />
 				<div className='flex justify-between items-center my-8'>
 					<h1 className='text-3xl font-bold uppercase text-yellow font-itf'>{t('viewContainers')}</h1>
-					<PermissionGuard permissions={['containers.edit']}>
+					<PermissionGuard permissions={['edit_container']}>
 						<button
 							onClick={openReorderPopup}
 							className='bg-naranja text-beige font-itf text-lg px-6 py-3 transition-colors duration-200 '
@@ -119,8 +119,8 @@ export function ViewContainers() {
 								<div className='titleContainer flex flex-row justify-between gap-10 items-center'>
 									<div className='flex flex-row justify-between items-center gap-6'>
 										<h2 className='text-2xl font-bold text-white font-itf uppercase'>{exp_id}</h2>
-										<PermissionGuard permissions={['containers.edit']}>
-											<Link to={`/edit-container/${dataWithButtons[0].container_id}`}>
+										<PermissionGuard permissions={['edit_container']}>
+											<Link to={`/containers/${dataWithButtons[0].container_id}/edit`}>
 												<img className='max-w-[50%]' src={editContainer} alt='Edit Container' />
 											</Link>
 										</PermissionGuard>
@@ -162,7 +162,7 @@ export function ViewContainers() {
 				{isCommentsOpen && <Comments ico={selectedIco} onClose={closeComments} onCommentAdded={refreshNotifications} />}
 
 				{/* Container Reorder Popup */}
-				<PermissionGuard permissions={['containers.edit']}>
+				<PermissionGuard permissions={['edit_container']}>
 					<ContainerReorderPopup
 						containers={containersForReorder}
 						isOpen={isReorderPopupOpen}
