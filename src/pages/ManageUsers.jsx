@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 
 export function ManageUsers() {
 	const { t } = useTranslation();
-	const { users, roles, loading, error, createUser, updateUserRole } = useUserManagement();
+	const { users, roles, loading, error, createUser, updateUserRole, deleteUser } = useUserManagement();
 	const [showCreateForm, setShowCreateForm] = useState(false);
 	const [formLoading, setFormLoading] = useState(false);
 	const [popup, setPopup] = useState({ isOpen: false, title: '', message: '', type: 'info' });
@@ -45,17 +45,28 @@ export function ManageUsers() {
 			username: user.username,
 			'role.name': user.role?.name || 'No Role',
 			actions: (
-				<select
-					value={user.role?.id || ''}
-					onChange={(e) => handleRoleChange(user.id, e.target.value)}
-					className='text-sm p-1 border border-cafe text-cafe'
-				>
-					{roles?.map((role) => (
-						<option key={role.id} value={role.id}>
-							{role.name}
-						</option>
-					)) || []}
-				</select>
+				<div className='flex gap-2 items-center'>
+					<select
+						value={user.role?.id || ''}
+						onChange={(e) => handleRoleChange(user.id, e.target.value)}
+						className='text-sm p-1 border border-cafe text-cafe'
+					>
+						{roles?.map((role) => (
+							<option key={role.id} value={role.id}>
+								{role.name}
+							</option>
+						)) || []}
+					</select>
+					<button
+						onClick={async () => {
+							if (!window.confirm(`Delete user ${user.username}?`)) return;
+							await deleteUser(user.id);
+						}}
+						className='text-red-500 border border-red-500 px-2 py-1 hover:bg-red-500 hover:text-white text-sm'
+					>
+						Delete
+					</button>
+				</div>
 			),
 		})) || [];
 

@@ -1,5 +1,5 @@
-//export const API_BASE_URL = 'https://bckcarcoltest.caravela.coffee/';
-export const API_BASE_URL = 'https://bckcarcol.caravela.coffee/';
+export const API_BASE_URL = 'https://bckcarcoltest.caravela.coffee/';
+//export const API_BASE_URL = 'https://bckcarcol.caravela.coffee/';
 //export const API_BASE_URL = 'http://localhost:8080/';
 
 export const API_ENDPOINTS = {
@@ -25,8 +25,9 @@ export const API_ENDPOINTS = {
 	MARK_COMMENTS_AS_VIEWED: 'api/exports/comments/markAsViewed',
 	// User management endpoints
 	USERS: 'api/users',
-	USER_PERMISSIONS: 'api/users/permissions',
+	USER_MODULES: 'api/users/modules',
 	USER_ROLES: 'api/users/roles',
+	ROLE_ROOT: 'api/roles',
 	// Container order endpoints
 	CONTAINER_ORDER: 'api/exports/container-order',
 };

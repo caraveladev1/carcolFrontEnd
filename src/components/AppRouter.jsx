@@ -15,61 +15,49 @@ import { EditContainer } from '../pages/EditContainer.jsx';
 import { ExportedContainers } from '../pages/ExportedContainers.jsx';
 import { AnnouncementsPage } from '../pages/AnnouncementsPage.jsx';
 import { ManageUsers } from '../pages/ManageUsers.jsx';
+import { ManageRoles } from '../pages/ManageRoles.jsx';
 
 // Mapa de componentes
 const COMPONENT_MAP = {
-  'LoginMS': LoginMS,
-  'Unauthorized': Unauthorized,
-  'ViewContainers': ViewContainers,
-  'PendingTask': PendingTask,
-  'CreateContainer': CreateContainer,
-  'EditContainer': EditContainer,
-  'ExportedContainers': ExportedContainers,
-  'AnnouncementsPage': AnnouncementsPage,
-  'ManageUsers': ManageUsers
+	LoginMS: LoginMS,
+	Unauthorized: Unauthorized,
+	ViewContainers: ViewContainers,
+	PendingTask: PendingTask,
+	CreateContainer: CreateContainer,
+	EditContainer: EditContainer,
+	ExportedContainers: ExportedContainers,
+	AnnouncementsPage: AnnouncementsPage,
+	ManageUsers: ManageUsers,
+	ManageRoles: ManageRoles,
 };
 
 export const AppRouter = () => {
-  const { isAuthenticated, loading } = useAuth();
-  const { canAccessRoute } = useRouteAccess();
+	const { isAuthenticated, loading } = useAuth();
+	const { canAccessRoute } = useRouteAccess();
 
-  if (loading) {
-    return <Loader />;
-  }
+	if (loading) {
+		return <Loader />;
+	}
 
-  return (
-    <Routes>
-      {Object.entries(ROUTES_CONFIG).map(([path, config]) => {
-        // Si no puede acceder a esta ruta, no la renderizamos
-        if (!canAccessRoute(path)) {
-          return null;
-        }
+	return (
+		<Routes>
+			{Object.entries(ROUTES_CONFIG).map(([path, config]) => {
+				// Si no puede acceder a esta ruta, no la renderizamos
+				if (!canAccessRoute(path)) {
+					return null;
+				}
 
-        const Component = COMPONENT_MAP[config.component];
-        if (!Component) {
-          console.error(`Component ${config.component} not found in COMPONENT_MAP`);
-          return null;
-        }
+				const Component = COMPONENT_MAP[config.component];
+				if (!Component) {
+					console.error(`Component ${config.component} not found in COMPONENT_MAP`);
+					return null;
+				}
 
-        return (
-          <Route 
-            key={path} 
-            path={path} 
-            element={<Component />} 
-          />
-        );
-      })}
-      
-      {/* Ruta por defecto - redirige según el estado de autenticación */}
-      <Route 
-        path="*" 
-        element={
-          <Navigate 
-            to={isAuthenticated ? DEFAULT_AUTHENTICATED_ROUTE : "/"} 
-            replace 
-          />
-        } 
-      />
-    </Routes>
-  );
+				return <Route key={path} path={path} element={<Component />} />;
+			})}
+
+			{/* Ruta por defecto - redirige según el estado de autenticación */}
+			<Route path='*' element={<Navigate to={isAuthenticated ? DEFAULT_AUTHENTICATED_ROUTE : '/'} replace />} />
+		</Routes>
+	);
 };
