@@ -107,7 +107,9 @@ export const useAnnouncements = (onClose) => {
 	}, [data, filteredData]);
 
 	useEffect(() => {
-		fetch(`${API_BASE_URL}api/exports/getAnnouncements`)
+		fetch(`${API_BASE_URL}api/exports/getAnnouncements`, {
+			credentials: 'include'
+		})
 			.then((response) => response.json())
 			.then((data) => {
 				setData(data);

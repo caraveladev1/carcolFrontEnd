@@ -26,7 +26,9 @@ export const useComments = (ico, onCommentAdded) => {
 	}, []);
 
 	useEffect(() => {
-		fetch(`${API_BASE_URL}${API_ENDPOINTS.GET_COMMENTS_BY_ICO}/${ico}`)
+		fetch(`${API_BASE_URL}${API_ENDPOINTS.GET_COMMENTS_BY_ICO}/${ico}`, {
+			credentials: 'include'
+		})
 			.then((response) => response.json())
 			.then((json) => {
 				const parsedComments = json.map((item) => {
