@@ -17,8 +17,25 @@ class ApiService {
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    
-    return response.json();
+
+    // Gracefully handle empty responses (e.g., 204 No Content) and non-JSON payloads
+    if (response.status === 204) {
+      return null;
+    }
+
+    const contentType = response.headers.get('content-type') || '';
+    if (contentType.includes('application/json')) {
+      try {
+        return await response.json();
+      } catch {
+        // Empty body or invalid JSON
+        return null;
+      }
+    }
+
+    // For other content types, return raw text (or null if empty)
+    const text = await response.text();
+    return text || null;
   }
 
   async get(endpoint, options = {}) {

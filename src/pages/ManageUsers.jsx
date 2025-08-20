@@ -5,6 +5,7 @@ import { useUserManagement } from '../Hooks/useUserManagement';
 import { Banner } from '../components/Banner';
 import { headersTableManageUsers } from '../constants/tableHeaders.js';
 import { useTranslation } from 'react-i18next';
+import { OptionsPopup } from '../components/general/OptionsPopup.jsx';
 
 export function ManageUsers() {
 	const { t } = useTranslation();
@@ -12,6 +13,7 @@ export function ManageUsers() {
 	const [showCreateForm, setShowCreateForm] = useState(false);
 	const [formLoading, setFormLoading] = useState(false);
 	const [popup, setPopup] = useState({ isOpen: false, title: '', message: '', type: 'info' });
+	const [confirmState, setConfirmState] = useState({ open: false, userId: null, username: '' });
 	// ...
 	const methods = useForm({ defaultValues: { email: '', roleId: '' } });
 
@@ -23,7 +25,6 @@ export function ManageUsers() {
 
 		if (result.success) {
 			methods.reset();
-			setCurrentPage(1);
 			setPopup({ isOpen: true, title: 'success', message: 'User created successfully!', type: 'success' });
 		} else {
 			setPopup({ isOpen: true, title: 'error', message: 'Failed to create user. Please try again.', type: 'error' });
@@ -35,7 +36,12 @@ export function ManageUsers() {
 	};
 
 	const handleRoleChange = async (userId, newRoleId) => {
-		await updateUserRole(userId, parseInt(newRoleId));
+		const res = await updateUserRole(userId, parseInt(newRoleId));
+		if (!res?.success) {
+			setPopup({ isOpen: true, title: 'error', message: 'Failed to update user role', type: 'error' });
+		} else {
+			setPopup({ isOpen: true, title: 'success', message: 'User role updated', type: 'success' });
+		}
 	};
 
 	const tableHeaders = headersTableManageUsers;
@@ -58,10 +64,7 @@ export function ManageUsers() {
 						)) || []}
 					</select>
 					<button
-						onClick={async () => {
-							if (!window.confirm(`Delete user ${user.username}?`)) return;
-							await deleteUser(user.id);
-						}}
+						onClick={() => setConfirmState({ open: true, userId: user.id, username: user.username })}
 						className='text-red-500 border border-red-500 px-2 py-1 hover:bg-red-500 hover:text-white text-sm'
 					>
 						Delete
@@ -94,6 +97,26 @@ export function ManageUsers() {
 						title={popup.title ? t(popup.title) : ''}
 						message={popup.message ? t(popup.message) : ''}
 						type={popup.type}
+					/>
+
+					<OptionsPopup
+						isOpen={confirmState.open}
+						title='Delete user'
+						message={`Delete user ${confirmState.username}?`}
+						confirmText='Delete'
+						cancelText='Cancel'
+						onConfirm={async () => {
+							const id = confirmState.userId;
+							setConfirmState({ open: false, userId: null, username: '' });
+							const res = await deleteUser(id);
+							if (!res?.success) {
+								setPopup({ isOpen: true, title: 'error', message: 'Failed to delete user', type: 'error' });
+							} else {
+								setPopup({ isOpen: true, title: 'success', message: 'User deleted', type: 'success' });
+							}
+						}}
+						onCancel={() => setConfirmState({ open: false, userId: null, username: '' })}
+						type='warning'
 					/>
 
 					{showCreateForm && (

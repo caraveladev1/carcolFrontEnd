@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { useRolesManagement, MODULE_OPTIONS } from '../Hooks/useRolesManagement.jsx';
 import { Loader } from '../components/Loader.jsx';
+import { Popup } from '../components/Popup.jsx';
 import { Banner } from '../components/Banner.jsx';
+import { OptionsPopup } from '../components/general/OptionsPopup.jsx';
 
 export function ManageRoles() {
 	const { roles, loading, error, createRole, updateRoleModules, deleteRole } = useRolesManagement();
 	const [newRoleName, setNewRoleName] = useState('');
+	const [msgPopup, setMsgPopup] = useState({ isOpen: false, title: '', message: '', type: 'info' });
 
 	if (loading) return <Loader />;
 	if (error) return <div className='text-red-500'>{error}</div>;
@@ -15,8 +18,12 @@ export function ManageRoles() {
 		const name = newRoleName.trim();
 		if (!name) return;
 		const res = await createRole(name, []);
-		if (res.success) setNewRoleName('');
-		else alert(res.error);
+		if (res.success) {
+			setNewRoleName('');
+			setMsgPopup({ isOpen: true, title: 'success', message: 'Role created', type: 'success' });
+		} else {
+			setMsgPopup({ isOpen: true, title: 'error', message: res.error || 'Failed to create role', type: 'error' });
+		}
 	};
 
 	return (
@@ -55,6 +62,13 @@ export function ManageRoles() {
 							/>
 						))}
 					</div>
+					<Popup
+						isOpen={msgPopup.isOpen}
+						onClose={() => setMsgPopup({ isOpen: false, title: '', message: '', type: 'info' })}
+						title={msgPopup.title}
+						message={msgPopup.message}
+						type={msgPopup.type}
+					/>
 				</div>
 			</section>
 		</div>
@@ -65,6 +79,8 @@ function RoleRow({ role, onSave, onDelete }) {
 	const [editing, setEditing] = useState(false);
 	const [mods, setMods] = useState(role.modules_access || []);
 	const [busy, setBusy] = useState(false);
+	const [confirmOpen, setConfirmOpen] = useState(false);
+	const [localMsg, setLocalMsg] = useState({ isOpen: false, title: '', message: '', type: 'info' });
 
 	const toggleMod = (value) =>
 		setMods((prev) => (prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]));
@@ -73,7 +89,10 @@ function RoleRow({ role, onSave, onDelete }) {
 		setBusy(true);
 		const res = await onSave(mods);
 		setBusy(false);
-		if (!res?.success) return alert(res?.error || 'Failed to save');
+		if (!res?.success) {
+			setLocalMsg({ isOpen: true, title: 'error', message: res?.error || 'Failed to save', type: 'error' });
+			return;
+		}
 		setEditing(false);
 	};
 
@@ -101,9 +120,7 @@ function RoleRow({ role, onSave, onDelete }) {
 								Edit
 							</button>
 							<button
-								onClick={() => {
-									if (confirm(`Delete role "${role.name}"?`)) onDelete();
-								}}
+								onClick={() => setConfirmOpen(true)}
 								className='border border-red-500 font-itf text-red-500 px-3 py-1 hover:bg-red-500 hover:text-white'
 							>
 								Delete
@@ -143,6 +160,27 @@ function RoleRow({ role, onSave, onDelete }) {
 					))}
 				</div>
 			)}
+
+			<OptionsPopup
+				isOpen={confirmOpen}
+				title='Delete role'
+				message={`Delete role "${role.name}"?`}
+				confirmText='Delete'
+				cancelText='Cancel'
+				onConfirm={() => {
+					setConfirmOpen(false);
+					onDelete();
+				}}
+				onCancel={() => setConfirmOpen(false)}
+				type='warning'
+			/>
+			<Popup
+				isOpen={localMsg.isOpen}
+				onClose={() => setLocalMsg({ isOpen: false, title: '', message: '', type: 'info' })}
+				title={localMsg.title}
+				message={localMsg.message}
+				type={localMsg.type}
+			/>
 		</div>
 	);
 }
